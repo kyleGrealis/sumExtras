@@ -1,0 +1,34 @@
+Package: sumExtras
+Title: Extra Functions for gtsummary Table Styling
+Version: 0.0.0.9000
+Authors@R: 
+    person(
+        "Kyle",
+        "Grealis",
+        email = "kyleGrealis@icloud.com",
+        role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0002-9223-8854")
+    )
+Description: Provides additional convenience functions for gtsummary & gt tables, 
+    including automatic variable labeling from dictionaries, standardized 
+    missing value display, and consistent formatting helpers for streamlined table styling workflows.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Suggests: 
+    broom,
+    broom.helpers,
+    conflicted,
+    here,
+    knitr,
+    quarto,
+    roxygen2
+VignetteBuilder: quarto
+Imports: 
+    dplyr,
+    gt,
+    gtsummary,
+    purrr,
+    stringr,
+    tibble

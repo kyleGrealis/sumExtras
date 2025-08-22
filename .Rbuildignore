@@ -1,0 +1,5 @@
+^sumExtras\.Rproj$
+^\.Rproj\.user$
+dated_progress_notes.md
+inst/.gitkeep
+^LICENSE\.md$
