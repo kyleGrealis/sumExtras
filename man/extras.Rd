@@ -45,13 +45,18 @@ gtsummary::trial |>
   extras(pval = FALSE)
   
 # Chain with other functions
-\dontrun{
+# Create required dictionary first
+dictionary <- tibble::tribble(
+  ~Variable, ~Description,
+  'record_id', 'Participant ID',
+  'age', 'Age at enrollment',
+  'sex', 'Biological sex'
+)
 gtsummary::trial |> 
   gtsummary::tbl_summary(by = trt) |> 
   add_auto_labels() |> 
   extras(pval = TRUE) |> 
   group_styling()
-}
 
 }
 \seealso{
