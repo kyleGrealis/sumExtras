@@ -3,3 +3,6 @@
 dated_progress_notes.md
 inst/.gitkeep
 ^LICENSE\.md$
+
+# Nix files
+flake.*
