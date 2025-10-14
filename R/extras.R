@@ -6,21 +6,20 @@
 #'
 #' @param tbl A gtsummary table object (e.g., from `tbl_summary()`, `tbl_regression()`)
 #' @param pval Logical indicating whether to add p-values. Default is `TRUE`.
-#'   When `TRUE`, adds Kruskal-Wallis tests for continuous variables and 
-#'   chi-square tests for categorical variables.
+#'   When `TRUE`, uses gtsummary's default statistical tests (Kruskal-Wallis for 
+#'   continuous variables with 3+ groups, chi-square for categorical variables).
 #' @param overall Logical indicating whether to add overall column
 #'
 #' @returns A gtsummary table object with standard formatting applied
 #'
 #' @details The function applies the following modifications:
-#' * Adds an "Overall" column as the last column
+#' * Adds an "Overall" column as the last column (if `overall = TRUE`)
 #' * Bolds variable labels for emphasis
 #' * Removes the "Characteristic" header label
 #' * Applies `clean_table()` styling
-#' * Optionally adds p-values with appropriate statistical tests
+#' * Optionally adds p-values with gtsummary's default statistical tests
 #' 
-#' @importFrom gtsummary add_overall add_p all_categorical all_continuous bold_labels 
-#'   modify_header style_pvalue
+#' @importFrom gtsummary add_overall add_p bold_labels modify_header style_pvalue
 #'
 #' @examples
 #' # With p-values (default)
@@ -66,12 +65,7 @@ extras <- function(tbl, pval = TRUE, overall = TRUE) {
   if (pval) {
     result <- result |> 
       add_p(
-        test = list(
-          all_continuous() ~ "kruskal.test",
-          all_categorical() ~ "janitor::chisq.test"
-        ),
-        pvalue_fun = ~ style_pvalue(.x, digits = 3),
-        test.args = gtsummary::all_tests("fisher.test") ~ list(simulate.p.value = TRUE)
+        pvalue_fun = ~ style_pvalue(.x, digits = 3)
       )
   }
   
