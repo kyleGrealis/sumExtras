@@ -68,7 +68,7 @@ extras <- function(tbl, pval = TRUE, overall = TRUE) {
       add_p(
         test = list(
           all_continuous() ~ "kruskal.test",
-          all_categorical() ~ "stats::chisq.test"
+          all_categorical() ~ "janitor::chisq.test"
         ),
         pvalue_fun = ~ style_pvalue(.x, digits = 3)
       )
