@@ -65,7 +65,8 @@ extras <- function(tbl, pval = TRUE, overall = TRUE) {
   if (pval) {
     result <- result |> 
       add_p(
-        pvalue_fun = ~ style_pvalue(.x, digits = 3)
+        pvalue_fun = ~ style_pvalue(.x, digits = 3),
+        test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)
       )
   }
   
