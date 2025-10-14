@@ -70,7 +70,8 @@ extras <- function(tbl, pval = TRUE, overall = TRUE) {
           all_continuous() ~ "kruskal.test",
           all_categorical() ~ "janitor::chisq.test"
         ),
-        pvalue_fun = ~ style_pvalue(.x, digits = 3)
+        pvalue_fun = ~ style_pvalue(.x, digits = 3),
+        test.args = gtsummary::all_tests("fisher.test") ~ list(simulate.p.value = TRUE)
       )
   }
   
