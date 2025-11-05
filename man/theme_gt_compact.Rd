@@ -61,8 +61,8 @@ data_table <- gtsummary::trial |>
 }
 \seealso{
 \itemize{
-\item \code{\link[gtsummary:theme_gtsummary]{gtsummary::theme_gtsummary_compact()}} for gtsummary table themes
-\item \code{\link[gtsummary:set_gtsummary_theme]{gtsummary::set_gtsummary_theme()}} for setting global gtsummary themes
-\item \code{\link[gt:tab_options]{gt::tab_options()}} for additional gt table styling options
+\item \code{gtsummary::theme_gtsummary_compact()} for gtsummary table themes
+\item \code{gtsummary::set_gtsummary_theme()} for setting global gtsummary themes
+\item \code{gt::tab_options()} for additional gt table styling options
 }
 }

@@ -26,6 +26,7 @@
 #' @importFrom stringr str_detect
 #'
 #' @examples
+#' \dontrun{
 #' # Basic usage - clean missing values in summary table
 #' gtsummary::trial |> 
 #'   gtsummary::tbl_summary(by = trt) |> 
@@ -50,10 +51,11 @@
 #' lm(age ~ trt + grade, data = gtsummary::trial) |> 
 #'   gtsummary::tbl_regression() |> 
 #'   clean_table()
+#' }
 #'
 #' @seealso 
-#' * [gtsummary::modify_table_body()] for general table body modifications
-#' * [extras()] which includes `clean_table()` in its styling pipeline
+#' * `gtsummary::modify_table_body()` for general table body modifications
+#' * `extras()` which includes `clean_table()` in its styling pipeline
 #'
 #' @export
 clean_table <- function(tbl) {

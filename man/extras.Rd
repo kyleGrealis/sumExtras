@@ -4,16 +4,22 @@
 \alias{extras}
 \title{Add standard styling and formatting to gtsummary tables}
 \usage{
-extras(tbl, pval = TRUE, overall = TRUE)
+extras(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL)
 }
 \arguments{
 \item{tbl}{A gtsummary table object (e.g., from \code{tbl_summary()}, \code{tbl_regression()})}
 
 \item{pval}{Logical indicating whether to add p-values. Default is \code{TRUE}.
-When \code{TRUE}, adds Kruskal-Wallis tests for continuous variables and
-chi-square tests for categorical variables.}
+When \code{TRUE}, uses gtsummary's default statistical tests (Kruskal-Wallis for
+continuous variables with 3+ groups, chi-square for categorical variables).}
 
 \item{overall}{Logical indicating whether to add overall column}
+
+\item{last}{Logical indicating if Overall column should be last. Aligns with default
+from \code{gtsummary::add_overall()}.}
+
+\item{.args}{Optional list of arguments to use instead of individual parameters.
+When provided, overrides \code{pval}, \code{overall}, and \code{last} arguments.}
 }
 \value{
 A gtsummary table object with standard formatting applied
@@ -26,18 +32,25 @@ Streamlines the common workflow of adding multiple formatting functions.
 \details{
 The function applies the following modifications:
 \itemize{
-\item Adds an "Overall" column as the last column
+\item Adds an "Overall" column as the last column (if \code{overall = TRUE})
 \item Bolds variable labels for emphasis
 \item Removes the "Characteristic" header label
 \item Applies \code{clean_table()} styling
-\item Optionally adds p-values with appropriate statistical tests
+\item Optionally adds p-values with gtsummary's default statistical tests
 }
 }
 \examples{
+\dontrun{
 # With p-values (default)
 gtsummary::trial |> 
   gtsummary::tbl_summary(by = trt) |> 
   extras()
+
+# Using .args list
+extra_args <- list(pval = TRUE, overall = TRUE, last = FALSE)
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  extras(.args = extra_args)
   
 # Without p-values
 gtsummary::trial |> 
@@ -57,12 +70,13 @@ gtsummary::trial |>
   add_auto_labels() |> 
   extras(pval = TRUE) |> 
   group_styling()
+}
 
 }
 \seealso{
 \itemize{
-\item \code{\link[gtsummary:add_overall]{gtsummary::add_overall()}} for adding overall columns
-\item \code{\link[gtsummary:add_p]{gtsummary::add_p()}} for adding p-values
-\item \code{\link[=clean_table]{clean_table()}} for additional table styling
+\item \code{gtsummary::add_overall()} for adding overall columns
+\item \code{gtsummary::add_p()} for adding p-values
+\item \code{clean_table()} for additional table styling
 }
 }

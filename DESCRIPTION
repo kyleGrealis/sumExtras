@@ -1,6 +1,6 @@
 Package: sumExtras
 Title: Extra Functions for gtsummary Table Styling
-Version: 0.0.1.9001
+Version: 0.0.1.9002
 Authors@R: 
     person(
         "Kyle",
@@ -15,7 +15,7 @@ Description: Provides additional convenience functions for gtsummary & gt tables
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Suggests: 
     broom,
     broom.helpers,
@@ -27,8 +27,8 @@ Suggests:
 VignetteBuilder: quarto
 Imports: 
     dplyr,
-    gt,
-    gtsummary,
+    gt (>= 0.9.0),
+    gtsummary (>= 1.7.0),
     purrr,
     stringr,
     tibble

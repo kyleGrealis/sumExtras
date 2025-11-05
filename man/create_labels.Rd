@@ -50,5 +50,5 @@ study_data |>
 
 }
 \seealso{
-\code{\link[=add_auto_labels]{add_auto_labels()}} for automatic application to existing tbl_summary objects
+\code{add_auto_labels()} for automatic application to existing tbl_summary objects
 }

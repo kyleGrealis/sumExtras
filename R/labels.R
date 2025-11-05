@@ -40,7 +40,7 @@
 #'   gtsummary::tbl_summary(label = create_labels(study_data))
 #' }
 #' 
-#' @seealso [add_auto_labels()] for automatic application to existing tbl_summary objects
+#' @seealso `add_auto_labels()` for automatic application to existing tbl_summary objects
 #' 
 #' @export
 create_labels <- function(data) {
@@ -95,7 +95,7 @@ create_labels <- function(data) {
 #'   add_auto_labels()  # 'age' stays "Patient Age", others get dictionary labels
 #' }
 #' 
-#' @seealso [create_labels()] for dictionary requirements
+#' @seealso `create_labels()` for dictionary requirements
 #' 
 #' @export
 add_auto_labels <- function(tbl) {
