@@ -34,5 +34,5 @@ table1_data |>
 
 }
 \seealso{
-\code{\link[=create_labels]{create_labels()}} for dictionary requirements
+\code{create_labels()} for dictionary requirements
 }

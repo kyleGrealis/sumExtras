@@ -49,9 +49,9 @@
 #'   theme_gt_compact()
 #'
 #' @seealso 
-#' * [gtsummary::theme_gtsummary_compact()] for gtsummary table themes
-#' * [gtsummary::set_gtsummary_theme()] for setting global gtsummary themes
-#' * [gt::tab_options()] for additional gt table styling options
+#' * `gtsummary::theme_gtsummary_compact()` for gtsummary table themes
+#' * `gtsummary::set_gtsummary_theme()` for setting global gtsummary themes
+#' * `gt::tab_options()` for additional gt table styling options
 #'
 #' @export
 theme_gt_compact <- function(tbl) {
@@ -122,8 +122,8 @@ theme_gt_compact <- function(tbl) {
 #'   group_styling(format = "bold")
 #' 
 #' @seealso 
-#' * [gtsummary::modify_table_styling()] for general table styling options
-#' * [gtsummary::tbl_strata()] for creating stratified tables with groups
+#' * `gtsummary::modify_table_styling()` for general table styling options
+#' * `gtsummary::tbl_strata()` for creating stratified tables with groups
 #' 
 #' @export
 group_styling <- function(tbl, format = c('bold', 'italic')) {

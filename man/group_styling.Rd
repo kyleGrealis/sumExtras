@@ -57,7 +57,7 @@ gtsummary::trial |>
 }
 \seealso{
 \itemize{
-\item \code{\link[gtsummary:modify_table_styling]{gtsummary::modify_table_styling()}} for general table styling options
-\item \code{\link[gtsummary:tbl_strata]{gtsummary::tbl_strata()}} for creating stratified tables with groups
+\item \code{gtsummary::modify_table_styling()} for general table styling options
+\item \code{gtsummary::tbl_strata()} for creating stratified tables with groups
 }
 }

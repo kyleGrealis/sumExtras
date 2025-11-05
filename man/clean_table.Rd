@@ -33,6 +33,7 @@ This standardization makes tables more scannable and reduces visual clutter
 from various "empty" data representations.
 }
 \examples{
+\dontrun{
 # Basic usage - clean missing values in summary table
 gtsummary::trial |> 
   gtsummary::tbl_summary(by = trt) |> 
@@ -57,11 +58,12 @@ gtsummary::trial |>
 lm(age ~ trt + grade, data = gtsummary::trial) |> 
   gtsummary::tbl_regression() |> 
   clean_table()
+}
 
 }
 \seealso{
 \itemize{
-\item \code{\link[gtsummary:modify_table_body]{gtsummary::modify_table_body()}} for general table body modifications
-\item \code{\link[=extras]{extras()}} which includes \code{clean_table()} in its styling pipeline
+\item \code{gtsummary::modify_table_body()} for general table body modifications
+\item \code{extras()} which includes \code{clean_table()} in its styling pipeline
 }
 }

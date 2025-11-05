@@ -26,6 +26,7 @@
 #' @importFrom gtsummary add_overall add_p bold_labels modify_header style_pvalue
 #'
 #' @examples
+#' \dontrun{
 #' # With p-values (default)
 #' gtsummary::trial |> 
 #'   gtsummary::tbl_summary(by = trt) |> 
@@ -55,11 +56,12 @@
 #'   add_auto_labels() |> 
 #'   extras(pval = TRUE) |> 
 #'   group_styling()
+#' }
 #' 
 #' @seealso 
-#' * [gtsummary::add_overall()] for adding overall columns
-#' * [gtsummary::add_p()] for adding p-values
-#' * [clean_table()] for additional table styling
+#' * `gtsummary::add_overall()` for adding overall columns
+#' * `gtsummary::add_p()` for adding p-values
+#' * `clean_table()` for additional table styling
 #'
 #' @export
 extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL) {
