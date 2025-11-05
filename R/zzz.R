@@ -3,7 +3,7 @@
   if (requireNamespace("gtsummary", quietly = TRUE)) {
     suppressMessages(
       gtsummary::set_gtsummary_theme(
-        gtsummary::theme_gtsummary_compact("jama", font_size = 10)
+        gtsummary::theme_gtsummary_compact("jama")
       )
     )
     packageStartupMessage(
