@@ -32,15 +32,24 @@ Streamlines the common workflow of adding multiple formatting functions.
 \details{
 The function applies the following modifications:
 \itemize{
-\item Adds an "Overall" column as the last column (if \code{overall = TRUE})
+\item Adds an "Overall" column as the last column (if \code{overall = TRUE} and table is stratified)
 \item Bolds variable labels for emphasis
 \item Removes the "Characteristic" header label
 \item Applies \code{clean_table()} styling
-\item Optionally adds p-values with gtsummary's default statistical tests
+\item Optionally adds p-values with gtsummary's default statistical tests (if table is stratified)
 }
+
+The function automatically detects whether the input table is stratified (has a \code{by}
+argument). For non-stratified tables, overall columns and p-values are silently skipped
+regardless of the \code{pval} and \code{overall} argument values, since these features require
+stratification.
+
+If adding p-values or overall column fails (e.g., due to table structure incompatibility),
+the function will issue a warning and continue without that feature rather than erroring.
+This ensures the function completes successfully even if individual styling steps fail.
 }
 \examples{
-\dontrun{
+\donttest{
 # With p-values (default)
 gtsummary::trial |> 
   gtsummary::tbl_summary(by = trt) |> 

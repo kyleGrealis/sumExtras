@@ -20,13 +20,14 @@
 #'   This standardization makes tables more scannable and reduces visual clutter
 #'   from various "empty" data representations.
 #' 
-#' @importFrom dplyr across if_else mutate 
-#' @importFrom gtsummary all_stat_cols modify_missing_symbol modify_table_body 
+#' @importFrom dplyr across if_else mutate
+#' @importFrom gtsummary all_stat_cols modify_missing_symbol modify_table_body
 #'   tbl_regression tbl_summary
 #' @importFrom stringr str_detect
+#' @importFrom rlang abort
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Basic usage - clean missing values in summary table
 #' gtsummary::trial |> 
 #'   gtsummary::tbl_summary(by = trt) |> 
@@ -59,14 +60,35 @@
 #'
 #' @export
 clean_table <- function(tbl) {
+  # Validate input is a gtsummary object
+  if (!inherits(tbl, "gtsummary")) {
+    rlang::abort(
+      c(
+        "`tbl` must be a gtsummary object.",
+        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
+        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+      ),
+      class = "clean_table_invalid_input"
+    )
+  }
+
   tbl |>
     modify_table_body(
       ~ .x |> 
         mutate(across(all_stat_cols(), ~ {
-          # Detect any statistic containing "NA", "Inf", or patterns with all zeros
-          # \\b ensures to match complete words, avoiding false positives
-          # The zero pattern catches: 0 (0%), 0.00 (0.00), 0% (0.000), etc.
-          na_pattern <- "\\bNA\\b|\\bInf\\b|^[0\\s%().,]+$"
+          # Detect specific missing value patterns to replace with standardized symbol
+          # Uses explicit pattern matching to avoid false positives
+          na_pattern <- paste(c(
+            "\\bNA\\b",                  # Literal NA
+            "\\bInf\\b",                 # Literal Inf
+            "-Inf",                      # Negative Inf
+            "^0 \\(0%\\)$",              # Exact: 0 (0%)
+            "^0 \\(NA%\\)$",             # Exact: 0 (NA%)
+            "^NA \\(NA\\)$",             # Exact: NA (NA)
+            "^NA \\(NA, NA\\)$",         # Exact: NA (NA, NA)
+            "^0\\.0+ \\(0\\.0+%?\\)$",   # 0.00 (0.00) or 0.00 (0.00%)
+            "^NA, NA$"                   # Exact: NA, NA
+          ), collapse = "|")
           if_else(str_detect(., na_pattern), NA_character_, .)
         }))
     ) |> 

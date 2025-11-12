@@ -1,0 +1,140 @@
+# Tests for styling functions (theme_gt_compact, group_styling, get_group_rows)
+
+test_that("theme_gt_compact() works with gt tables", {
+  skip_if_not_installed("gt")
+
+  tbl <- mtcars |>
+    head() |>
+    gt::gt() |>
+    theme_gt_compact()
+
+  expect_s3_class(tbl, "gt_tbl")
+})
+
+test_that("theme_gt_compact() sets correct options", {
+  skip_if_not_installed("gt")
+
+  tbl <- mtcars |>
+    head() |>
+    gt::gt() |>
+    theme_gt_compact()
+
+  expect_s3_class(tbl, "gt_tbl")
+  # Check that styling was applied
+  expect_true(!is.null(tbl$`_options`))
+})
+
+test_that("group_styling() works with default formatting", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade)) |>
+    gtsummary::add_variable_group_header(
+      header = "Test Group",
+      variables = age:grade
+    ) |>
+    group_styling()
+
+  expect_s3_class(tbl, "gtsummary")
+})
+
+test_that("group_styling() works with bold only", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+    gtsummary::add_variable_group_header(
+      header = "Demographics",
+      variables = age:marker
+    ) |>
+    group_styling(format = "bold")
+
+  expect_s3_class(tbl, "gtsummary")
+})
+
+test_that("group_styling() works with italic only", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+    gtsummary::add_variable_group_header(
+      header = "Demographics",
+      variables = age:marker
+    ) |>
+    group_styling(format = "italic")
+
+  expect_s3_class(tbl, "gtsummary")
+})
+
+test_that("group_styling() works with multiple groups", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade, stage)) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 1",
+      variables = age
+    ) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 2",
+      variables = marker:stage
+    ) |>
+    group_styling()
+
+  expect_s3_class(tbl, "gtsummary")
+})
+
+test_that("get_group_rows() returns correct row numbers", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade)) |>
+    gtsummary::add_variable_group_header(
+      header = "Test Group",
+      variables = age:grade
+    )
+
+  rows <- get_group_rows(tbl)
+
+  expect_type(rows, "integer")
+  expect_true(length(rows) > 0)
+})
+
+test_that("get_group_rows() works with multiple groups", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade, stage)) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 1",
+      variables = age
+    ) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 2",
+      variables = marker:stage
+    )
+
+  rows <- get_group_rows(tbl)
+
+  expect_type(rows, "integer")
+  expect_equal(length(rows), 2)
+})
+
+test_that("get_group_rows() errors with non-gtsummary input", {
+  expect_error(
+    get_group_rows(mtcars),
+    "must be a gtsummary object"
+  )
+})
+
+test_that("get_group_rows() returns empty vector when no groups", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker))
+
+  rows <- get_group_rows(tbl)
+
+  expect_type(rows, "integer")
+  expect_equal(length(rows), 0)
+})

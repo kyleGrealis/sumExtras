@@ -17,16 +17,26 @@
 #' @returns A gtsummary table object with standard formatting applied
 #'
 #' @details The function applies the following modifications:
-#' * Adds an "Overall" column as the last column (if `overall = TRUE`)
+#' * Adds an "Overall" column as the last column (if `overall = TRUE` and table is stratified)
 #' * Bolds variable labels for emphasis
 #' * Removes the "Characteristic" header label
 #' * Applies `clean_table()` styling
-#' * Optionally adds p-values with gtsummary's default statistical tests
-#' 
-#' @importFrom gtsummary add_overall add_p bold_labels modify_header style_pvalue
+#' * Optionally adds p-values with gtsummary's default statistical tests (if table is stratified)
+#'
+#' The function automatically detects whether the input table is stratified (has a `by`
+#' argument). For non-stratified tables, overall columns and p-values are silently skipped
+#' regardless of the `pval` and `overall` argument values, since these features require
+#' stratification.
+#'
+#' If adding p-values or overall column fails (e.g., due to table structure incompatibility),
+#' the function will issue a warning and continue without that feature rather than erroring.
+#' This ensures the function completes successfully even if individual styling steps fail.
+#'
+#' @importFrom gtsummary add_overall add_p all_tests bold_labels modify_header style_pvalue
+#' @importFrom rlang %||% warn abort
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # With p-values (default)
 #' gtsummary::trial |> 
 #'   gtsummary::tbl_summary(by = trt) |> 
@@ -66,28 +76,107 @@
 #' @export
 extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL) {
 
-  # If .args is provided, use those values; otherwise use explicit arguments
+  # Validate tbl is a gtsummary object
+  if (!inherits(tbl, "gtsummary")) {
+    rlang::abort(
+      c(
+        "`tbl` must be a gtsummary object.",
+        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
+        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+      ),
+      class = "extras_invalid_input"
+    )
+  }
+
+  # Validate .args structure if provided
   if (!is.null(.args)) {
+    if (!is.list(.args)) {
+      rlang::abort(
+        c(
+          "`.args` must be a list.",
+          "x" = sprintf("You supplied an object of class: %s", class(.args)[1]),
+          "i" = "Use a named list like `list(pval = TRUE, overall = TRUE, last = FALSE)`."
+        ),
+        class = "extras_invalid_args"
+      )
+    }
+
+    # Check for valid argument names
+    valid_args <- c("pval", "overall", "last")
+    invalid_args <- setdiff(names(.args), valid_args)
+
+    if (length(invalid_args) > 0) {
+      rlang::abort(
+        c(
+          "`.args` contains invalid argument names.",
+          "x" = sprintf("Invalid argument(s): %s", paste(invalid_args, collapse = ", ")),
+          "i" = sprintf("Valid arguments are: %s", paste(valid_args, collapse = ", "))
+        ),
+        class = "extras_invalid_arg_names"
+      )
+    }
+
     pval <- .args$pval %||% TRUE
     overall <- .args$overall %||% TRUE
     last <- .args$last %||% FALSE
   }
-  
+
+  # Detect if table is stratified (has a 'by' argument)
+  # For tbl_summary objects, check if tbl$inputs$by exists and has length > 0
+  # Using length() handles both NULL and character(0) cases
+  is_stratified <- !is.null(tbl$inputs) && length(tbl$inputs$by) > 0
+
   result <- tbl |>
-    bold_labels() |> 
+    bold_labels() |>
     modify_header(label ~ "")
 
-  # Add overall column and set default position to first column. THis follows the 
+  # Add overall column and set default position to first column. This follows the
   # default from gtsummary::add_overall().
-  if (overall) result <- result |> add_overall(last = last)
-  
-  if (pval) {
-    result <- result |> 
-      add_p(
-        pvalue_fun = ~ style_pvalue(.x, digits = 3),
-        test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)
-      )
+  # Only add if table is stratified, warn on failure rather than silently ignoring
+  if (overall && is_stratified) {
+    result <- tryCatch(
+      {
+        suppressMessages(result |> add_overall(last = last))
+      },
+      error = function(e) {
+        rlang::warn(
+          c(
+            "Failed to add overall column.",
+            "x" = sprintf("Error: %s", conditionMessage(e)),
+            "i" = "Continuing without overall column."
+          ),
+          class = "extras_overall_failed"
+        )
+        result
+      }
+    )
   }
-  
+
+  # Only add p-values if table is stratified, warn on failure rather than silently ignoring
+  if (pval && is_stratified) {
+    result <- tryCatch(
+      {
+        suppressMessages(
+          result |>
+            add_p(
+              pvalue_fun = ~ style_pvalue(.x, digits = 3),
+              test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)
+            )
+        )
+      },
+      error = function(e) {
+        rlang::warn(
+          c(
+            "Failed to add p-values.",
+            "x" = sprintf("Error: %s", conditionMessage(e)),
+            "i" = "Continuing without p-values."
+          ),
+          class = "extras_pvalue_failed"
+        )
+        result
+      }
+    )
+  }
+
   result |> clean_table()
 }
