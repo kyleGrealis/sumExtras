@@ -33,7 +33,7 @@ This standardization makes tables more scannable and reduces visual clutter
 from various "empty" data representations.
 }
 \examples{
-\dontrun{
+\donttest{
 # Basic usage - clean missing values in summary table
 gtsummary::trial |> 
   gtsummary::tbl_summary(by = trt) |> 

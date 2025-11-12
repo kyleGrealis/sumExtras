@@ -16,19 +16,19 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-Suggests: 
-    broom,
-    broom.helpers,
-    conflicted,
-    here,
+Suggests:
+    broom (>= 1.0.5),
+    broom.helpers (>= 1.20.0),
     knitr,
     quarto,
-    roxygen2
+    testthat (>= 3.0.0)
 VignetteBuilder: quarto
+Config/testthat/edition: 3
 Imports: 
     dplyr,
     gt (>= 0.9.0),
     gtsummary (>= 1.7.0),
     purrr,
+    rlang,
     stringr,
     tibble

@@ -18,10 +18,10 @@ variable group headers
 }
 \description{
 Adds customizable formatting to variable group headers in
-gtsummary tables. Variable groups are created when using functions like
-\code{tbl_strata()} or when variables are organized into sections. This function
-enhances table readability by making group headers visually distinct from
-individual variable labels.
+gtsummary tables. Variable groups are created using
+\code{gtsummary::add_variable_group_header()} to organize variables into sections.
+This function enhances table readability by making group headers visually
+distinct from individual variable labels.
 }
 \details{
 The function targets rows where \code{row_type == 'variable_group'} and
@@ -30,34 +30,43 @@ particularly useful for tables with multiple sections or stratified analyses
 where clear visual hierarchy improves interpretation.
 }
 \examples{
+\donttest{
 # Default formatting (bold and italic)
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt, include = c(age, marker, grade)) |>
+  gtsummary::add_variable_group_header(
+    header = "Patient Characteristics",
+    variables = age:grade
+  ) |>
   group_styling()
-  
+
 # Bold only
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+  gtsummary::add_variable_group_header(
+    header = "Demographics",
+    variables = age:marker
+  ) |>
   group_styling(format = "bold")
-  
-# Italic only
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
-  group_styling(format = "italic")
-  
-# Useful with stratified tables
-gtsummary::trial |> 
-  gtsummary::tbl_strata(
-    strata = grade,
-    .tbl_fun = ~ .x |> 
-      gtsummary::tbl_summary(by = trt)
-  ) |> 
-  group_styling(format = "bold")
+
+# Multiple group headers
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  gtsummary::add_variable_group_header(
+    header = "Demographics",
+    variables = age
+  ) |>
+  gtsummary::add_variable_group_header(
+    header = "Clinical Measures",
+    variables = marker:response
+  ) |>
+  group_styling()
+}
 
 }
 \seealso{
 \itemize{
 \item \code{gtsummary::modify_table_styling()} for general table styling options
-\item \code{gtsummary::tbl_strata()} for creating stratified tables with groups
+\item \code{gtsummary::add_variable_group_header()} for creating variable group headers
 }
 }

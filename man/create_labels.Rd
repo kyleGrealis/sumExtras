@@ -31,21 +31,24 @@ Only variables present in both the input data and dictionary will be included
 in the output. Missing variables are silently ignored.
 }
 \examples{
-\dontrun{
+\donttest{
 # Create required dictionary first
 dictionary <- tibble::tribble(
   ~Variable, ~Description,
-  'record_id', 'Participant ID',
-  'age', 'Age at enrollment',
-  'sex', 'Biological sex'
+  "age", "Age at Enrollment",
+  "marker", "Marker Level (ng/mL)",
+  "trt", "Treatment Group"
 )
 
 # Generate labels for a dataset
-my_labels <- create_labels(study_data)
+my_labels <- create_labels(gtsummary::trial)
 
 # Use directly in tbl_summary
-study_data |> 
-  gtsummary::tbl_summary(label = create_labels(study_data))
+gtsummary::trial |>
+  gtsummary::tbl_summary(
+    include = c(age, marker, trt),
+    label = create_labels(gtsummary::trial)
+  )
 }
 
 }

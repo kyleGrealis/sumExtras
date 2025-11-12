@@ -20,6 +20,7 @@
 #'   * Consistent spacing that matches JAMA journal standards
 #' 
 #' @importFrom gt px tab_options
+#' @importFrom rlang abort
 #'
 #' @examples
 #' # Basic usage with a data frame
@@ -55,7 +56,19 @@
 #'
 #' @export
 theme_gt_compact <- function(tbl) {
- tbl |>
+  # Validate tbl is a gt object
+  if (!inherits(tbl, "gt_tbl")) {
+    rlang::abort(
+      c(
+        "`tbl` must be a gt table object.",
+        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
+        "i" = "Create a gt table using `gt::gt()` or convert a gtsummary table with `gtsummary::as_gt()`."
+      ),
+      class = "theme_gt_compact_invalid_input"
+    )
+  }
+
+  tbl |>
    gt::tab_options(
      table.font.size = gt::px(13),
      data_row.padding = gt::px(1),
@@ -76,11 +89,11 @@ theme_gt_compact <- function(tbl) {
 
 #' Apply styling to variable group headers in gtsummary tables
 #' 
-#' @description Adds customizable formatting to variable group headers in 
-#'   gtsummary tables. Variable groups are created when using functions like 
-#'   `tbl_strata()` or when variables are organized into sections. This function 
-#'   enhances table readability by making group headers visually distinct from 
-#'   individual variable labels.
+#' @description Adds customizable formatting to variable group headers in
+#'   gtsummary tables. Variable groups are created using
+#'   `gtsummary::add_variable_group_header()` to organize variables into sections.
+#'   This function enhances table readability by making group headers visually
+#'   distinct from individual variable labels.
 #' 
 #' @param tbl A gtsummary table object (e.g., from `tbl_summary()`, `tbl_regression()`)
 #' @param format Character vector specifying text formatting. Options include 
@@ -97,40 +110,177 @@ theme_gt_compact <- function(tbl) {
 #' @importFrom gtsummary modify_table_styling tbl_strata tbl_summary
 #' 
 #' @examples
+#' \donttest{
 #' # Default formatting (bold and italic)
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_summary(by = trt) |> 
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt, include = c(age, marker, grade)) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Patient Characteristics",
+#'     variables = age:grade
+#'   ) |>
 #'   group_styling()
-#'   
+#'
 #' # Bold only
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_summary(by = trt) |> 
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Demographics",
+#'     variables = age:marker
+#'   ) |>
 #'   group_styling(format = "bold")
-#'   
-#' # Italic only
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_summary(by = trt) |> 
-#'   group_styling(format = "italic")
-#'   
-#' # Useful with stratified tables
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_strata(
-#'     strata = grade,
-#'     .tbl_fun = ~ .x |> 
-#'       gtsummary::tbl_summary(by = trt)
-#'   ) |> 
-#'   group_styling(format = "bold")
+#'
+#' # Multiple group headers
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Demographics",
+#'     variables = age
+#'   ) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Clinical Measures",
+#'     variables = marker:response
+#'   ) |>
+#'   group_styling()
+#' }
 #' 
-#' @seealso 
+#' @seealso
 #' * `gtsummary::modify_table_styling()` for general table styling options
-#' * `gtsummary::tbl_strata()` for creating stratified tables with groups
+#' * `gtsummary::add_variable_group_header()` for creating variable group headers
 #' 
 #' @export
 group_styling <- function(tbl, format = c('bold', 'italic')) {
-  tbl |> 
+  # Validate tbl is a gtsummary object
+  if (!inherits(tbl, "gtsummary")) {
+    rlang::abort(
+      c(
+        "`tbl` must be a gtsummary object.",
+        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
+        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+      ),
+      class = "group_styling_invalid_input"
+    )
+  }
+
+  # Validate format parameter
+  if (!is.character(format)) {
+    rlang::abort(
+      c(
+        "`format` must be a character vector.",
+        "x" = sprintf("You supplied an object of class: %s", class(format)[1]),
+        "i" = "Use a character vector like `c('bold', 'italic')` or `'bold'`."
+      ),
+      class = "group_styling_invalid_format_type"
+    )
+  }
+
+  valid_formats <- c("bold", "italic")
+  invalid_formats <- setdiff(format, valid_formats)
+
+  if (length(invalid_formats) > 0) {
+    rlang::abort(
+      c(
+        "`format` contains invalid formatting options.",
+        "x" = sprintf("Invalid option(s): %s", paste(invalid_formats, collapse = ", ")),
+        "i" = sprintf("Valid options are: %s", paste(valid_formats, collapse = ", "))
+      ),
+      class = "group_styling_invalid_format_value"
+    )
+  }
+
+  tbl |>
     modify_table_styling(
       columns = label,
       rows = row_type == 'variable_group',
       text_format = format
     )
+}
+
+
+#' Get row numbers of variable group headers for gt styling
+#'
+#' @description Extracts the row indices of variable group headers from a
+#'   gtsummary table. This is useful for applying background colors or other
+#'   gt-specific styling after converting a gtsummary table to gt with `as_gt()`.
+#'
+#' @param tbl A gtsummary table object with variable group headers created by
+#'   `gtsummary::add_variable_group_header()`
+#'
+#' @returns An integer vector of row numbers where variable_group headers are located
+#'
+#' @details Variable group headers are identified by `row_type == 'variable_group'`
+#'   in the table body. The returned row numbers can be used with `gt::tab_style()`
+#'   to apply styling like background colors after converting to a gt table.
+#'
+#'   This function should be called BEFORE converting the table with `as_gt()`,
+#'   as the row type information is only available in gtsummary table objects.
+#'
+#' @examples
+#' \donttest{
+#' # Create table with variable groups
+#' my_tbl <- gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt, include = c(age, marker, grade, stage)) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Demographics",
+#'     variables = age
+#'   ) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Clinical",
+#'     variables = marker:stage
+#'   ) |>
+#'   group_styling()
+#'
+#' # Get group row numbers before conversion
+#' group_rows <- get_group_rows(my_tbl)
+#'
+#' # Convert to gt and apply gray background
+#' my_tbl |>
+#'   gtsummary::as_gt() |>
+#'   gt::tab_style(
+#'     style = gt::cell_fill(color = "#E8E8E8"),
+#'     locations = gt::cells_body(rows = group_rows)
+#'   )
+#' }
+#'
+#' @seealso
+#' * `group_styling()` for applying text formatting to group headers
+#' * `gtsummary::add_variable_group_header()` for creating variable groups
+#' * `gt::tab_style()` for applying gt-specific styling
+#'
+#' @export
+get_group_rows <- function(tbl) {
+  # Validate tbl is a gtsummary object
+  if (!inherits(tbl, "gtsummary")) {
+    rlang::abort(
+      c(
+        "`tbl` must be a gtsummary object.",
+        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
+        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+      ),
+      class = "get_group_rows_invalid_input"
+    )
+  }
+
+  # Validate that table_body exists
+  if (is.null(tbl$table_body)) {
+    rlang::abort(
+      c(
+        "The gtsummary object does not contain a `table_body` component.",
+        "i" = "This function requires a properly structured gtsummary table."
+      ),
+      class = "get_group_rows_missing_table_body"
+    )
+  }
+
+  # Validate that row_type column exists
+  if (!"row_type" %in% names(tbl$table_body)) {
+    rlang::abort(
+      c(
+        "The table body does not contain a `row_type` column.",
+        "i" = "This function requires a gtsummary table with row type information."
+      ),
+      class = "get_group_rows_missing_row_type"
+    )
+  }
+
+  which(tbl$table_body$row_type == 'variable_group')
 }

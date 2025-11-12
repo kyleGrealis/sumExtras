@@ -5,6 +5,7 @@ utils::globalVariables(
     "row_type",
     "label",
     "Variable",
+    "Description",
     "dictionary",
     "tbl_svysummary"
   )
