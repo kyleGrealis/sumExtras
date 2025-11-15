@@ -4,10 +4,14 @@
 \alias{create_labels}
 \title{Create a list of variable labels from a dataset using a dictionary}
 \usage{
-create_labels(data)
+create_labels(data, dictionary = NULL)
 }
 \arguments{
 \item{data}{A data frame or tibble containing variables to be labeled}
+
+\item{dictionary}{Optional. A data frame or tibble with \code{Variable} and \code{Description}
+columns. If not provided, the function will search for a \code{dictionary} object in
+the calling environment.}
 }
 \value{
 A list of formula objects in the format \code{variable ~ "Description"}
@@ -16,12 +20,11 @@ suitable for use in \code{gtsummary::tbl_summary(label = )}
 \description{
 Creates a list of formula objects for variable labeling compatible with
 \code{gtsummary::tbl_summary()}. Matches dataset variable names against a dictionary
-tibble to generate labels. Requires a global \code{dictionary} object with \code{Variable}
-and \code{Description} columns. Can be used standalone or internally by \code{add_auto_labels()}.
+tibble to generate labels. The dictionary can be passed explicitly as a parameter
+or will be searched for in the calling environment.
 }
 \details{
-The function requires a \code{dictionary} object in the global environment
-structured as a tibble with columns:
+The dictionary must be structured as a data frame with columns:
 \itemize{
 \item \code{Variable}: Character column with exact variable names from datasets
 \item \code{Description}: Character column with human-readable labels
@@ -32,26 +35,34 @@ in the output. Missing variables are silently ignored.
 }
 \examples{
 \donttest{
-# Create required dictionary first
-dictionary <- tibble::tribble(
+# Create a dictionary
+my_dict <- tibble::tribble(
   ~Variable, ~Description,
   "age", "Age at Enrollment",
   "marker", "Marker Level (ng/mL)",
   "trt", "Treatment Group"
 )
 
-# Generate labels for a dataset
+# Pass dictionary explicitly (recommended)
+my_labels <- create_labels(gtsummary::trial, dictionary = my_dict)
+
+# Or use without passing (searches calling environment)
+dictionary <- my_dict
 my_labels <- create_labels(gtsummary::trial)
 
 # Use directly in tbl_summary
 gtsummary::trial |>
   gtsummary::tbl_summary(
     include = c(age, marker, trt),
-    label = create_labels(gtsummary::trial)
+    label = create_labels(gtsummary::trial, dictionary = my_dict)
   )
 }
 
 }
 \seealso{
 \code{add_auto_labels()} for automatic application to existing tbl_summary objects
+
+Other labeling functions: 
+\code{\link{add_auto_labels}()}
 }
+\concept{labeling functions}
