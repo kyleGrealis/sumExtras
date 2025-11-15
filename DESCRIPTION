@@ -5,7 +5,7 @@ Authors@R:
     person(
         "Kyle",
         "Grealis",
-        email = "kyleGrealis@icloud.com",
+        email = "kyleGrealis@proton.me",
         role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-9223-8854")
     )
