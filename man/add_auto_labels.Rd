@@ -4,10 +4,14 @@
 \alias{add_auto_labels}
 \title{Add automatic labels from dictionary to a tbl_summary or tbl_regression object}
 \usage{
-add_auto_labels(tbl)
+add_auto_labels(tbl, dictionary = NULL)
 }
 \arguments{
 \item{tbl}{A gtsummary table object created by \code{tbl_summary()} or \code{tbl_regression()}}
+
+\item{dictionary}{Optional. A data frame or tibble with \code{Variable} and \code{Description}
+columns. If not provided, the function will search for a \code{dictionary} object in
+the calling environment.}
 }
 \value{
 A gtsummary table object with automatic labels applied
@@ -16,26 +20,32 @@ A gtsummary table object with automatic labels applied
 Pipe a \code{gtsummary::tbl_summary} or \code{gtsummary::tbl_regression}
 object to automatically add variable labels from a dictionary tibble.
 Preserves any manual label overrides specified in the original table call
-while adding dictionary labels for unlabeled variables. Requires a \code{dictionary}
-object with \code{Variable} and \code{Description} columns.
+while adding dictionary labels for unlabeled variables. The dictionary can
+be passed explicitly or will be searched for in the calling environment.
 See \code{create_labels()} function for dictionary format requirements.
 }
 \examples{
 \donttest{
-# Create a dictionary first
-dictionary <- tibble::tribble(
+# Create a dictionary
+my_dict <- tibble::tribble(
   ~Variable, ~Description,
   "age", "Age at Enrollment",
   "trt", "Treatment Group"
 )
 
-# With tbl_summary
+# With tbl_summary (pass dictionary explicitly - recommended)
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
+  add_auto_labels(dictionary = my_dict)
+
+# Or use without passing (searches calling environment)
+dictionary <- my_dict
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
   add_auto_labels()
 
 # With tbl_regression
-dictionary <- tibble::tribble(
+reg_dict <- tibble::tribble(
   ~Variable, ~Description,
   "cyl", "Number of Cylinders",
   "wt", "Weight (1000 lbs)",
@@ -43,10 +53,14 @@ dictionary <- tibble::tribble(
 )
 lm(mpg ~ cyl + wt + hp, data = mtcars) |>
   gtsummary::tbl_regression() |>
-  add_auto_labels()
+  add_auto_labels(dictionary = reg_dict)
 }
 
 }
 \seealso{
 \code{create_labels()} for dictionary requirements
+
+Other labeling functions: 
+\code{\link{create_labels}()}
 }
+\concept{labeling functions}
