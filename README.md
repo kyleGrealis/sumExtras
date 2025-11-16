@@ -184,7 +184,7 @@ sumExtras is licensed under the [MIT License](https://github.com/kyleGrealis/sum
 sumExtras is built with love using R and these amazing packages:
 
 * [gtsummary](https://www.danieldsjoberg.com/gtsummary/) - Easily create publication-ready analytical tables
-* [gt](https://posit.co/blog/introducing-gt/) - The grammar of tables for R
+* [gt](https://gt.rstudio.com/) - The grammar of tables for R
 * [dplyr](https://dplyr.tidyverse.org/) - Data manipulation and transformation
 * [rlang](https://rlang.r-lib.org/) - Low-level programming tools for R
 * [stringr](https://stringr.tidyverse.org/) - Simple string handling

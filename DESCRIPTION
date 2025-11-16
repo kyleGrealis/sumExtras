@@ -1,13 +1,22 @@
 Package: sumExtras
-Title: Extra Functions for gtsummary Table Styling
+Title: Extra Functions for 'gtsummary' Table Styling
 Version: 0.1.0
 Authors@R: 
-    person(
-        "Kyle",
-        "Grealis",
-        email = "kyleGrealis@proton.me",
-        role = c("aut", "cre"),
-        comment = c(ORCID = "0000-0002-9223-8854")
+    c(
+        person(
+            "Kyle",
+            "Grealis",
+            email = "kyleGrealis@proton.me",
+            role = c("aut", "cre"),
+            comment = c(ORCID = "0000-0002-9223-8854")
+        ),
+        person(
+            given = "Raymond",
+            family = "Balise",
+            role = c("ctb"),
+            email = "balise@miami.edu",
+            comment = c(ORCID = "0000-0002-9856-5901")
+        )
     )
 Description: Provides additional convenience functions for gtsummary & gt tables, 
     including automatic variable labeling from dictionaries, standardized 
@@ -16,6 +25,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
 Suggests:
     broom (>= 1.0.5),
     broom.helpers (>= 1.20.0),
