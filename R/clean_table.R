@@ -28,7 +28,7 @@
 #'   Note: The function checks for the presence of `var_type` column before applying
 #'   `modify_missing_symbol()`. This allows it to work seamlessly with `tbl_strata`
 #'   objects which use `var_type_1`, `var_type_2`, etc. instead of `var_type`.
-#' 
+#'
 #' @importFrom dplyr across if_else mutate
 #' @importFrom gtsummary all_stat_cols modify_missing_symbol modify_table_body
 #'   tbl_regression tbl_summary
@@ -38,10 +38,10 @@
 #' @examples
 #' \donttest{
 #' # Basic usage - clean missing values in summary table
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_summary(by = trt) |> 
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
 #'   clean_table()
-#' 
+#'
 #' # Often used as part of a styling pipeline
 #' # Create a test dictionary for add_auto_labels():
 #' dictionary <- tibble::tribble(
@@ -51,19 +51,19 @@
 #'   'grade', 'Grade',
 #'   'response', 'Tumor Response'
 #' )
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_summary(by = trt) |> 
-#'   add_auto_labels() |> 
-#'   extras() |> 
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   add_auto_labels() |>
+#'   extras() |>
 #'   clean_table()
-#'   
+#'
 #' # Works with regression tables too
-#' lm(age ~ trt + grade, data = gtsummary::trial) |> 
-#'   gtsummary::tbl_regression() |> 
+#' lm(age ~ trt + grade, data = gtsummary::trial) |>
+#'   gtsummary::tbl_regression() |>
 #'   clean_table()
 #' }
 #'
-#' @seealso 
+#' @seealso
 #' * `gtsummary::modify_table_body()` for general table body modifications
 #' * `extras()` which includes `clean_table()` in its styling pipeline
 #'

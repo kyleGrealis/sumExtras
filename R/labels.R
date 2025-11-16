@@ -118,7 +118,7 @@ create_labels <- function(data, dictionary = NULL) {
   # This prevents errors from dictionary entries not in the current data
   filtered_dict <- dictionary |>
     filter(Variable %in% variables)
-  
+
   # Create list of formulas using map2 for pairwise iteration
   # Format: variable ~ "Description" as required by gtsummary::tbl_summary()
   labels_list <- purrr::map2(

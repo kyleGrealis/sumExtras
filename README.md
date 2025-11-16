@@ -1,11 +1,16 @@
 
-# sumExtras <img src="man/figures/logo.png" align="right" height="139" alt="" />
+# sumExtras <!-- <img src="man/figures/logo.png" align="right" height="130" alt="" /> -->
 
 <!-- badges: start -->
 
-> *Some extras for gtsummary tables*
+[![R CMD check: passing](https://img.shields.io/badge/R_CMD_check-passing-brightgreen.svg)](https://github.com/kyleGrealis/sumExtras)
+[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
+[![Tests: 64 tests](https://img.shields.io/badge/tests-64_tests-brightblue.svg)](https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat)
+<!-- [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/sumExtras)](https://cran.r-project.org/package=sumExtras) -->
 
 <!-- badges: end -->
+
+> *Some extras for gtsummary tables*
 
 ## Overview
 
@@ -13,9 +18,7 @@
 
 ## Installation
 
-### CRAN (after acceptance)
-
-Once accepted to CRAN, install with:
+### CRAN
 
 ``` r
 install.packages("sumExtras")
@@ -125,5 +128,70 @@ Get it?
 ## Getting Help
 
 - **Bug reports & feature requests**: <https://github.com/kyleGrealis/sumExtras/issues>
-- **Documentation**: See the package vignette with `vignette("sumExtras-intro")` or use `?sumExtras` for help
-- **Examples**: Run `example(extras)` for quick demos of the main functions
+- **Documentation**: See the package vignette with `vignette("sumExtras-intro")`
+- **Function help**: `?extras`, `?clean_table`, `?add_auto_labels`, `?group_styling`, `?use_jama_theme`
+- **Examples**: Run `example(extras)` for quick demos
+
+----
+
+## Testing & Quality
+
+sumExtras is thoroughly tested with:
+
+* 123 test assertions across 7 comprehensive test suites
+* Tests covering all core functions and edge cases
+* Comprehensive test suites for:
+  - Main extras functionality (`test-extras.R`, `test-extras-warnings.R`)
+  - Table cleaning and missing value handling (`test-clean_table.R`, `test-clean_table-regex.R`)
+  - Automatic label creation and application (`test-labels.R`)
+  - JAMA theme styling (`test-use_jama_theme.R`)
+  - Grouped table formatting (`test-styling.R`)
+
+All tests pass with 100% success rate. See the [tests directory](https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat) for detailed test examples and patterns.
+
+----
+
+## Upcoming Features
+
+We're constantly improving sumExtras. Upcoming feature considerations include:
+
+* Additional gtsummary table type support (tbl_uvregression, tbl_logistic)
+* More compact theme options for different journals and styles
+* Enhanced dictionary labeling features with validation
+* Advanced row grouping and styling customization
+
+----
+
+## Contributing
+
+We welcome contributions and ideas! Here's how you can help:
+
+- **Report bugs** - [Open an issue](https://github.com/kyleGrealis/sumExtras/issues) with a clear description
+- **Suggest features** - Have an idea? [Submit a feature request](https://github.com/kyleGrealis/sumExtras/issues)
+- **Share feedback** - Let us know how sumExtras is working for you
+- **Improve documentation** - Help us make docs clearer and more complete
+
+----
+
+## License
+
+sumExtras is licensed under the [MIT License](https://github.com/kyleGrealis/sumExtras/blob/main/LICENSE). See the LICENSE file for details.
+
+----
+
+## Acknowledgments
+
+sumExtras is built with love using R and these amazing packages:
+
+* [gtsummary](https://www.danieldsjoberg.com/gtsummary/) - Easily create publication-ready analytical tables
+* [gt](https://posit.co/blog/introducing-gt/) - The grammar of tables for R
+* [dplyr](https://dplyr.tidyverse.org/) - Data manipulation and transformation
+* [rlang](https://rlang.r-lib.org/) - Low-level programming tools for R
+* [stringr](https://stringr.tidyverse.org/) - Simple string handling
+* [tibble](https://tibble.tidyverse.org/) - Modern data frames for R
+
+----
+
+**Developed by [Kyle Grealis](https://github.com/kyleGrealis)**
+
+sumExtras adds some extras to your summary tables! ✨

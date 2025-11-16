@@ -18,6 +18,9 @@
 * Fixed missing import of `gtsummary::all_tests()` in `extras()` function
 * Improved regex pattern in `clean_table()` to avoid false positives (e.g., matching `"..."` or `"   "`)
 * `extras()` now warns when `add_overall()` or `add_p()` fail instead of silently continuing
+* Fixed `modify_indent()` column parameter in `group_styling()` - column name now properly quoted as "label" to ensure correct indentation when rendering vignettes in pkgdown
+* Enhanced `extras()` to warn when called with unsupported table types (tbl_regression, tbl_strata, non-stratified tables) instead of silently skipping features
+* Fixed `clean_table()` handling of `tbl_strata` objects by detecting when `var_type` column is missing
 
 ## Performance Improvements
 
