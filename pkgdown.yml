@@ -1,0 +1,9 @@
+pandoc: 3.1.11
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  sumExtras-intro: sumExtras-intro.html
+last_built: 2025-11-16T06:56Z
+urls:
+  reference: https://www.kyleGrealis.com/sumExtras/reference
+  article: https://www.kyleGrealis.com/sumExtras/articles
