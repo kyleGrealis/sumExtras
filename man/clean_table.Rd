@@ -44,8 +44,8 @@ objects which use \code{var_type_1}, \code{var_type_2}, etc. instead of \code{va
 \examples{
 \donttest{
 # Basic usage - clean missing values in summary table
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
   clean_table()
 
 # Often used as part of a styling pipeline
@@ -57,15 +57,15 @@ dictionary <- tibble::tribble(
   'grade', 'Grade',
   'response', 'Tumor Response'
 )
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
-  add_auto_labels() |> 
-  extras() |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  add_auto_labels() |>
+  extras() |>
   clean_table()
-  
+
 # Works with regression tables too
-lm(age ~ trt + grade, data = gtsummary::trial) |> 
-  gtsummary::tbl_regression() |> 
+lm(age ~ trt + grade, data = gtsummary::trial) |>
+  gtsummary::tbl_regression() |>
   clean_table()
 }
 

@@ -22,7 +22,7 @@ Suggests:
     knitr,
     quarto,
     testthat (>= 3.0.0)
-VignetteBuilder: quarto
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Imports: 
     dplyr,
