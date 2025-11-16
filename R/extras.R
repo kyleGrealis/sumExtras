@@ -58,21 +58,21 @@
 #' @examples
 #' \donttest{
 #' # With p-values (default)
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_summary(by = trt) |> 
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
 #'   extras()
-#' 
+#'
 #' # Using .args list
 #' extra_args <- list(pval = TRUE, overall = TRUE, last = FALSE)
 #' gtsummary::trial |>
 #'   gtsummary::tbl_summary(by = trt) |>
 #'   extras(.args = extra_args)
-#'   
+#'
 #' # Without p-values
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_summary(by = trt) |> 
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
 #'   extras(pval = FALSE)
-#'   
+#'
 #' # Chain with other functions
 #' # Create required dictionary first
 #' dictionary <- tibble::tribble(
@@ -81,14 +81,14 @@
 #'   'age', 'Age at enrollment',
 #'   'sex', 'Biological sex'
 #' )
-#' gtsummary::trial |> 
-#'   gtsummary::tbl_summary(by = trt) |> 
-#'   add_auto_labels() |> 
-#'   extras(pval = TRUE) |> 
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   add_auto_labels() |>
+#'   extras(pval = TRUE) |>
 #'   group_styling()
 #' }
-#' 
-#' @seealso 
+#'
+#' @seealso
 #' * `gtsummary::add_overall()` for adding overall columns
 #' * `gtsummary::add_p()` for adding p-values
 #' * `clean_table()` for additional table styling
