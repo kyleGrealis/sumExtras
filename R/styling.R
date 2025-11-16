@@ -107,7 +107,7 @@ theme_gt_compact <- function(tbl) {
 #'   particularly useful for tables with multiple sections or stratified analyses 
 #'   where clear visual hierarchy improves interpretation.
 #' 
-#' @importFrom gtsummary modify_table_styling tbl_strata tbl_summary
+#' @importFrom gtsummary modify_table_styling modify_indent tbl_strata tbl_summary
 #' 
 #' @examples
 #' \donttest{
@@ -192,6 +192,14 @@ group_styling <- function(tbl, format = c('bold', 'italic')) {
       columns = label,
       rows = row_type == 'variable_group',
       text_format = format
+    ) |> 
+    # Modify the indentation of grouped variables. Default is to indent 2 spaces, but
+    # this causes the variable label and the value to be aligned vertically. This 
+    # restores the original variable label indentation.
+    modify_indent(
+      columns = "label",
+      rows = row_type %in% 'label',
+      indent = 0L
     )
 }
 

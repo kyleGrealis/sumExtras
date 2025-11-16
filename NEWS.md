@@ -1,4 +1,4 @@
-# sumExtras 0.0.1.9002 (development version)
+# sumExtras 0.1.0 (2025-11-15)
 
 ## Breaking Changes
 

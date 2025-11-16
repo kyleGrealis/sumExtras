@@ -3,10 +3,11 @@
 #' @description Applies a consistent set of formatting options to gtsummary tables
 #'   including overall column, bold labels, clean headers, and optional p-values.
 #'   Streamlines the common workflow of adding multiple formatting functions.
+#'   The function always succeeds by applying what works and warning about unsupported features.
 #'
 #' @param tbl A gtsummary table object (e.g., from `tbl_summary()`, `tbl_regression()`)
 #' @param pval Logical indicating whether to add p-values. Default is `TRUE`.
-#'   When `TRUE`, uses gtsummary's default statistical tests (Kruskal-Wallis for 
+#'   When `TRUE`, uses gtsummary's default statistical tests (Kruskal-Wallis for
 #'   continuous variables with 3+ groups, chi-square for categorical variables).
 #' @param overall Logical indicating whether to add overall column
 #' @param last Logical indicating if Overall column should be last. Aligns with default
@@ -17,23 +18,42 @@
 #' @returns A gtsummary table object with standard formatting applied
 #'
 #' @details The function applies the following modifications:
-#' * Adds an "Overall" column as the last column (if `overall = TRUE` and table is stratified)
-#' * Bolds variable labels for emphasis
-#' * Removes the "Characteristic" header label
-#' * Applies `clean_table()` styling
-#' * Optionally adds p-values with gtsummary's default statistical tests (if table is stratified)
+#' * Bolds variable labels for emphasis (all table types)
+#' * Removes the "Characteristic" header label (all table types)
+#' * Adds an "Overall" column (only stratified summary tables)
+#' * Optionally adds p-values (only stratified summary tables)
+#' * Applies `clean_table()` styling (all table types)
 #'
 #' The function automatically detects whether the input table is stratified (has a `by`
-#' argument). For non-stratified tables, overall columns and p-values are silently skipped
-#' regardless of the `pval` and `overall` argument values, since these features require
-#' stratification.
+#' argument) and what type of table it is (tbl_summary, tbl_regression, tbl_strata, etc.).
 #'
-#' If adding p-values or overall column fails (e.g., due to table structure incompatibility),
-#' the function will issue a warning and continue without that feature rather than erroring.
-#' This ensures the function completes successfully even if individual styling steps fail.
+#' For tables that don't support overall columns or p-values (non-stratified tables,
+#' regression tables, or stacked tables), the function will issue a warning and
+#' continue by applying only the universally supported features (bold_labels and
+#' modify_header). This ensures the function always succeeds rather than failing
+#' midway through the pipeline.
+#'
+#' If any individual formatting step fails (e.g., due to unexpected table structure),
+#' the function will issue a warning and continue without that feature. This provides
+#' robustness while keeping you informed of what was skipped.
 #'
 #' @importFrom gtsummary add_overall add_p all_tests bold_labels modify_header style_pvalue
 #' @importFrom rlang %||% warn abort
+#'
+#' @section Table Type Support:
+#' The function applies features based on table type and stratification:
+#'
+#' \itemize{
+#'   \item \strong{bold_labels()} and \strong{modify_header()}: Work on all table types
+#'   \item \strong{add_overall()}: Only works on stratified summary tables (tbl_summary with `by`)
+#'   \item \strong{add_p()}: Only works on stratified summary tables (tbl_summary with `by`)
+#' }
+#'
+#' \strong{Full feature support:} tbl_summary and tbl_svysummary with `by` argument
+#'
+#' \strong{Partial support (basic formatting only):} tbl_regression, tbl_strata, and
+#' non-stratified tables. When applied to these table types and overall/pval = TRUE,
+#' the function warns about unsupported features but applies the formatting that works.
 #'
 #' @examples
 #' \donttest{
@@ -125,6 +145,41 @@ extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL)
   # For tbl_summary objects, check if tbl$inputs$by exists and has length > 0
   # Using length() handles both NULL and character(0) cases
   is_stratified <- !is.null(tbl$inputs) && length(tbl$inputs$by) > 0
+
+  # Warn about table types with limited feature support
+  if ("tbl_regression" %in% class(tbl) && (overall || pval)) {
+    rlang::warn(
+      c(
+        "Regression tables cannot have overall columns or p-values.",
+        "i" = "The regression coefficients are the model results.",
+        "i" = "Applying only `bold_labels()` and `modify_header(label ~ '')`."
+      ),
+      class = "extras_regression_unsupported_features"
+    )
+  }
+
+  if ("tbl_strata" %in% class(tbl) && (overall || pval)) {
+    rlang::warn(
+      c(
+        "`extras()` with stacked tables (tbl_strata) has limited support.",
+        "i" = "Overall column and p-values are not supported for stacked tables.",
+        "i" = "Applying only `bold_labels()` and `modify_header(label ~ '')`.",
+        "i" = "For full features, apply `extras()` to each stratum before stacking."
+      ),
+      class = "extras_strata_limited_support"
+    )
+  }
+
+  if (!is_stratified && (overall || pval)) {
+    rlang::warn(
+      c(
+        "This table is not stratified (missing `by` argument).",
+        "i" = "Overall column and p-values require stratification.",
+        "i" = "Applying only `bold_labels()` and `modify_header(label ~ '')`."
+      ),
+      class = "extras_not_stratified"
+    )
+  }
 
   result <- tbl |>
     bold_labels() |>

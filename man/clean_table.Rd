@@ -2,12 +2,13 @@
 % Please edit documentation in R/clean_table.R
 \name{clean_table}
 \alias{clean_table}
-\title{Clean and standardize missing value display in gtsummary tables}
+\title{Standardize missing value display across all gtsummary table types}
 \usage{
 clean_table(tbl)
 }
 \arguments{
-\item{tbl}{A gtsummary table object (e.g., from \code{tbl_summary()}, \code{tbl_regression()})}
+\item{tbl}{A gtsummary table object (e.g., from \code{tbl_summary()}, \code{tbl_svysummary()},
+\code{tbl_regression()}, or \code{tbl_strata()})}
 }
 \value{
 A gtsummary table object with standardized missing value display
@@ -17,6 +18,10 @@ Improves table readability by replacing various missing value
 representations with a consistent "--" symbol. This makes it easier to
 distinguish between actual data and missing/undefined values in summary
 tables, creating a cleaner and more professional appearance.
+
+Works seamlessly with all gtsummary table types, including stacked tables
+(\code{tbl_strata}) and survey-weighted summaries (\code{tbl_svysummary}).
+Automatically handles tables with or without the standard \code{var_type} column.
 }
 \details{
 The function uses \code{gtsummary::modify_table_body()} to transform
@@ -31,6 +36,10 @@ character columns and replace common missing value patterns with "--":
 
 This standardization makes tables more scannable and reduces visual clutter
 from various "empty" data representations.
+
+Note: The function checks for the presence of \code{var_type} column before applying
+\code{modify_missing_symbol()}. This allows it to work seamlessly with \code{tbl_strata}
+objects which use \code{var_type_1}, \code{var_type_2}, etc. instead of \code{var_type}.
 }
 \examples{
 \donttest{

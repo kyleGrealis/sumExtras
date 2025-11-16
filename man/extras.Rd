@@ -28,26 +28,48 @@ A gtsummary table object with standard formatting applied
 Applies a consistent set of formatting options to gtsummary tables
 including overall column, bold labels, clean headers, and optional p-values.
 Streamlines the common workflow of adding multiple formatting functions.
+The function always succeeds by applying what works and warning about unsupported features.
 }
 \details{
 The function applies the following modifications:
 \itemize{
-\item Adds an "Overall" column as the last column (if \code{overall = TRUE} and table is stratified)
-\item Bolds variable labels for emphasis
-\item Removes the "Characteristic" header label
-\item Applies \code{clean_table()} styling
-\item Optionally adds p-values with gtsummary's default statistical tests (if table is stratified)
+\item Bolds variable labels for emphasis (all table types)
+\item Removes the "Characteristic" header label (all table types)
+\item Adds an "Overall" column (only stratified summary tables)
+\item Optionally adds p-values (only stratified summary tables)
+\item Applies \code{clean_table()} styling (all table types)
 }
 
 The function automatically detects whether the input table is stratified (has a \code{by}
-argument). For non-stratified tables, overall columns and p-values are silently skipped
-regardless of the \code{pval} and \code{overall} argument values, since these features require
-stratification.
+argument) and what type of table it is (tbl_summary, tbl_regression, tbl_strata, etc.).
 
-If adding p-values or overall column fails (e.g., due to table structure incompatibility),
-the function will issue a warning and continue without that feature rather than erroring.
-This ensures the function completes successfully even if individual styling steps fail.
+For tables that don't support overall columns or p-values (non-stratified tables,
+regression tables, or stacked tables), the function will issue a warning and
+continue by applying only the universally supported features (bold_labels and
+modify_header). This ensures the function always succeeds rather than failing
+midway through the pipeline.
+
+If any individual formatting step fails (e.g., due to unexpected table structure),
+the function will issue a warning and continue without that feature. This provides
+robustness while keeping you informed of what was skipped.
 }
+\section{Table Type Support}{
+
+The function applies features based on table type and stratification:
+
+\itemize{
+\item \strong{bold_labels()} and \strong{modify_header()}: Work on all table types
+\item \strong{add_overall()}: Only works on stratified summary tables (tbl_summary with \code{by})
+\item \strong{add_p()}: Only works on stratified summary tables (tbl_summary with \code{by})
+}
+
+\strong{Full feature support:} tbl_summary and tbl_svysummary with \code{by} argument
+
+\strong{Partial support (basic formatting only):} tbl_regression, tbl_strata, and
+non-stratified tables. When applied to these table types and overall/pval = TRUE,
+the function warns about unsupported features but applies the formatting that works.
+}
+
 \examples{
 \donttest{
 # With p-values (default)

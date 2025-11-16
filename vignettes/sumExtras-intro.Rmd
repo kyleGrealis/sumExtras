@@ -1,9 +1,9 @@
 ---
 title: "Introduction to sumExtras"
-format: html
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to sumExtras}
-  %\VignetteEngine{quarto::html}
+  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
@@ -12,6 +12,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+# Set gtsummary print engine for proper rendering
+options(gtsummary.print_engine = "gt")
 ```
 
 ```{r setup}
@@ -225,6 +228,8 @@ trial |>
   group_styling(format = "bold")  # Bold only
 ```
 
+Using `group_styling()` also restores the original left-justified variable label indentation. The default behavior of `add_variable_group_header()` is to align the variable label with categorical levels or "Unknown" display.
+
 ### Adding Background Color to Group Headers
 
 For additional visual distinction, you can add a gray background to group headers after converting to a gt table. Use the `get_group_rows()` helper function to identify which rows contain group headers:
@@ -278,7 +283,7 @@ When mixing gtsummary tables with regular gt tables in the same document, visual
 
 ```{r}
 # gtsummary table (uses the theme set with use_jama_theme())
-summary_table <- trial |>
+trial |>
   select(trt, age, grade) |>
   tbl_summary() |>
   extras()
