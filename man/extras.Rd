@@ -73,8 +73,8 @@ the function warns about unsupported features but applies the formatting that wo
 \examples{
 \donttest{
 # With p-values (default)
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
   extras()
 
 # Using .args list
@@ -82,12 +82,12 @@ extra_args <- list(pval = TRUE, overall = TRUE, last = FALSE)
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>
   extras(.args = extra_args)
-  
+
 # Without p-values
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
   extras(pval = FALSE)
-  
+
 # Chain with other functions
 # Create required dictionary first
 dictionary <- tibble::tribble(
@@ -96,10 +96,10 @@ dictionary <- tibble::tribble(
   'age', 'Age at enrollment',
   'sex', 'Biological sex'
 )
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
-  add_auto_labels() |> 
-  extras(pval = TRUE) |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  add_auto_labels() |>
+  extras(pval = TRUE) |>
   group_styling()
 }
 
