@@ -7,6 +7,8 @@ inst/.gitkeep
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^\.github$
+^vignettes/\.quarto$
 
 # Nix files
 flake.*

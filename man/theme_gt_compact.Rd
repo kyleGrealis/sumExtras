@@ -33,27 +33,27 @@ Key styling includes:
 }
 \examples{
 # Basic usage with a data frame
-mtcars |> 
-  head() |> 
-  gt::gt() |> 
+mtcars |>
+  head() |>
+  gt::gt() |>
   theme_gt_compact()
-  
+
 # Combine with other gt functions
-mtcars |> 
-  head() |> 
-  gt::gt() |> 
-  gt::tab_header(title = "Vehicle Data") |> 
+mtcars |>
+  head() |>
+  gt::gt() |>
+  gt::tab_header(title = "Vehicle Data") |>
   theme_gt_compact()
-  
+
 # Use alongside gtsummary tables for consistency
 # Set gtsummary theme first
 gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))
 
 # Then both tables will have matching appearance
-summary_table <- gtsummary::trial |> 
+summary_table <- gtsummary::trial |>
   gtsummary::tbl_summary()
 
-data_table <- gtsummary::trial |> 
+data_table <- gtsummary::trial |>
   head() |>
   gt::gt() |>
   theme_gt_compact()
