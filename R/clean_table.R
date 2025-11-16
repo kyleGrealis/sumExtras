@@ -1,24 +1,33 @@
-#' Clean and standardize missing value display in gtsummary tables
+#' Standardize missing value display across all gtsummary table types
 #'
-#' @description Improves table readability by replacing various missing value 
-#'   representations with a consistent "--" symbol. This makes it easier to 
-#'   distinguish between actual data and missing/undefined values in summary 
+#' @description Improves table readability by replacing various missing value
+#'   representations with a consistent "--" symbol. This makes it easier to
+#'   distinguish between actual data and missing/undefined values in summary
 #'   tables, creating a cleaner and more professional appearance.
 #'
-#' @param tbl A gtsummary table object (e.g., from `tbl_summary()`, `tbl_regression()`)
+#'   Works seamlessly with all gtsummary table types, including stacked tables
+#'   (`tbl_strata`) and survey-weighted summaries (`tbl_svysummary`).
+#'   Automatically handles tables with or without the standard `var_type` column.
+#'
+#' @param tbl A gtsummary table object (e.g., from `tbl_summary()`, `tbl_svysummary()`,
+#'   `tbl_regression()`, or `tbl_strata()`)
 #'
 #' @returns A gtsummary table object with standardized missing value display
 #'
-#' @details The function uses `gtsummary::modify_table_body()` to transform 
+#' @details The function uses `gtsummary::modify_table_body()` to transform
 #'   character columns and replace common missing value patterns with "--":
 #'   * `"0 (NA%)"` - No events occurred and percentages cannot be calculated
 #'   * `"NA (NA)"` - Completely missing data for both count and percentage
 #'   * `"0 (0%)"` - Zero counts with zero percentage
 #'   * `"NA (NA, NA)"` - Missing data with confidence intervals
 #'   * `"NA, NA"` - Missing paired values (e.g., median and IQR)
-#'   
+#'
 #'   This standardization makes tables more scannable and reduces visual clutter
 #'   from various "empty" data representations.
+#'
+#'   Note: The function checks for the presence of `var_type` column before applying
+#'   `modify_missing_symbol()`. This allows it to work seamlessly with `tbl_strata`
+#'   objects which use `var_type_1`, `var_type_2`, etc. instead of `var_type`.
 #' 
 #' @importFrom dplyr across if_else mutate
 #' @importFrom gtsummary all_stat_cols modify_missing_symbol modify_table_body
@@ -72,9 +81,10 @@ clean_table <- function(tbl) {
     )
   }
 
-  tbl |>
+  # Apply the NA pattern cleaning first
+  tbl <- tbl |>
     modify_table_body(
-      ~ .x |> 
+      ~ .x |>
         mutate(across(all_stat_cols(), ~ {
           # Detect specific missing value patterns to replace with standardized symbol
           # Uses explicit pattern matching to avoid false positives
@@ -91,12 +101,21 @@ clean_table <- function(tbl) {
           ), collapse = "|")
           if_else(str_detect(., na_pattern), NA_character_, .)
         }))
-    ) |> 
-    modify_missing_symbol(
-      symbol = "---",
-      columns = all_stat_cols(),
-      rows = 
-        (var_type %in% c("continuous", "dichotomous") & row_type == "label") |
-        (var_type %in% c("continuous2", "categorical") & row_type == "level")
     )
+
+  # Only apply modify_missing_symbol if var_type column exists
+  # tbl_strata objects have var_type_1, var_type_2, etc. instead of var_type
+  # so we skip this step for those table types
+  if ("var_type" %in% names(tbl$table_body)) {
+    tbl <- tbl |>
+      modify_missing_symbol(
+        symbol = "---",
+        columns = all_stat_cols(),
+        rows =
+          (var_type %in% c("continuous", "dichotomous") & row_type == "label") |
+          (var_type %in% c("continuous2", "categorical") & row_type == "level")
+      )
+  }
+
+  tbl
 }

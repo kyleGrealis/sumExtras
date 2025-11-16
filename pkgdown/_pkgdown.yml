@@ -1,0 +1,39 @@
+url: https://www.kyleGrealis.com/sumExtras/
+template:
+  bootstrap: 5
+  light-switch: true
+  bslib:
+    font-size: 0.9rem
+    border-radius: 0.5rem
+    btn-border-radius: 0.25rem
+
+articles:
+  - title: Get Started
+    navbar: ~
+    contents:
+      - sumExtras-intro
+
+reference:
+  - title: "Core Table Styling"
+    desc: "Main functions for adding professional formatting to gtsummary tables"
+    contents:
+      - extras
+      - clean_table
+
+  - title: "Automatic Variable Labeling"
+    desc: "Functions for managing variable labels from data dictionaries"
+    contents:
+      - add_auto_labels
+      - create_labels
+
+  - title: "Theme Functions"
+    desc: "Apply JAMA-style compact themes for consistent professional formatting"
+    contents:
+      - use_jama_theme
+      - theme_gt_compact
+
+  - title: "Group Header Styling"
+    desc: "Enhanced formatting for variable group headers in summary tables"
+    contents:
+      - group_styling
+      - get_group_rows

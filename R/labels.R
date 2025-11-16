@@ -133,26 +133,35 @@ create_labels <- function(data, dictionary = NULL) {
 
 
 
-#' Add automatic labels from dictionary to a tbl_summary or tbl_regression object
+#' Add automatic labels from dictionary to a gtsummary table
 #'
-#' @description Pipe a `gtsummary::tbl_summary` or `gtsummary::tbl_regression`
-#'   object to automatically add variable labels from a dictionary tibble.
-#'   Preserves any manual label overrides specified in the original table call
-#'   while adding dictionary labels for unlabeled variables. The dictionary can
-#'   be passed explicitly or will be searched for in the calling environment.
-#'   See `create_labels()` function for dictionary format requirements.
+#' @description Automatically apply variable labels from a dictionary to
+#'   `tbl_summary` or `tbl_svysummary` objects. Intelligently preserves manual
+#'   label overrides set in the original table call while applying dictionary
+#'   labels only to unlabeled variables. The dictionary can be passed explicitly
+#'   or will be searched for in the calling environment. See `create_labels()`
+#'   for dictionary format requirements.
 #'
-#' @param tbl A gtsummary table object created by `tbl_summary()` or `tbl_regression()`
+#' @param tbl A gtsummary table object created by `tbl_summary()`, `tbl_svysummary()`,
+#'   or `tbl_regression()`
 #' @param dictionary Optional. A data frame or tibble with `Variable` and `Description`
 #'   columns. If not provided, the function will search for a `dictionary` object in
 #'   the calling environment.
 #'
-#' @returns A gtsummary table object with automatic labels applied
+#' @returns A gtsummary table object with labels applied. Manual labels set via
+#'   `label = list(...)` in the original table call are preserved.
+#'
+#' @details The function intelligently applies labels:
+#'   - Dictionary labels are applied to variables without manual overrides
+#'   - Manual labels set via `label = list(variable ~ "Custom Label")` in
+#'     `tbl_summary()`, `tbl_svysummary()`, or `tbl_regression()` are preserved
+#'   - Only variables present in both the table and dictionary receive labels
+#'   - Variables not in the dictionary are left unchanged
 #'
 #' @importFrom gtsummary modify_table_body
 #' @importFrom dplyr left_join mutate select if_else filter
 #' @importFrom purrr map_chr
-#' @importFrom stats setNames
+#' @importFrom stats setNames na.omit
 #' @importFrom rlang %||%
 #'
 #' @examples
@@ -161,30 +170,35 @@ create_labels <- function(data, dictionary = NULL) {
 #' my_dict <- tibble::tribble(
 #'   ~Variable, ~Description,
 #'   "age", "Age at Enrollment",
-#'   "trt", "Treatment Group"
+#'   "trt", "Treatment Group",
+#'   "grade", "Grade"
 #' )
 #'
-#' # With tbl_summary (pass dictionary explicitly - recommended)
+#' # Basic usage: apply dictionary labels to all variables
 #' gtsummary::trial |>
-#'   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
+#'   gtsummary::tbl_summary(by = trt, include = c(age, grade, trt)) |>
 #'   add_auto_labels(dictionary = my_dict)
 #'
-#' # Or use without passing (searches calling environment)
+#' # Manual label overrides are preserved
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(
+#'     by = trt,
+#'     include = c(age, grade, trt),
+#'     label = list(age ~ "Custom Age Label")  # This override is kept
+#'   ) |>
+#'   add_auto_labels(dictionary = my_dict)  # grade and trt get dict labels
+#'
+#' # Works with tbl_svysummary (if survey package is available)
+#' # survey_design <- survey::svydesign(...)
+#' # survey_design |>
+#' #   gtsummary::tbl_svysummary(include = c(age, grade)) |>
+#' #   add_auto_labels(dictionary = my_dict)
+#'
+#' # Or search for dictionary in environment
 #' dictionary <- my_dict
 #' gtsummary::trial |>
 #'   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
 #'   add_auto_labels()
-#'
-#' # With tbl_regression
-#' reg_dict <- tibble::tribble(
-#'   ~Variable, ~Description,
-#'   "cyl", "Number of Cylinders",
-#'   "wt", "Weight (1000 lbs)",
-#'   "hp", "Horsepower"
-#' )
-#' lm(mpg ~ cyl + wt + hp, data = mtcars) |>
-#'   gtsummary::tbl_regression() |>
-#'   add_auto_labels(dictionary = reg_dict)
 #' }
 #'
 #' @family labeling functions
@@ -256,16 +270,38 @@ add_auto_labels <- function(tbl, dictionary = NULL) {
     dplyr::filter(Variable %in% table_vars) |>
     dplyr::select(variable = Variable, auto_label = Description)
 
+  # Extract variables that have explicit labels set in the tbl_summary() call
+  # by checking if 'label' appears in the call_list arguments
+  user_labeled_vars <- c()
+  if (!is.null(tbl$call_list$tbl_summary) && !is.null(tbl$call_list$tbl_summary$label)) {
+    tryCatch(
+      {
+        # The label argument is stored as an unevaluated expression, so we evaluate it
+        label_arg <- eval(tbl$call_list$tbl_summary$label)
+        # Extract variable names from label formulas (e.g., age ~ "Label" -> "age")
+        user_labeled_vars <- sapply(label_arg, function(x) {
+          if (inherits(x, "formula")) {
+            all.vars(x)[1]
+          } else {
+            NA_character_
+          }
+        }, USE.NAMES = FALSE)
+        user_labeled_vars <- as.character(na.omit(user_labeled_vars))
+      },
+      error = function(e) NULL  # Silently handle eval errors
+    )
+  }
+
   # Apply labels by modifying the table body
   # Only update labels for variable header rows (row_type == 'label')
-  # This approach works for ALL gtsummary table types and preserves all modifications
+  # Preserve manual label overrides: skip variables that have user-set labels
   result <- tbl |>
     modify_table_body(
       ~ .x |>
         dplyr::left_join(dict_filtered, by = 'variable') |>
         dplyr::mutate(
           label = dplyr::if_else(
-            row_type == 'label' & !is.na(auto_label),
+            row_type == 'label' & !is.na(auto_label) & !(variable %in% user_labeled_vars),
             auto_label,
             label
           )

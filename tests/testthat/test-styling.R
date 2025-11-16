@@ -138,3 +138,19 @@ test_that("get_group_rows() returns empty vector when no groups", {
   expect_type(rows, "integer")
   expect_equal(length(rows), 0)
 })
+
+test_that("group_styling() sets indent to 0 for label rows", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade)) |>
+    gtsummary::add_variable_group_header(
+      header = "Test Group",
+      variables = age:grade
+    ) |>
+    group_styling()
+
+  # Verify that table_styling$indent exists and has n_spaces = 0 for label rows
+  indent_df <- tbl$table_styling$indent
+  expect_true(any(indent_df$n_spaces == 0))
+})

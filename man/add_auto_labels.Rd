@@ -2,27 +2,39 @@
 % Please edit documentation in R/labels.R
 \name{add_auto_labels}
 \alias{add_auto_labels}
-\title{Add automatic labels from dictionary to a tbl_summary or tbl_regression object}
+\title{Add automatic labels from dictionary to a gtsummary table}
 \usage{
 add_auto_labels(tbl, dictionary = NULL)
 }
 \arguments{
-\item{tbl}{A gtsummary table object created by \code{tbl_summary()} or \code{tbl_regression()}}
+\item{tbl}{A gtsummary table object created by \code{tbl_summary()}, \code{tbl_svysummary()},
+or \code{tbl_regression()}}
 
 \item{dictionary}{Optional. A data frame or tibble with \code{Variable} and \code{Description}
 columns. If not provided, the function will search for a \code{dictionary} object in
 the calling environment.}
 }
 \value{
-A gtsummary table object with automatic labels applied
+A gtsummary table object with labels applied. Manual labels set via
+\code{label = list(...)} in the original table call are preserved.
 }
 \description{
-Pipe a \code{gtsummary::tbl_summary} or \code{gtsummary::tbl_regression}
-object to automatically add variable labels from a dictionary tibble.
-Preserves any manual label overrides specified in the original table call
-while adding dictionary labels for unlabeled variables. The dictionary can
-be passed explicitly or will be searched for in the calling environment.
-See \code{create_labels()} function for dictionary format requirements.
+Automatically apply variable labels from a dictionary to
+\code{tbl_summary} or \code{tbl_svysummary} objects. Intelligently preserves manual
+label overrides set in the original table call while applying dictionary
+labels only to unlabeled variables. The dictionary can be passed explicitly
+or will be searched for in the calling environment. See \code{create_labels()}
+for dictionary format requirements.
+}
+\details{
+The function intelligently applies labels:
+\itemize{
+\item Dictionary labels are applied to variables without manual overrides
+\item Manual labels set via \code{label = list(variable ~ "Custom Label")} in
+\code{tbl_summary()}, \code{tbl_svysummary()}, or \code{tbl_regression()} are preserved
+\item Only variables present in both the table and dictionary receive labels
+\item Variables not in the dictionary are left unchanged
+}
 }
 \examples{
 \donttest{
@@ -30,30 +42,35 @@ See \code{create_labels()} function for dictionary format requirements.
 my_dict <- tibble::tribble(
   ~Variable, ~Description,
   "age", "Age at Enrollment",
-  "trt", "Treatment Group"
+  "trt", "Treatment Group",
+  "grade", "Grade"
 )
 
-# With tbl_summary (pass dictionary explicitly - recommended)
+# Basic usage: apply dictionary labels to all variables
 gtsummary::trial |>
-  gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
+  gtsummary::tbl_summary(by = trt, include = c(age, grade, trt)) |>
   add_auto_labels(dictionary = my_dict)
 
-# Or use without passing (searches calling environment)
+# Manual label overrides are preserved
+gtsummary::trial |>
+  gtsummary::tbl_summary(
+    by = trt,
+    include = c(age, grade, trt),
+    label = list(age ~ "Custom Age Label")  # This override is kept
+  ) |>
+  add_auto_labels(dictionary = my_dict)  # grade and trt get dict labels
+
+# Works with tbl_svysummary (if survey package is available)
+# survey_design <- survey::svydesign(...)
+# survey_design |>
+#   gtsummary::tbl_svysummary(include = c(age, grade)) |>
+#   add_auto_labels(dictionary = my_dict)
+
+# Or search for dictionary in environment
 dictionary <- my_dict
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
   add_auto_labels()
-
-# With tbl_regression
-reg_dict <- tibble::tribble(
-  ~Variable, ~Description,
-  "cyl", "Number of Cylinders",
-  "wt", "Weight (1000 lbs)",
-  "hp", "Horsepower"
-)
-lm(mpg ~ cyl + wt + hp, data = mtcars) |>
-  gtsummary::tbl_regression() |>
-  add_auto_labels(dictionary = reg_dict)
 }
 
 }

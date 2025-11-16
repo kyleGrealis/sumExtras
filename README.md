@@ -13,6 +13,16 @@
 
 ## Installation
 
+### CRAN (after acceptance)
+
+Once accepted to CRAN, install with:
+
+``` r
+install.packages("sumExtras")
+```
+
+### Development version
+
 You can install the development version of sumExtras from GitHub:
 
 ``` r
@@ -68,8 +78,52 @@ trial |>
 - `group_styling()` - Enhanced formatting for grouped tables
 - `get_group_rows()` - Extract group row information from grouped tables
 
+## Table Type Support
+
+The `extras()` function is designed to work with all gtsummary table types using a "warn-and-continue" philosophy:
+- It applies all compatible features to your table
+- For unsupported features, it issues a helpful warning and continues with what works
+- **The function always succeeds** - it never breaks your pipeline
+
+### Feature Support by Table Type
+
+| Table Type | bold_labels | modify_header | add_overall | add_p | Status |
+|------------|:-----------:|:-------------:|:-----------:|:-----:|--------|
+| tbl_summary (stratified) | ✅ | ✅ | ✅ | ✅ | Full support |
+| tbl_summary (unstratified) | ✅ | ✅ | ⚠️ | ⚠️ | Partial support |
+| tbl_svysummary (stratified) | ✅ | ✅ | ✅ | ✅ | Full support |
+| tbl_regression | ✅ | ✅ | ⚠️ | ⚠️ | Partial support |
+| tbl_strata | ✅ | ✅ | ⚠️ | ⚠️ | Partial support |
+
+**Legend:**
+- ✅ Feature works and is applied
+- ⚠️ Feature not applicable to this table type (function warns but continues)
+
+### How It Works
+
+When you call `extras()` on any table:
+
+1. **Always applied:** Bold labels and clean headers
+2. **Conditionally applied:** Overall column and p-values (only on stratified summary tables)
+3. **On unsupported features:** You'll see a warning, but the function completes successfully
+
+Example with an unstratified table:
+```r
+trial |>
+  tbl_summary() |>  # No 'by' argument = unstratified
+  extras()  # Warns that overall/p-values aren't supported, but still bolds labels and cleans headers
+```
+
+You'll see a warning like: "This table is not stratified. Overall column and p-values require stratification. Applying only bold_labels() and modify_header()." - but your table is still successfully formatted!
+
 ## The Name
 
 **sumExtras** = "**SUM**mary table **EXTRAS**" + "**SOME EXTRAS** for gt**SUMMARY**"
 
 Get it?
+
+## Getting Help
+
+- **Bug reports & feature requests**: <https://github.com/kyleGrealis/sumExtras/issues>
+- **Documentation**: See the package vignette with `vignette("sumExtras-intro")` or use `?sumExtras` for help
+- **Examples**: Run `example(extras)` for quick demos of the main functions
