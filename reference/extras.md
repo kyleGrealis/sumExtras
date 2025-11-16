@@ -114,8 +114,8 @@ applies the formatting that works.
 ``` r
 # \donttest{
 # With p-values (default)
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
   extras()
 
 

@@ -70,8 +70,8 @@ This allows it to work seamlessly with `tbl_strata` objects which use
 ``` r
 # \donttest{
 # Basic usage - clean missing values in summary table
-gtsummary::trial |> 
-  gtsummary::tbl_summary(by = trt) |> 
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
   clean_table()
 
 

@@ -54,9 +54,9 @@ tables. Key styling includes:
 
 ``` r
 # Basic usage with a data frame
-mtcars |> 
-  head() |> 
-  gt::gt() |> 
+mtcars |>
+  head() |>
+  gt::gt() |>
   theme_gt_compact()
 
 
