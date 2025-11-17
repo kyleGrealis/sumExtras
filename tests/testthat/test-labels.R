@@ -105,11 +105,14 @@ test_that("add_auto_labels() searches environment for dictionary", {
   )
 
   # Should find dictionary automatically
+  # Reset the message flag for this test
+  options(sumExtras.dictionary_message_shown = NULL)
+
   expect_message(
     tbl <- get_unlabeled_trial() |>
       gtsummary::tbl_summary(include = age) |>
       add_auto_labels(),
-    "Using 'dictionary' object found in calling environment"
+    "Auto-labeling from 'dictionary' object in your environment"
   )
 
   age_label <- tbl$table_body$label[tbl$table_body$variable == "age"][1]

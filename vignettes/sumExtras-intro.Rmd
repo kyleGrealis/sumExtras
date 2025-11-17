@@ -191,6 +191,8 @@ trial |>
   extras()
 ```
 
+The first time `add_auto_labels()` finds your dictionary automatically in a session, you'll see a friendly message: "Auto-labeling from 'dictionary' object in your environment (this message will only show once per session)". This confirms that your dictionary was found and is being used.
+
 This is particularly convenient when working in an R Markdown or Quarto document where your dictionary is defined once at the top.
 
 #### Working with Pre-Labeled Data (Attributes)

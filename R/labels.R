@@ -149,7 +149,15 @@ add_auto_labels <- function(tbl, dictionary) {
       if (exists("dictionary", envir = parent.frame())) {
         dictionary <- get("dictionary", envir = parent.frame())
         has_dictionary <- TRUE
-        message("Using 'dictionary' object found in calling environment")
+
+        # Show user-friendly message only once per session
+        if (!isTRUE(getOption("sumExtras.dictionary_message_shown"))) {
+          message(
+            "Auto-labeling from 'dictionary' object in your environment ",
+            "(this message will only show once per session)"
+          )
+          options(sumExtras.dictionary_message_shown = TRUE)
+        }
       }
     } else {
       # Dictionary was provided explicitly
