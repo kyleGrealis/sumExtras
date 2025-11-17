@@ -30,6 +30,7 @@ character columns and replace common missing value patterns with "--":
 \item \code{"0 (NA\%)"} - No events occurred and percentages cannot be calculated
 \item \code{"NA (NA)"} - Completely missing data for both count and percentage
 \item \code{"0 (0\%)"} - Zero counts with zero percentage
+\item \code{"0\% (0.000)"} - Zero percentage with decimal precision
 \item \code{"NA (NA, NA)"} - Missing data with confidence intervals
 \item \code{"NA, NA"} - Missing paired values (e.g., median and IQR)
 }

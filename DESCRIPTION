@@ -1,6 +1,6 @@
 Package: sumExtras
 Title: Extra Functions for 'gtsummary' Table Styling
-Version: 0.1.0
+Version: 0.1.1
 Authors@R: 
     c(
         person(
@@ -30,16 +30,18 @@ Depends:
 Suggests:
     broom (>= 1.0.5),
     broom.helpers (>= 1.20.0),
+    ggplot2,
     knitr,
+    labelled,
     quarto,
-    testthat (>= 3.0.0)
+    survey,
+    testthat (>= 3.0.0),
+    tibble
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-Imports: 
+Imports:
     dplyr,
     gt (>= 0.9.0),
     gtsummary (>= 1.7.0),
     purrr,
-    rlang,
-    stringr,
-    tibble
+    rlang

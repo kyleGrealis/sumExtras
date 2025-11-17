@@ -19,6 +19,7 @@
 #'   * `"0 (NA%)"` - No events occurred and percentages cannot be calculated
 #'   * `"NA (NA)"` - Completely missing data for both count and percentage
 #'   * `"0 (0%)"` - Zero counts with zero percentage
+#'   * `"0% (0.000)"` - Zero percentage with decimal precision
 #'   * `"NA (NA, NA)"` - Missing data with confidence intervals
 #'   * `"NA, NA"` - Missing paired values (e.g., median and IQR)
 #'
@@ -32,7 +33,6 @@
 #' @importFrom dplyr across if_else mutate
 #' @importFrom gtsummary all_stat_cols modify_missing_symbol modify_table_body
 #'   tbl_regression tbl_summary
-#' @importFrom stringr str_detect
 #' @importFrom rlang abort
 #'
 #' @examples
@@ -93,13 +93,15 @@ clean_table <- function(tbl) {
             "\\bInf\\b",                 # Literal Inf
             "-Inf",                      # Negative Inf
             "^0 \\(0%\\)$",              # Exact: 0 (0%)
+            "^0% \\(0\\.0+\\)$",         # Exact: 0% (0.000)
             "^0 \\(NA%\\)$",             # Exact: 0 (NA%)
             "^NA \\(NA\\)$",             # Exact: NA (NA)
             "^NA \\(NA, NA\\)$",         # Exact: NA (NA, NA)
             "^0\\.0+ \\(0\\.0+%?\\)$",   # 0.00 (0.00) or 0.00 (0.00%)
+            "^0\\.0+% \\(0\\.0+\\)$",    # 0.00% (0.00)
             "^NA, NA$"                   # Exact: NA, NA
           ), collapse = "|")
-          if_else(str_detect(., na_pattern), NA_character_, .)
+          if_else(grepl(na_pattern, ., perl = TRUE), NA_character_, .)
         }))
     )
 
