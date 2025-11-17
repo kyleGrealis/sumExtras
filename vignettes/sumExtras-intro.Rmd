@@ -135,18 +135,26 @@ trial_missing |>
 
 ## Automatic Variable Labeling
 
-For projects with many variables, manually specifying labels for each one becomes tedious and error-prone. The `add_auto_labels()` function automates this process by pulling labels from a data dictionary.
+One of the most time-consuming aspects of creating publication-ready tables is labeling variables with human-readable descriptions. Instead of manually typing labels for every variable in every table, sumExtras provides a streamlined two-function labeling system:
 
-### Setting Up a Dictionary
+- **`add_auto_labels()`** - Smart labeling for gtsummary tables
+- **`apply_labels_from_dictionary()`** - Set labels as data attributes for cross-package workflows
 
-The function expects a dictionary object in your global environment with two columns: `Variable` (exact variable names) and `Description` (human-readable labels):
+Both functions use the same dictionary format, making it easy to maintain consistent labels across tables and plots throughout your analysis.
+
+### Creating a Data Dictionary
+
+A data dictionary serves dual purposes: it documents your variables and provides labels for automatic application. The dictionary is simply a data frame with two required columns:
+
+- **`Variable`**: The exact variable names from your dataset
+- **`Description`**: Human-readable labels you want to display
 
 ```{r}
 # Create a dictionary for the trial dataset
 dictionary <- tibble::tribble(
   ~Variable,    ~Description,
   "trt",        "Chemotherapy Treatment",
-  "age",        "Age at Enrollment",
+  "age",        "Age at Enrollment (years)",
   "marker",     "Marker Level (ng/mL)",
   "stage",      "T Stage",
   "grade",      "Tumor Grade",
@@ -154,45 +162,264 @@ dictionary <- tibble::tribble(
 )
 ```
 
-In practice, you would typically maintain this dictionary as a CSV file or within a data management script, loading it once at the beginning of your analysis.
+In real projects, you would typically maintain this dictionary as a CSV file or database table, loading it once at the beginning of your analysis. This centralizes your variable documentation and ensures consistency across all outputs.
 
-### Applying Automatic Labels
+### Labeling gtsummary Tables with `add_auto_labels()`
 
-Once your dictionary is defined, pipe any gtsummary table through `add_auto_labels()`:
+The `add_auto_labels()` function is designed to be flexible and intelligent. It can work with dictionaries, pre-labeled data, or both, and it always respects manual overrides.
+
+#### Basic Usage: Pass Dictionary Explicitly
+
+The most straightforward approach is to pass your dictionary directly to the function:
 
 ```{r}
 trial |>
-  tbl_summary(by = trt) |>
-  add_auto_labels() |>
+  tbl_summary(by = trt, include = c(age, grade, marker)) |>
+  add_auto_labels(dictionary = dictionary) |>
   extras()
 ```
 
-The function intelligently handles several scenarios:
+#### Automatic Discovery: Dictionary in Environment
 
-- Variables not in the dictionary are left unlabeled (showing the variable name)
-- Variables not included in the table are ignored
-- Manual label overrides specified in `tbl_summary(label = ...)` take precedence over dictionary labels
+If you have a `dictionary` object in your environment, `add_auto_labels()` will find it automatically without needing to pass it explicitly:
 
 ```{r}
-# Manual override takes precedence
+# Dictionary is already in environment from above
+trial |>
+  tbl_summary(by = trt, include = c(age, stage, response)) |>
+  add_auto_labels() |>  # Finds dictionary automatically
+  extras()
+```
+
+This is particularly convenient when working in an R Markdown or Quarto document where your dictionary is defined once at the top.
+
+#### Working with Pre-Labeled Data (Attributes)
+
+If your data already has label attributes (from packages like haven, labelled, or set manually), `add_auto_labels()` can read them directly:
+
+```{r}
+# Create data with label attributes
+labeled_trial <- trial
+attr(labeled_trial$age, "label") <- "Patient Age at Baseline"
+attr(labeled_trial$marker, "label") <- "Biomarker Concentration (ng/mL)"
+
+# Use attributes for labeling (no dictionary needed)
+labeled_trial |>
+  tbl_summary(by = trt, include = c(age, marker)) |>
+  add_auto_labels()  # Reads from label attributes
+```
+
+#### Manual Overrides Always Win
+
+No matter where labels come from (dictionary or attributes), manual labels specified in your `tbl_summary()` call always take precedence:
+
+```{r}
 trial |>
   tbl_summary(
     by = trt,
-    label = list(age ~ "Patient Age (years)")  # This overrides dictionary
+    include = c(age, grade, marker),
+    label = list(age ~ "Age (Custom Label)")  # This overrides dictionary/attributes
   ) |>
-  add_auto_labels() |>
+  add_auto_labels(dictionary = dictionary) |>
   extras()
 ```
 
-### Working with Regression Tables
+This gives you complete control: use automated labeling for most variables, but override specific ones when needed.
 
-The labeling system also works with regression tables:
+#### Working with Regression Tables
+
+The labeling system works seamlessly with regression tables too:
 
 ```{r}
 lm(marker ~ age + grade + stage, data = trial) |>
   tbl_regression() |>
-  add_auto_labels()
+  add_auto_labels(dictionary = dictionary)
 ```
+
+### Controlling Label Priority with Options
+
+When your data has both dictionary labels and attribute labels available, `add_auto_labels()` needs to decide which one to use. You control this with a global option.
+
+#### Default Behavior: Attributes Have Priority
+
+By default, label attributes take precedence over dictionary labels. This respects labels that may have been carefully set by data import functions (like `haven::read_sas()`) or other preprocessing steps:
+
+```{r}
+# Create data with both sources of labels
+trial_both <- trial
+attr(trial_both$age, "label") <- "Age from Attribute"
+
+# Also have dictionary (already defined above)
+dictionary_conflict <- tibble::tribble(
+  ~Variable, ~Description,
+  "age", "Age from Dictionary"
+)
+
+# Default: attribute wins
+trial_both |>
+  tbl_summary(by = trt, include = age) |>
+  add_auto_labels(dictionary = dictionary_conflict) |>
+  extras()
+# Shows: "Age from Attribute"
+```
+
+#### Prefer Dictionary: When to Use `TRUE`
+
+If you want dictionary labels to override attribute labels, set the `sumExtras.preferDictionary` option to `TRUE`. This is useful when you're actively maintaining a master dictionary and want it to be the single source of truth:
+
+```{r}
+# Prioritize dictionary over attributes
+options(sumExtras.preferDictionary = TRUE)
+
+trial_both |>
+  tbl_summary(by = trt, include = age) |>
+  add_auto_labels(dictionary = dictionary_conflict) |>
+  extras()
+# Shows: "Age from Dictionary"
+
+# Reset to default for rest of vignette
+options(sumExtras.preferDictionary = FALSE)
+```
+
+**When to use each setting:**
+
+- **`FALSE` (default)**: You're importing labeled data from SAS/Stata/SPSS and want to preserve those labels
+- **`TRUE`**: You maintain a master dictionary and want it to override any existing labels
+
+Remember: manual labels set via `label = list(...)` always win, regardless of this option.
+
+### Cross-Package Workflows: One Dictionary for Tables and Plots
+
+Often you need consistent labels across both gtsummary tables and ggplot2 visualizations. The `apply_labels_from_dictionary()` function enables this by setting dictionary labels as data attributes, which ggplot2 4.0+ can use automatically.
+
+#### Setting Labels Once, Using Everywhere
+
+Apply your dictionary labels to the data once, then use the labeled data for both tables and plots:
+
+```{r}
+# Apply labels to data as attributes
+trial_labeled <- trial |>
+  apply_labels_from_dictionary(dictionary = dictionary)
+
+# Now use for gtsummary table
+trial_labeled |>
+  tbl_summary(by = trt, include = c(age, marker, grade)) |>
+  add_auto_labels() |>  # Reads attributes automatically
+  extras()
+```
+
+#### ggplot2 4.0+ Integration
+
+With ggplot2 version 4.0 and later, label attributes are automatically used for axis and legend labels:
+
+```{r, fig.width=7, fig.height=4}
+library(ggplot2)
+
+# Labels appear automatically on axes and legend!
+trial_labeled |>
+  ggplot(aes(x = age, y = marker, color = trt)) +
+  geom_point(alpha = 0.6) +
+  theme_minimal()
+```
+
+No need to manually specify `labs()` - the labels from your dictionary are applied automatically.
+
+#### Complete Workflow: Dictionary to Tables and Plots
+
+Here's a realistic workflow showing how one dictionary serves both gtsummary tables and ggplot2 visualizations:
+
+```{r, fig.width=7, fig.height=5}
+# 1. Define dictionary once
+my_dictionary <- tibble::tribble(
+  ~Variable,    ~Description,
+  "age",        "Age at Enrollment (years)",
+  "marker",     "Marker Level (ng/mL)",
+  "trt",        "Treatment Group",
+  "grade",      "Tumor Grade",
+  "stage",      "T Stage"
+)
+
+# 2. Apply to data
+trial_final <- trial |>
+  apply_labels_from_dictionary(my_dictionary)
+
+# 3. Create gtsummary table
+trial_final |>
+  tbl_summary(
+    by = trt,
+    include = c(age, marker, grade, stage)
+  ) |>
+  add_auto_labels() |>
+  extras()
+
+# 4. Create ggplot2 visualization with same labels
+trial_final |>
+  filter(!is.na(marker)) |>
+  ggplot(aes(x = age, y = marker)) +
+  geom_point(aes(color = grade), alpha = 0.6) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  facet_wrap(~trt) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+Notice how the axis labels and legend titles are automatically pulled from your dictionary - no manual `labs()` calls needed!
+
+### Real-World Example: Complete Analysis
+
+Here's a comprehensive example showing how the labeling system streamlines a typical analysis workflow:
+
+```{r, fig.width=8, fig.height=6}
+# Step 1: Define your master dictionary
+# In practice, this would be loaded from a CSV file
+study_dictionary <- tibble::tribble(
+  ~Variable,    ~Description,
+  "trt",        "Treatment Assignment",
+  "age",        "Age at Baseline (years)",
+  "marker",     "Biomarker Level (ng/mL)",
+  "stage",      "Clinical Stage",
+  "grade",      "Tumor Grade",
+  "response",   "Treatment Response"
+)
+
+# Step 2: Apply labels to your data once
+trial_study <- trial |>
+  apply_labels_from_dictionary(study_dictionary)
+
+# Step 3: Create multiple tables using the same labels
+# Table 1: Overall summary
+trial_study |>
+  tbl_summary(include = c(age, marker, stage, grade)) |>
+  add_auto_labels() |>
+  extras(overall = TRUE, pval = FALSE)
+
+# Table 2: By treatment comparison
+trial_study |>
+  tbl_summary(
+    by = trt,
+    include = c(age, marker, response)
+  ) |>
+  add_auto_labels() |>
+  extras()
+
+# Step 4: Create plots using the same labels
+# Plot 1: Age distribution by treatment
+trial_study |>
+  ggplot(aes(x = trt, y = age, fill = trt)) +
+  geom_boxplot(alpha = 0.7) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+# Plot 2: Marker vs age relationship
+trial_study |>
+  filter(!is.na(marker)) |>
+  ggplot(aes(x = age, y = marker, color = trt)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "loess", se = FALSE) +
+  theme_minimal()
+```
+
+This workflow demonstrates the power of the labeling system: define your labels once in a dictionary, apply them to your data, then create as many tables and plots as you need with consistent, professional labeling throughout.
 
 ## Styling Group Headers
 
@@ -359,8 +586,8 @@ This vignette covered the core functionality of sumExtras. For detailed informat
 
 - `?extras` - Main styling function
 - `?clean_table` - Missing value standardization
-- `?add_auto_labels` - Automatic variable labeling
-- `?create_labels` - Manual label list creation
+- `?add_auto_labels` - Automatic variable labeling for gtsummary tables
+- `?apply_labels_from_dictionary` - Set label attributes for cross-package workflows
 - `?use_jama_theme` - Apply JAMA compact theme
 - `?group_styling` - Group header formatting
 - `?get_group_rows` - Get row numbers of variable group headers

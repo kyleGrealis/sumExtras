@@ -74,11 +74,11 @@ trial |>
 
 - `extras()` - The signature function that adds overall columns, p-values, and clean styling
 - `clean_table()` - Standardizes missing value display
-- `add_auto_labels()` - Automatic variable labeling from dictionaries
-- `create_labels()` - Create a list of variable labels from a dataset using a dictionary
+- `add_auto_labels()` - Smart automatic variable labeling from dictionaries or label attributes
+- `apply_labels_from_dictionary()` - Set label attributes on data for cross-package workflows (ggplot2, gt, etc.)
 - `use_jama_theme()` - Apply JAMA compact theme to gtsummary tables
 - `theme_gt_compact()` - JAMA-style compact themes for gt tables
-- `group_styling()` - Enhanced formatting for grouped tables
+- `group_styling()` - Enhanced formatting for grouped tables with customizable indentation
 - `get_group_rows()` - Extract group row information from grouped tables
 
 ## Table Type Support

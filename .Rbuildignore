@@ -1,6 +1,7 @@
 ^sumExtras\.Rproj$
 ^\.Rproj\.user$
 dated_progress_notes.md
+PROJECT_STATUS.md
 inst/.gitkeep
 ^\.claude$
 ^LICENSE\.md$

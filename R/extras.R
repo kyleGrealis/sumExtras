@@ -215,6 +215,11 @@ extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL)
           result |>
             add_p(
               pvalue_fun = ~ style_pvalue(.x, digits = 3),
+              # Use Monte Carlo simulation for Fisher's exact test to prevent
+              # computational errors and excessive runtime on large tables (r>2 or c>2).
+              # Trades exact p-values for computational feasibility. Default B=2000
+              # iterations provides adequate precision.
+              # Reference: https://stat.ethz.ch/R-manual/R-devel/library/stats/html/fisher.test.html
               test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)
             )
         )

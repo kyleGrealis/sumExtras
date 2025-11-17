@@ -139,7 +139,7 @@ test_that("get_group_rows() returns empty vector when no groups", {
   expect_equal(length(rows), 0)
 })
 
-test_that("group_styling() sets indent to 0 for label rows", {
+test_that("group_styling() sets indent to 0 for label rows by default", {
   skip_if_not_installed("gtsummary")
 
   tbl <- gtsummary::trial |>
@@ -153,4 +153,84 @@ test_that("group_styling() sets indent to 0 for label rows", {
   # Verify that table_styling$indent exists and has n_spaces = 0 for label rows
   indent_df <- tbl$table_styling$indent
   expect_true(any(indent_df$n_spaces == 0))
+})
+
+test_that("group_styling() accepts custom indent_labels value", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade)) |>
+    gtsummary::add_variable_group_header(
+      header = "Test Group",
+      variables = age:grade
+    ) |>
+    group_styling(indent_labels = 4L)
+
+  # Verify that table_styling$indent exists and has n_spaces = 4 for label rows
+  indent_df <- tbl$table_styling$indent
+  expect_true(any(indent_df$n_spaces == 4))
+})
+
+test_that("group_styling() accepts indent_labels = 2L", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+    gtsummary::add_variable_group_header(
+      header = "Variables",
+      variables = age:marker
+    ) |>
+    group_styling(indent_labels = 2L)
+
+  expect_s3_class(tbl, "gtsummary")
+  indent_df <- tbl$table_styling$indent
+  expect_true(any(indent_df$n_spaces == 2))
+})
+
+test_that("group_styling() errors with negative indent_labels", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+    gtsummary::add_variable_group_header(
+      header = "Test",
+      variables = age:marker
+    )
+
+  expect_error(
+    group_styling(tbl, indent_labels = -1L),
+    "must be non-negative"
+  )
+})
+
+test_that("group_styling() errors with non-numeric indent_labels", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+    gtsummary::add_variable_group_header(
+      header = "Test",
+      variables = age:marker
+    )
+
+  expect_error(
+    group_styling(tbl, indent_labels = "4"),
+    "must be a single integer"
+  )
+})
+
+test_that("group_styling() errors with vector indent_labels", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+    gtsummary::add_variable_group_header(
+      header = "Test",
+      variables = age:marker
+    )
+
+  expect_error(
+    group_styling(tbl, indent_labels = c(0L, 4L)),
+    "must be a single integer"
+  )
 })
