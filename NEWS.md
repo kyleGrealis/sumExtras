@@ -14,6 +14,10 @@
   reducing package dependency footprint
 * Replaced `purrr::walk2()` with traditional for-loop in `apply_labels_from_dictionary()`
   for improved code clarity and maintainability
+* `add_auto_labels()` now displays a clearer, more user-friendly message when
+  automatically finding a dictionary in the environment: "Auto-labeling from
+  'dictionary' object in your environment (this message will only show once per
+  session)". The message now only appears once per R session to reduce clutter
 
 ## Documentation
 

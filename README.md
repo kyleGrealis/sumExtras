@@ -3,10 +3,10 @@
 
 <!-- badges: start -->
 
-[![R CMD check: passing](https://img.shields.io/badge/R_CMD_check-passing-brightgreen.svg)](https://github.com/kyleGrealis/sumExtras)
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
-[![Tests: 64 tests](https://img.shields.io/badge/tests-64_tests-brightblue.svg)](https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat)
-<!-- [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/sumExtras)](https://cran.r-project.org/package=sumExtras) -->
+[![R-CMD-check](https://github.com/kyleGrealis/sumExtras/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kyleGrealis/sumExtras/actions/workflows/R-CMD-check.yaml)
+[![CRAN status](https://www.r-pkg.org/badges/version/sumExtras)](https://CRAN.R-project.org/package=sumExtras)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![Tests: 156 passing](https://img.shields.io/badge/tests-156_passing-brightgreen.svg)](https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat)
 
 <!-- badges: end -->
 
@@ -66,27 +66,27 @@ dictionary <- tibble::tribble(
 
 trial |>
   tbl_summary(by = trt) |>
-  add_auto_labels() |>
+  add_auto_labels() |>  # Automatically finds 'dictionary' in your environment
   extras()
 ```
 
 ## What's Included
 
-- `extras()` - The signature function that adds overall columns, p-values, and clean styling
-- `clean_table()` - Standardizes missing value display
-- `add_auto_labels()` - Smart automatic variable labeling from dictionaries or label attributes
-- `apply_labels_from_dictionary()` - Set label attributes on data for cross-package workflows (ggplot2, gt, etc.)
-- `use_jama_theme()` - Apply JAMA compact theme to gtsummary tables
-- `theme_gt_compact()` - JAMA-style compact themes for gt tables
-- `group_styling()` - Enhanced formatting for grouped tables with customizable indentation
-- `get_group_rows()` - Extract group row information from grouped tables
+* `extras()` - The signature function that adds overall columns, p-values, and clean styling
+* `clean_table()` - Standardizes missing value display
+* `add_auto_labels()` - Smart automatic variable labeling from dictionaries or label attributes
+* `apply_labels_from_dictionary()` - Set label attributes on data for cross-package workflows (ggplot2, gt, etc.)
+* `use_jama_theme()` - Apply JAMA compact theme to gtsummary tables
+* `theme_gt_compact()` - JAMA-style compact themes for gt tables
+* `group_styling()` - Enhanced formatting for grouped tables with customizable indentation
+* `get_group_rows()` - Extract group row information from grouped tables
 
 ## Table Type Support
 
 The `extras()` function is designed to work with all gtsummary table types using a "warn-and-continue" philosophy:
-- It applies all compatible features to your table
-- For unsupported features, it issues a helpful warning and continues with what works
-- **The function always succeeds** - it never breaks your pipeline
+* It applies all compatible features to your table
+* For unsupported features, it issues a helpful warning and continues with what works
+* **The function always succeeds** - it never breaks your pipeline
 
 ### Feature Support by Table Type
 
@@ -99,8 +99,8 @@ The `extras()` function is designed to work with all gtsummary table types using
 | tbl_strata | ✅ | ✅ | ⚠️ | ⚠️ | Partial support |
 
 **Legend:**
-- ✅ Feature works and is applied
-- ⚠️ Feature not applicable to this table type (function warns but continues)
+* ✅ Feature works and is applied
+* ⚠️ Feature not applicable to this table type (function warns but continues)
 
 ### How It Works
 
@@ -127,10 +127,10 @@ Get it?
 
 ## Getting Help
 
-- **Bug reports & feature requests**: <https://github.com/kyleGrealis/sumExtras/issues>
-- **Documentation**: See the package vignette with `vignette("sumExtras-intro")`
-- **Function help**: `?extras`, `?clean_table`, `?add_auto_labels`, `?group_styling`, `?use_jama_theme`
-- **Examples**: Run `example(extras)` for quick demos
+* **Bug reports & feature requests**: <https://github.com/kyleGrealis/sumExtras/issues>
+* **Documentation**: See the package vignette with `vignette("sumExtras-intro")`
+* **Function help**: `?extras`, `?clean_table`, `?add_auto_labels`, `?group_styling`, `?use_jama_theme`
+* **Examples**: Run `example(extras)` for quick demos
 
 ----
 
@@ -138,7 +138,7 @@ Get it?
 
 sumExtras is thoroughly tested with:
 
-* 123 test assertions across 7 comprehensive test suites
+* 156 test assertions across 7 comprehensive test suites
 * Tests covering all core functions and edge cases
 * Comprehensive test suites for:
   - Main extras functionality (`test-extras.R`, `test-extras-warnings.R`)
@@ -166,10 +166,10 @@ We're constantly improving sumExtras. Upcoming feature considerations include:
 
 We welcome contributions and ideas! Here's how you can help:
 
-- **Report bugs** - [Open an issue](https://github.com/kyleGrealis/sumExtras/issues) with a clear description
-- **Suggest features** - Have an idea? [Submit a feature request](https://github.com/kyleGrealis/sumExtras/issues)
-- **Share feedback** - Let us know how sumExtras is working for you
-- **Improve documentation** - Help us make docs clearer and more complete
+* **Report bugs** - [Open an issue](https://github.com/kyleGrealis/sumExtras/issues) with a clear description
+* **Suggest features** - Have an idea? [Submit a feature request](https://github.com/kyleGrealis/sumExtras/issues)
+* **Share feedback** - Let us know how sumExtras is working for you
+* **Improve documentation** - Help us make docs clearer and more complete
 
 ----
 
@@ -187,8 +187,7 @@ sumExtras is built with love using R and these amazing packages:
 * [gt](https://gt.rstudio.com/) - The grammar of tables for R
 * [dplyr](https://dplyr.tidyverse.org/) - Data manipulation and transformation
 * [rlang](https://rlang.r-lib.org/) - Low-level programming tools for R
-* [stringr](https://stringr.tidyverse.org/) - Simple string handling
-* [tibble](https://tibble.tidyverse.org/) - Modern data frames for R
+* [purrr](https://purrr.tidyverse.org/) - Functional programming tools
 
 ----
 
