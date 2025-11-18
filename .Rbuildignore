@@ -11,3 +11,5 @@ inst/.gitkeep
 ^\.github
 ^vignettes/\.quarto
 ^inst/WORDLIST$
+^doc$
+^Meta$
