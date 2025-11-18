@@ -42,9 +42,26 @@ labeling system to the broader R ecosystem. Key use cases:
 
 Only variables present in both the data and dictionary will receive label
 attributes. Dictionary entries for non-existent variables are silently ignored.
+\subsection{Implementation: The R Ecosystem Label Convention}{
 
-The function sets attributes using the standard \code{'label'} attribute name.
-This does NOT require the labelled package, but is fully compatible with it.
+This function uses \strong{native R's \code{attr()} function} to store labels in the \code{"label"}
+attribute, following the same approach as haven, Hmisc, and ggplot2 4.0+.
+This standardized convention enables seamless integration across the R ecosystem.
+
+Because labels are stored as simple base R attributes (not in a special package-specific
+format), they work transparently with any package that respects the \code{"label"} attribute:
+\itemize{
+\item \strong{Dictionary-to-Attribute Bridge}: Converts your dictionary's \code{Description} column
+into standard R label attributes
+\item \strong{Zero Dependencies}: Uses only base R, no special packages required
+\item \strong{Transparent & Simple}: Users can inspect labels with \code{attr(data$var, "label")}
+\item \strong{Ecosystem Compatible}: Works with ggplot2, gt, gtsummary, Hmisc, and beyond
+}
+
+The benefits of this approach are that labels remain portable with your data,
+work across multiple R packages without version constraints, and integrate naturally
+with the broader R ecosystem's labeling conventions.
+}
 }
 \examples{
 \donttest{
