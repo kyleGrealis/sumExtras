@@ -64,7 +64,7 @@ When tables contain many variables, organizing them into logical sections improv
 
 ### Basic Group Headers
 
-```{r}
+```{r basic-groups-example}
 trial |>
   select(age, marker, grade, stage, response, trt) |>
   tbl_summary(by = trt) |>
@@ -89,7 +89,34 @@ The `group_styling()` function adds visual emphasis to group headers, making sec
 
 By default, `group_styling()` applies both bold and italic formatting:
 
-```{r}
+:::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### Without group_styling()
+
+```{r group-styling-without, eval=FALSE}
+trial |>
+  select(age, marker, grade, stage, response, trt) |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Demographics",
+    variables = age
+  ) |>
+  add_variable_group_header(
+    header = "Clinical Measures",
+    variables = marker:response
+  )
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### With group_styling()
+
+```{r group-styling-with, eval=FALSE}
 trial |>
   select(age, marker, grade, stage, response, trt) |>
   tbl_summary(by = trt) |>
@@ -104,6 +131,59 @@ trial |>
   ) |>
   group_styling()
 ```
+
+:::
+
+::::::
+
+```{r build-group-styling, echo=FALSE}
+table_without_group_styling <- trial |>
+  select(age, marker, grade, stage, response, trt) |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Demographics",
+    variables = age
+  ) |>
+  add_variable_group_header(
+    header = "Clinical Measures",
+    variables = marker:response
+  )
+
+table_with_group_styling <- trial |>
+  select(age, marker, grade, stage, response, trt) |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Demographics",
+    variables = age
+  ) |>
+  add_variable_group_header(
+    header = "Clinical Measures",
+    variables = marker:response
+  ) |>
+  group_styling()
+```
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 30px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-without-group-styling, echo=FALSE}
+table_without_group_styling
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-with-group-styling, echo=FALSE}
+table_with_group_styling
+```
+
+:::
+
+::::::
 
 Notice how the group headers now stand out with bold italic text, creating clear visual breaks between table sections.
 
@@ -159,8 +239,15 @@ Using `group_styling()` also restores the original left-justified variable label
 
 Compare these two approaches:
 
-```{r}
-# Without group_styling() - indentation may look off
+:::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### Without group_styling()
+
+*Indentation may look off*
+
+```{r indentation-without, eval=FALSE}
 trial |>
   select(age, grade, stage, trt) |>
   tbl_summary(by = trt) |>
@@ -169,8 +256,17 @@ trial |>
     header = "Patient Variables",
     variables = age:stage
   )
+```
 
-# With group_styling() - proper indentation restored
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### With group_styling()
+
+*Proper indentation restored*
+
+```{r indentation-with, eval=FALSE}
 trial |>
   select(age, grade, stage, trt) |>
   tbl_summary(by = trt) |>
@@ -181,6 +277,51 @@ trial |>
   ) |>
   group_styling()
 ```
+
+:::
+
+::::::
+
+```{r build-indentation, echo=FALSE}
+table_without_indent <- trial |>
+  select(age, grade, stage, trt) |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Patient Variables",
+    variables = age:stage
+  )
+
+table_with_indent <- trial |>
+  select(age, grade, stage, trt) |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Patient Variables",
+    variables = age:stage
+  ) |>
+  group_styling()
+```
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 30px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-without-indent, echo=FALSE}
+table_without_indent
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-with-indent, echo=FALSE}
+table_with_indent
+```
+
+:::
+
+::::::
 
 ## Background Colors: Enhanced Visual Distinction
 
@@ -411,14 +552,26 @@ gtsummary::reset_gtsummary_theme()
 
 When mixing gtsummary tables with regular gt tables in the same document, visual consistency matters. The `theme_gt_compact()` function applies JAMA-style compact formatting to gt tables, matching the appearance of the JAMA compact theme used by gtsummary.
 
-```{r}
-# gtsummary table (uses JAMA theme)
+:::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### Without theme_gt_compact()
+
+```{r gt-theme-without, eval=FALSE}
 trial |>
   select(trt, age, grade) |>
-  tbl_summary() |>
-  extras()
+  head(10) |>
+  gt::gt()
+```
 
-# Regular gt table with matching compact style
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### With theme_gt_compact()
+
+```{r gt-theme-with, eval=FALSE}
 trial |>
   select(trt, age, grade) |>
   head(10) |>
@@ -426,7 +579,44 @@ trial |>
   theme_gt_compact()
 ```
 
-Now both tables share a consistent visual style, creating a more professional, cohesive document.
+:::
+
+::::::
+
+```{r build-gt-theme, echo=FALSE}
+table_gt_without <- trial |>
+  select(trt, age, grade) |>
+  head(10) |>
+  gt::gt()
+
+table_gt_with <- trial |>
+  select(trt, age, grade) |>
+  head(10) |>
+  gt::gt() |>
+  theme_gt_compact()
+```
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 30px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-gt-without, echo=FALSE}
+table_gt_without
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-gt-with, echo=FALSE}
+table_gt_with
+```
+
+:::
+
+::::::
+
+The compact theme creates visual consistency with gtsummary tables, resulting in a more professional, cohesive document.
 
 ### Customizing gt Tables Further
 

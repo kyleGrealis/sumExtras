@@ -40,6 +40,52 @@ Alternatively, using remotes:
 remotes::install_github("kyleGrealis/sumExtras")
 ```
 
+## See the Difference
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+**Standard gtsummary workflow**
+
+```r
+trial |>
+  tbl_summary(by = trt) |>
+  add_overall() |>
+  add_p() |>
+  bold_labels() |>
+  modify_header(label ~ "")
+```
+
+</td>
+<td width="50%" valign="top">
+
+**Using extras()**
+
+```r
+trial |>
+  tbl_summary(by = trt) |>
+  extras()
+```
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+<img src="man/figures/table-a.png" width="100%">
+
+</td>
+<td width="50%" valign="top">
+
+<img src="man/figures/table-b.png" width="100%">
+
+</td>
+</tr>
+</table>
+
+Both produce identical output, but `extras()` requires significantly less code and ensures consistency across your analysis.
+
 ## Quick Start
 
 ```r
@@ -53,6 +99,11 @@ use_jama_theme()
 trial |>
   tbl_summary(by = trt) |>
   extras()  # Adds overall, p-values, cleans missing values, and more!
+
+# Clean missing values independently
+trial |>
+  tbl_summary(by = trt) |>
+  clean_table()  # Standardizes missing/zero displays to "---"
 
 # With automatic labels from your dictionary
 # First, create a dictionary with Variable and Description columns
