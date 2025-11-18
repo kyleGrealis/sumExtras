@@ -60,20 +60,69 @@ The signature function of this package, `extras()`, consolidates the most common
 
 ### Basic Usage
 
-```{r}
-# Standard gtsummary workflow
+:::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### Standard gtsummary workflow
+
+```{r extras-comparison-standard, eval=FALSE}
 trial |>
   tbl_summary(by = trt) |>
   add_overall() |>
   add_p() |>
   bold_labels() |>
   modify_header(label ~ "")
+```
 
-# Equivalent using extras()
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### Equivalent using extras()
+
+```{r extras-comparison-extras, eval=FALSE}
 trial |>
   tbl_summary(by = trt) |>
   extras()
 ```
+
+:::
+
+::::::
+
+```{r build-extras-comparison, echo=FALSE}
+table_standard <- trial |>
+  tbl_summary(by = trt) |>
+  add_overall() |>
+  add_p() |>
+  bold_labels() |>
+  modify_header(label ~ "")
+
+table_extras <- trial |>
+  tbl_summary(by = trt) |>
+  extras()
+```
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 30px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-standard, echo=FALSE}
+table_standard
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-extras, echo=FALSE}
+table_extras
+```
+
+:::
+
+::::::
 
 Both approaches produce the same result, but `extras()` requires less code and ensures consistency across your analysis.
 
@@ -121,25 +170,70 @@ One subtle but important aspect of table presentation is how missing or undefine
 
 The `clean_table()` function (which is called automatically by `extras()`) standardizes all zero (`0 (0%)`) or missing value representations to "---":
 
-```{r}
+```{r create-missing-data, echo=FALSE}
 # Create data with some missing patterns
 trial_missing <- trial |>
   mutate(
     age = if_else(trt == 'Drug B', NA_real_, age),
     marker = if_else(trt == 'Drug A', NA_real_, marker)
   )
+```
 
-# Without cleaning
+:::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### Without cleaning
+
+```{r clean-comparison-without, eval=FALSE}
 trial_missing |>
   tbl_summary(by = trt)
 ```
 
-```{r}
-# With clean_table()
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### With clean_table()
+
+```{r clean-comparison-with, eval=FALSE}
 trial_missing |>
   tbl_summary(by = trt) |>
   clean_table()
 ```
+
+:::
+
+::::::
+
+```{r build-clean-comparison, echo=FALSE}
+table_without_clean <- trial_missing |>
+  tbl_summary(by = trt)
+
+table_with_clean <- trial_missing |>
+  tbl_summary(by = trt) |>
+  clean_table()
+```
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 30px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-without-clean, echo=FALSE}
+table_without_clean
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-with-clean, echo=FALSE}
+table_with_clean
+```
+
+:::
+
+::::::
 
 You can also use `clean_table()` independently if you prefer to build tables step-by-step:
 
