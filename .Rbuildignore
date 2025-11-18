@@ -10,3 +10,4 @@ inst/.gitkeep
 ^pkgdown$
 ^\.github
 ^vignettes/\.quarto
+^inst/WORDLIST$
