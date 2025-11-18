@@ -51,9 +51,20 @@
 
 ## Testing
 
+* **Comprehensive labeling test suite added** - 51 new test cases (826+ lines) in
+  `test-labels.R` providing thorough coverage of the labeling system:
+  - Dictionary auto-discovery and session-scoped messaging behavior
+  - Label priority logic testing both default (attributes > dictionary) and
+    `preferDictionary = TRUE` modes
+  - Comprehensive error validation with proper error classes for invalid inputs
+  - Edge case coverage: NA values, empty/single-row data, very long labels
+  - Integration tests validating all 9 vignette workflow scenarios
+  - Performance testing with large dictionaries (1000+ entries) and wide data
+  - Robustness testing with special characters, unicode, and underscores
 * Added unicode and emoji test to verify label handling of special characters
   (emoji, Greek letters, symbols)
 * Updated all regex tests to use base R `grepl()` instead of stringr
+* Package now has 245 passing test assertions with 100% success rate
 
 # sumExtras 0.1.0 (2025-11-15)
 

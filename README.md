@@ -6,7 +6,7 @@
 [![R-CMD-check](https://github.com/kyleGrealis/sumExtras/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kyleGrealis/sumExtras/actions/workflows/R-CMD-check.yaml)
 [![CRAN status](https://www.r-pkg.org/badges/version/sumExtras)](https://CRAN.R-project.org/package=sumExtras)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
-[![Tests: 156 passing](https://img.shields.io/badge/tests-156_passing-brightgreen.svg)](https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat)
+[![Tests: 245 passing](https://img.shields.io/badge/tests-245_passing-brightgreen.svg)](https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat)
 
 <!-- badges: end -->
 
@@ -155,14 +155,20 @@ Get it?
 
 sumExtras is thoroughly tested with:
 
-* 156 test assertions across 7 comprehensive test suites  
-* Tests covering all core functions and edge cases  
-* Comprehensive test suites for:  
-  - Main extras functionality (`test-extras.R`, `test-extras-warnings.R`)  
-  - Table cleaning and missing value handling (`test-clean_table.R`, `test-clean_table-regex.R`)  
-  - Automatic label creation and application (`test-labels.R`)  
-  - JAMA theme styling (`test-use_jama_theme.R`)  
-  - Grouped table formatting (`test-styling.R`)  
+* 245 test assertions across 7 comprehensive test suites
+* Tests covering all core functions and edge cases
+* Comprehensive test suites for:
+  - Main extras functionality (`test-extras.R`, `test-extras-warnings.R`)
+  - Table cleaning and missing value handling (`test-clean_table.R`, `test-clean_table-regex.R`)
+  - Automatic label creation and application (`test-labels.R`) - **51 tests** covering:
+    - Dictionary auto-discovery and session messaging
+    - Label priority logic (manual > attributes > dictionary)
+    - Comprehensive error validation with informative error classes
+    - Edge cases (NA values, empty/single-row data, long labels)
+    - All 9 vignette workflow scenarios
+    - Performance with large dictionaries (1000+ entries) and wide data
+  - JAMA theme styling (`test-use_jama_theme.R`)
+  - Grouped table formatting (`test-styling.R`)
 
 All tests pass with 100% success rate. See the [tests directory](https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat) for detailed test examples and patterns.
 
