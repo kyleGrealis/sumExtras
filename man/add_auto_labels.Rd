@@ -56,8 +56,23 @@ The dictionary must be a data frame with columns:
 
 \subsection{Label Attributes}{
 
-The function can read label attributes from data (set via \code{attr(data$var, "label")}).
-This enables integration with data labeled by haven, labelled, or other packages.
+The function reads label attributes from data using \code{attr(data$var, "label")},
+following the same label convention used by \strong{haven}, \strong{Hmisc}, and \strong{ggplot2 4.0+}.
+
+Your data may already have labels from various sources - imported from statistical
+software packages, set by other R packages, added manually, or from collaborative
+projects. This function discovers and applies them seamlessly within gtsummary tables.
+
+Because sumExtras uses native R's attribute storage, labels work across any package
+that respects the \code{"label"} attribute convention, including:
+\itemize{
+\item \strong{ggplot2 4.0+} - automatic axis and legend labels
+\item \strong{gt} - table label support
+\item \strong{Hmisc} - label utilities and display functions
+}
+
+This approach requires zero package dependencies and is fully compatible with the
+labelled package if you choose to use it, but does not require it.
 }
 
 \subsection{Implementation Note}{
