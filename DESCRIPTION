@@ -34,6 +34,7 @@ Suggests:
     knitr,
     labelled,
     quarto,
+    scales,
     survey,
     testthat (>= 3.0.0),
     tibble
