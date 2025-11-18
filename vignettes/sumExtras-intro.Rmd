@@ -18,6 +18,19 @@ options(gtsummary.print_engine = "gt")
 ```
 
 ```{r setup}
+#| eval: false
+library(sumExtras)
+library(gtsummary)
+library(dplyr)
+
+# Apply the recommended JAMA theme
+use_jama_theme()
+```
+
+```{r setup2}
+#| warning: false
+#| message: false
+#| echo: false
 library(sumExtras)
 library(gtsummary)
 library(dplyr)
@@ -35,6 +48,11 @@ sumExtras streamlines this process by providing convenience functions that apply
 1. **Repetitive styling workflows** - Combining multiple formatting steps into one function call
 2. **Inconsistent missing value displays** - Standardizing how NA values appear across tables
 3. **Manual variable labeling** - Automating label assignment from data dictionaries
+
+This vignette will get you started with the core functions. For more specialized workflows, see:
+
+- `vignette("labeling")` - Comprehensive guide to automatic variable labeling across tables and plots
+- `vignette("styling")` - Advanced table styling and formatting techniques
 
 ## The `extras()` Function
 
@@ -114,7 +132,9 @@ trial_missing <- trial |>
 # Without cleaning
 trial_missing |>
   tbl_summary(by = trt)
+```
 
+```{r}
 # With clean_table()
 trial_missing |>
   tbl_summary(by = trt) |>
@@ -133,369 +153,47 @@ trial_missing |>
   clean_table()
 ```
 
-## Automatic Variable Labeling
+## Quick Start: Automatic Labeling
 
-One of the most time-consuming aspects of creating publication-ready tables is labeling variables with human-readable descriptions. Instead of manually typing labels for every variable in every table, sumExtras provides a streamlined two-function labeling system:
-
-- **`add_auto_labels()`** - Smart labeling for gtsummary tables
-- **`apply_labels_from_dictionary()`** - Set labels as data attributes for cross-package workflows
-
-Both functions use the same dictionary format, making it easy to maintain consistent labels across tables and plots throughout your analysis.
-
-### Creating a Data Dictionary
-
-A data dictionary serves dual purposes: it documents your variables and provides labels for automatic application. The dictionary is simply a data frame with two required columns:
-
-- **`Variable`**: The exact variable names from your dataset
-- **`Description`**: Human-readable labels you want to display
+One of the most time-consuming aspects of creating publication-ready tables is labeling variables with human-readable descriptions. sumExtras provides a streamlined labeling system using data dictionaries:
 
 ```{r}
-# Create a dictionary for the trial dataset
+# Create a simple dictionary
 dictionary <- tibble::tribble(
   ~Variable,    ~Description,
   "trt",        "Chemotherapy Treatment",
   "age",        "Age at Enrollment (years)",
   "marker",     "Marker Level (ng/mL)",
   "stage",      "T Stage",
-  "grade",      "Tumor Grade",
-  "response",   "Tumor Response"
+  "grade",      "Tumor Grade"
 )
-```
 
-In real projects, you would typically maintain this dictionary as a CSV file or database table, loading it once at the beginning of your analysis. This centralizes your variable documentation and ensures consistency across all outputs.
-
-### Labeling gtsummary Tables with `add_auto_labels()`
-
-The `add_auto_labels()` function is designed to be flexible and intelligent. It can work with dictionaries, pre-labeled data, or both, and it always respects manual overrides.
-
-#### Basic Usage: Pass Dictionary Explicitly
-
-The most straightforward approach is to pass your dictionary directly to the function:
-
-```{r}
+# Apply labels automatically
 trial |>
   tbl_summary(by = trt, include = c(age, grade, marker)) |>
   add_auto_labels(dictionary = dictionary) |>
   extras()
 ```
 
-#### Automatic Discovery: Dictionary in Environment
+The `add_auto_labels()` function is intelligent and flexible:
 
-If you have a `dictionary` object in your environment, `add_auto_labels()` will find it automatically without needing to pass it explicitly:
+- Pass a dictionary explicitly, or let it find one in your environment automatically
+- Works with pre-labeled data (from haven, Hmisc, or manual labeling)
+- Manual labels in `tbl_summary()` always override automatic ones
+- Compatible with regression tables via `tbl_regression()`
 
-```{r}
-# Dictionary is already in environment from above
-trial |>
-  tbl_summary(by = trt, include = c(age, stage, response)) |>
-  add_auto_labels() |>  # Finds dictionary automatically
-  extras()
-```
+### What About More Complex Labeling Workflows?
 
-The first time `add_auto_labels()` finds your dictionary automatically in a session, you'll see a friendly message: "Auto-labeling from 'dictionary' object in your environment (this message will only show once per session)". This confirms that your dictionary was found and is being used.
+The labeling system is much more powerful than this basic example suggests. You can:
 
-This is particularly convenient when working in an R Markdown or Quarto document where your dictionary is defined once at the top.
+- Use one dictionary for both gtsummary tables and ggplot2 visualizations
+- Control label priority when you have multiple label sources
+- Set up cross-package workflows with `apply_labels_from_dictionary()`
+- Understand how R's label attribute system works under the hood
 
-#### Working with Pre-Labeled Data (Attributes)
+For comprehensive coverage of these workflows and real-world examples, see **`vignette("labeling")`**.
 
-If your data already has label attributes (from packages like haven, labelled, or set manually), `add_auto_labels()` can read them directly:
-
-```{r}
-# Create data with label attributes
-labeled_trial <- trial
-attr(labeled_trial$age, "label") <- "Patient Age at Baseline"
-attr(labeled_trial$marker, "label") <- "Biomarker Concentration (ng/mL)"
-
-# Use attributes for labeling (no dictionary needed)
-labeled_trial |>
-  tbl_summary(by = trt, include = c(age, marker)) |>
-  add_auto_labels()  # Reads from label attributes
-```
-
-#### Manual Overrides Always Win
-
-No matter where labels come from (dictionary or attributes), manual labels specified in your `tbl_summary()` call always take precedence:
-
-```{r}
-trial |>
-  tbl_summary(
-    by = trt,
-    include = c(age, grade, marker),
-    label = list(age ~ "Age (Custom Label)")  # This overrides dictionary/attributes
-  ) |>
-  add_auto_labels(dictionary = dictionary) |>
-  extras()
-```
-
-This gives you complete control: use automated labeling for most variables, but override specific ones when needed.
-
-#### Working with Regression Tables
-
-The labeling system works seamlessly with regression tables too:
-
-```{r}
-lm(marker ~ age + grade + stage, data = trial) |>
-  tbl_regression() |>
-  add_auto_labels(dictionary = dictionary)
-```
-
-### Controlling Label Priority with Options
-
-When your data has both dictionary labels and attribute labels available, `add_auto_labels()` needs to decide which one to use. You control this with a global option.
-
-#### Default Behavior: Attributes Have Priority
-
-By default, label attributes take precedence over dictionary labels. This respects labels that may have been carefully set by data import functions (like `haven::read_sas()`) or other preprocessing steps:
-
-```{r}
-# Create data with both sources of labels
-trial_both <- trial
-attr(trial_both$age, "label") <- "Age from Attribute"
-
-# Also have dictionary (already defined above)
-dictionary_conflict <- tibble::tribble(
-  ~Variable, ~Description,
-  "age", "Age from Dictionary"
-)
-
-# Default: attribute wins
-trial_both |>
-  tbl_summary(by = trt, include = age) |>
-  add_auto_labels(dictionary = dictionary_conflict) |>
-  extras()
-# Shows: "Age from Attribute"
-```
-
-#### Prefer Dictionary: When to Use `TRUE`
-
-If you want dictionary labels to override attribute labels, set the `sumExtras.preferDictionary` option to `TRUE`. This is useful when you're actively maintaining a master dictionary and want it to be the single source of truth:
-
-```{r}
-# Prioritize dictionary over attributes
-options(sumExtras.preferDictionary = TRUE)
-
-trial_both |>
-  tbl_summary(by = trt, include = age) |>
-  add_auto_labels(dictionary = dictionary_conflict) |>
-  extras()
-# Shows: "Age from Dictionary"
-
-# Reset to default for rest of vignette
-options(sumExtras.preferDictionary = FALSE)
-```
-
-**When to use each setting:**
-
-- **`FALSE` (default)**: You're importing labeled data from SAS/Stata/SPSS and want to preserve those labels
-- **`TRUE`**: You maintain a master dictionary and want it to override any existing labels
-
-Remember: manual labels set via `label = list(...)` always win, regardless of this option.
-
-### Cross-Package Workflows: One Dictionary for Tables and Plots
-
-Often you need consistent labels across both gtsummary tables and ggplot2 visualizations. The `apply_labels_from_dictionary()` function enables this by setting dictionary labels as data attributes, which ggplot2 4.0+ can use automatically.
-
-#### Setting Labels Once, Using Everywhere
-
-Apply your dictionary labels to the data once, then use the labeled data for both tables and plots:
-
-```{r}
-# Apply labels to data as attributes
-trial_labeled <- trial |>
-  apply_labels_from_dictionary(dictionary = dictionary)
-
-# Now use for gtsummary table
-trial_labeled |>
-  tbl_summary(by = trt, include = c(age, marker, grade)) |>
-  add_auto_labels() |>  # Reads attributes automatically
-  extras()
-```
-
-#### ggplot2 4.0+ Integration
-
-With ggplot2 version 4.0 and later, label attributes are automatically used for axis and legend labels:
-
-```{r, fig.width=7, fig.height=4}
-library(ggplot2)
-
-# Labels appear automatically on axes and legend!
-trial_labeled |>
-  ggplot(aes(x = age, y = marker, color = trt)) +
-  geom_point(alpha = 0.6) +
-  theme_minimal()
-```
-
-No need to manually specify `labs()` - the labels from your dictionary are applied automatically.
-
-#### Complete Workflow: Dictionary to Tables and Plots
-
-Here's a realistic workflow showing how one dictionary serves both gtsummary tables and ggplot2 visualizations:
-
-```{r, fig.width=7, fig.height=5}
-# 1. Define dictionary once
-my_dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
-  "age",        "Age at Enrollment (years)",
-  "marker",     "Marker Level (ng/mL)",
-  "trt",        "Treatment Group",
-  "grade",      "Tumor Grade",
-  "stage",      "T Stage"
-)
-
-# 2. Apply to data
-trial_final <- trial |>
-  apply_labels_from_dictionary(my_dictionary)
-
-# 3. Create gtsummary table
-trial_final |>
-  tbl_summary(
-    by = trt,
-    include = c(age, marker, grade, stage)
-  ) |>
-  add_auto_labels() |>
-  extras()
-
-# 4. Create ggplot2 visualization with same labels
-trial_final |>
-  filter(!is.na(marker)) |>
-  ggplot(aes(x = age, y = marker)) +
-  geom_point(aes(color = grade), alpha = 0.6) +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
-  facet_wrap(~trt) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-```
-
-Notice how the axis labels and legend titles are automatically pulled from your dictionary - no manual `labs()` calls needed!
-
-### Real-World Example: Complete Analysis
-
-Here's a comprehensive example showing how the labeling system streamlines a typical analysis workflow:
-
-```{r, fig.width=8, fig.height=6}
-# Step 1: Define your master dictionary
-# In practice, this would be loaded from a CSV file
-study_dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
-  "trt",        "Treatment Assignment",
-  "age",        "Age at Baseline (years)",
-  "marker",     "Biomarker Level (ng/mL)",
-  "stage",      "Clinical Stage",
-  "grade",      "Tumor Grade",
-  "response",   "Treatment Response"
-)
-
-# Step 2: Apply labels to your data once
-trial_study <- trial |>
-  apply_labels_from_dictionary(study_dictionary)
-
-# Step 3: Create multiple tables using the same labels
-# Table 1: Overall summary
-trial_study |>
-  tbl_summary(include = c(age, marker, stage, grade)) |>
-  add_auto_labels() |>
-  extras(overall = TRUE, pval = FALSE)
-
-# Table 2: By treatment comparison
-trial_study |>
-  tbl_summary(
-    by = trt,
-    include = c(age, marker, response)
-  ) |>
-  add_auto_labels() |>
-  extras()
-
-# Step 4: Create plots using the same labels
-# Plot 1: Age distribution by treatment
-trial_study |>
-  ggplot(aes(x = trt, y = age, fill = trt)) +
-  geom_boxplot(alpha = 0.7) +
-  theme_minimal() +
-  theme(legend.position = "none")
-
-# Plot 2: Marker vs age relationship
-trial_study |>
-  filter(!is.na(marker)) |>
-  ggplot(aes(x = age, y = marker, color = trt)) +
-  geom_point(alpha = 0.5) +
-  geom_smooth(method = "loess", se = FALSE) +
-  theme_minimal()
-```
-
-This workflow demonstrates the power of the labeling system: define your labels once in a dictionary, apply them to your data, then create as many tables and plots as you need with consistent, professional labeling throughout.
-
-## Styling Group Headers
-
-When you organize variables into sections using `add_variable_group_header()`, the `group_styling()` function adds visual emphasis to make those section headers stand out:
-
-```{r}
-trial |>
-  select(age, marker, grade, stage, response, trt) |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = marker:response
-  ) |>
-  group_styling()
-```
-
-By default, this applies both bold and italic formatting to group headers. You can customize the text formatting:
-
-```{r}
-trial |>
-  select(age, marker, grade, stage, trt) |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Patient Characteristics",
-    variables = age:stage
-  ) |>
-  group_styling(format = "bold")  # Bold only
-```
-
-Using `group_styling()` also restores the original left-justified variable label indentation. The default behavior of `add_variable_group_header()` is to align the variable label with categorical levels or "Unknown" display.
-
-### Adding Background Color to Group Headers
-
-For additional visual distinction, you can add a gray background to group headers after converting to a gt table. Use the `get_group_rows()` helper function to identify which rows contain group headers:
-
-```{r}
-# Create table with groups and styling
-my_table <- trial |>
-  select(age, marker, grade, stage, response, trt) |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = marker:response
-  ) |>
-  group_styling()
-
-# Get group row numbers before converting to gt
-group_rows <- get_group_rows(my_table)
-
-# Convert to gt and apply gray background
-my_table |>
-  as_gt() |>
-  gt::tab_style(
-    style = gt::cell_fill(color = "#E8E8E8"),
-    locations = gt::cells_body(rows = group_rows)
-  )
-```
-
-This pattern combines text formatting (bold/italic) with background color (#E8E8E8, a light gray) to create clear visual separation between table sections.
-
-## Theme Management
-
-### Applying the JAMA Theme
+## Basic Theme Setup
 
 sumExtras is designed to work best with the JAMA compact theme. Use `use_jama_theme()` to apply this theme to all gtsummary tables in your session:
 
@@ -506,93 +204,53 @@ use_jama_theme()
 
 This is equivalent to calling `gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))` but provides a more convenient interface. You can reset to the default gtsummary theme at any time with `gtsummary::reset_gtsummary_theme()`.
 
-### Compact Themes for gt Tables
-
-When mixing gtsummary tables with regular gt tables in the same document, visual consistency matters. The `theme_gt_compact()` function applies JAMA-style compact formatting to gt tables, matching the appearance of the JAMA compact theme:
-
-```{r}
-# gtsummary table (uses the theme set with use_jama_theme())
-trial |>
-  select(trt, age, grade) |>
-  tbl_summary() |>
-  extras()
-
-# Regular gt table with matching compact style
-trial |>
-  select(trt, age, grade) |>
-  head(10) |>
-  gt::gt() |>
-  theme_gt_compact()
-```
+For information about matching gt table styles, creating styled group headers, and advanced formatting techniques, see **`vignette("styling")`**.
 
 ## Putting It All Together
 
-Here's a complete workflow demonstrating how these functions work together:
+Here's a simple workflow demonstrating how these core functions work together:
 
 ```{r}
 # 1. Define your dictionary (typically done once per project)
-dictionary <- tibble::tribble(
+my_dictionary <- tibble::tribble(
   ~Variable,    ~Description,
   "trt",        "Chemotherapy Treatment",
   "age",        "Age at Enrollment (years)",
   "marker",     "Marker Level (ng/mL)",
   "stage",      "T Stage",
   "grade",      "Tumor Grade",
-  "response",   "Tumor Response",
-  "death",      "Patient Died"
+  "response",   "Tumor Response"
 )
 
-# 2. Set the recommended theme
+# 2. Set the recommended theme (once per session)
 use_jama_theme()
 
-# 3. Create a table with automatic labels and standard formatting
+# 3. Create a clean, labeled table with one function call
 trial |>
-  select(trt, age, marker, stage, grade, response) |>
+  select(age, marker, stage, grade, response, trt) |>
   tbl_summary(
     by = trt,
     missing = "no"
   ) |>
-  add_auto_labels() |>
+  add_auto_labels(dictionary = my_dictionary) |>
   extras()
-
-# 4. Table with grouped variables, styling, and gray background
-final_table <- trial |>
-  select(trt, age, marker, grade, stage, response) |>
-  tbl_summary(by = trt, missing = "no") |>
-  add_auto_labels() |>
-  extras() |>
-  add_variable_group_header(
-    header = "Baseline Characteristics",
-    variables = age:marker
-  ) |>
-  add_variable_group_header(
-    header = "Disease Characteristics",
-    variables = grade:response
-  ) |>
-  group_styling()
-
-# Get group rows and apply gray background
-group_rows <- get_group_rows(final_table)
-
-final_table |>
-  as_gt() |>
-  gt::tab_style(
-    style = gt::cell_fill(color = "#E8E8E8"),
-    locations = gt::cells_body(rows = group_rows)
-  )
 ```
+
+That's it! With just a few lines of code, you have a publication-ready table with automatic labeling, clean missing values, bold labels, an overall column, and p-values.
 
 ## Next Steps
 
-This vignette covered the core functionality of sumExtras. For detailed information about individual functions, see their help documentation:
+This vignette covered the essential functions to get you started quickly. For more advanced usage:
+
+- **`vignette("labeling")`** - Learn about the complete labeling system, including cross-package workflows with ggplot2, controlling label priority, working with pre-labeled data, and real-world analysis examples
+
+- **`vignette("styling")`** - Explore advanced styling techniques including group headers, background colors, text formatting, and creating visually polished tables
+
+For detailed information about individual functions, see their help documentation:
 
 - `?extras` - Main styling function
 - `?clean_table` - Missing value standardization
-- `?add_auto_labels` - Automatic variable labeling for gtsummary tables
-- `?apply_labels_from_dictionary` - Set label attributes for cross-package workflows
+- `?add_auto_labels` - Automatic variable labeling
 - `?use_jama_theme` - Apply JAMA compact theme
-- `?group_styling` - Group header formatting
-- `?get_group_rows` - Get row numbers of variable group headers
-- `?theme_gt_compact` - Compact gt table themes
 
 The package is designed to reduce repetitive code while maintaining the flexibility of gtsummary's modular approach. Use as much or as little as fits your workflow.

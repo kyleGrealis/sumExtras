@@ -20,6 +20,7 @@
 #### Bug Fixes
 - Fixed `clean_table()` missing regex patterns for `0% (0.000)` formats
 - Improved code clarity in `apply_labels_from_dictionary()` (removed `<<-` side-effect)
+- Fixed styling.Rmd vignette build error: corrected row count logic in `cells_body()` to use actual gt table row count instead of original dataset rows
 
 #### Code Quality
 - **Removed stringr dependency** - replaced with base R `grepl()`
@@ -170,6 +171,7 @@
 - ✅ Missing documentation about gtsummary internals
 - ✅ No CITATION file
 - ✅ No unicode test coverage
+- ✅ styling.Rmd vignette failing to build due to incorrect row count in cells_body()
 
 ---
 
