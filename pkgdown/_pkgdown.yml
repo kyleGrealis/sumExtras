@@ -12,6 +12,8 @@ articles:
     navbar: ~
     contents:
       - sumExtras-intro
+      - labeling
+      - styling
 
 reference:
   - title: "Core Table Styling"

@@ -23,11 +23,31 @@
 
 * Added package-level documentation (`sumExtras-package`) with notes about
   dependency on gtsummary internal structures and minimum version requirements
-* Enhanced `add_auto_labels()` documentation with implementation notes about
-  gtsummary internals
+* Enhanced `add_auto_labels()` documentation with comprehensive explanation of R's
+  ecosystem label convention, including integration with haven, Hmisc, and ggplot2 4.0+.
+  New documentation clarifies how labels work across the R ecosystem using standard
+  `"label"` attributes without special packages or formats
+* Added extensive documentation to `apply_labels_from_dictionary()` explaining the
+  implementation approach using native R attributes and ecosystem compatibility
+* Updated README with new "How Labels Work" section explaining how the labeling system
+  uses R's standard attribute convention, enabling seamless integration with ggplot2,
+  gt, Hmisc, and other label-aware packages
 * Added Fisher test documentation in `extras()` explaining why Monte Carlo
   simulation is used
 * Created CITATION file for proper package attribution
+* Added comprehensive new vignettes covering key sumExtras workflows:
+  - `vignette("labeling")` - **Automatic Variable Labeling**: Detailed guide to unified labeling
+    across gtsummary tables and ggplot2 plots. Covers R's label attribute system, creating and
+    maintaining data dictionaries, automatic label discovery with `add_auto_labels()`, setting
+    label attributes with `apply_labels_from_dictionary()`, label priority control via
+    `sumExtras.preferDictionary` option, and cross-package workflows demonstrating seamless
+    integration between gtsummary, ggplot2, and gt
+  - `vignette("styling")` - **Table Styling and Formatting**: Advanced techniques for creating
+    publication-ready tables. Covers creating visually organized tables with group headers,
+    styling group headers with text formatting via `group_styling()`, adding background colors
+    for emphasis with `get_group_rows()`, theme management across gtsummary and gt with
+    `use_jama_theme()` and `theme_gt_compact()`, and combining techniques for professional
+    table presentation
 
 ## Testing
 

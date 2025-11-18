@@ -39,8 +39,21 @@
 #'
 #' ## Label Attributes
 #'
-#' The function can read label attributes from data (set via `attr(data$var, "label")`).
-#' This enables integration with data labeled by haven, labelled, or other packages.
+#' The function reads label attributes from data using `attr(data$var, "label")`,
+#' following the same label convention used by **haven**, **Hmisc**, and **ggplot2 4.0+**.
+#'
+#' Your data may already have labels from various sources - imported from statistical
+#' software packages, set by other R packages, added manually, or from collaborative
+#' projects. This function discovers and applies them seamlessly within gtsummary tables.
+#'
+#' Because sumExtras uses native R's attribute storage, labels work across any package
+#' that respects the `"label"` attribute convention, including:
+#' - **ggplot2 4.0+** - automatic axis and legend labels
+#' - **gt** - table label support
+#' - **Hmisc** - label utilities and display functions
+#'
+#' This approach requires zero package dependencies and is fully compatible with the
+#' labelled package if you choose to use it, but does not require it.
 #'
 #' ## Implementation Note
 #'
@@ -359,8 +372,24 @@ add_auto_labels <- function(tbl, dictionary) {
 #'   Only variables present in both the data and dictionary will receive label
 #'   attributes. Dictionary entries for non-existent variables are silently ignored.
 #'
-#'   The function sets attributes using the standard `'label'` attribute name.
-#'   This does NOT require the labelled package, but is fully compatible with it.
+#'   ## Implementation: The R Ecosystem Label Convention
+#'
+#'   This function uses **native R's `attr()` function** to store labels in the `"label"`
+#'   attribute, following the same approach as haven, Hmisc, and ggplot2 4.0+.
+#'   This standardized convention enables seamless integration across the R ecosystem.
+#'
+#'   Because labels are stored as simple base R attributes (not in a special package-specific
+#'   format), they work transparently with any package that respects the `"label"` attribute:
+#'
+#'   - **Dictionary-to-Attribute Bridge**: Converts your dictionary's `Description` column
+#'     into standard R label attributes
+#'   - **Zero Dependencies**: Uses only base R, no special packages required
+#'   - **Transparent & Simple**: Users can inspect labels with `attr(data$var, "label")`
+#'   - **Ecosystem Compatible**: Works with ggplot2, gt, gtsummary, Hmisc, and beyond
+#'
+#'   The benefits of this approach are that labels remain portable with your data,
+#'   work across multiple R packages without version constraints, and integrate naturally
+#'   with the broader R ecosystem's labeling conventions.
 #'
 #' @importFrom rlang abort
 #'
