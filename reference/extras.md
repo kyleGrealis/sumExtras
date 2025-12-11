@@ -59,7 +59,7 @@ The function applies the following modifications:
 - Optionally adds p-values (only stratified summary tables)
 
 - Applies
-  [`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md)
+  [`clean_table()`](https://kyleGrealis.com/sumExtras/reference/clean_table.md)
   styling (all table types)
 
 The function automatically detects whether the input table is stratified
@@ -106,7 +106,7 @@ applies the formatting that works.
 - [`gtsummary::add_p()`](https://www.danieldsjoberg.com/gtsummary/reference/add_p.html)
   for adding p-values
 
-- [`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md)
+- [`clean_table()`](https://kyleGrealis.com/sumExtras/reference/clean_table.md)
   for additional table styling
 
 ## Examples
@@ -334,9 +334,9 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\>
-[add_auto_labels](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
+[add_auto_labels](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
 \|\> extras(pval = TRUE) \|\>
-[group_styling](https://www.kyleGrealis.com/sumExtras/reference/group_styling.md)()
+[group_styling](https://kyleGrealis.com/sumExtras/reference/group_styling.md)()
 \#\> Warning: Failed to add overall column. \#\> ✖ Error: An error
 occured in \`add_overall()\`, and the overall statistic cannot be \#\>
 added. \#\> Have variable labels changed since the original call to

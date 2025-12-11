@@ -3,4 +3,8 @@
 ### Get Started
 
 - [Introduction to
-  sumExtras](https://www.kyleGrealis.com/sumExtras/articles/sumExtras-intro.md):
+  sumExtras](https://kyleGrealis.com/sumExtras/articles/sumExtras-intro.md):
+- [Automatic Variable
+  Labeling](https://kyleGrealis.com/sumExtras/articles/labeling.md):
+- [Table Styling and
+  Formatting](https://kyleGrealis.com/sumExtras/articles/styling.md):

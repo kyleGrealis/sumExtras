@@ -33,6 +33,15 @@ Alternatively, using remotes:
 remotes::install_github("kyleGrealis/sumExtras")
 ```
 
+## See the Difference
+
+[TABLE]
+
+Both produce identical output, but
+[`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md)
+requires significantly less code and ensures consistency across your
+analysis.
+
 ## Quick Start
 
 ``` r
@@ -47,6 +56,11 @@ trial |>
   tbl_summary(by = trt) |>
   extras()  # Adds overall, p-values, cleans missing values, and more!
 
+# Clean missing values independently
+trial |>
+  tbl_summary(by = trt) |>
+  clean_table()  # Standardizes missing/zero displays to "---"
+
 # With automatic labels from your dictionary
 # First, create a dictionary with Variable and Description columns
 dictionary <- tibble::tribble(
@@ -59,39 +73,62 @@ dictionary <- tibble::tribble(
 
 trial |>
   tbl_summary(by = trt) |>
-  add_auto_labels() |>
+  add_auto_labels() |>  # Automatically finds 'dictionary' in your environment
   extras()
 ```
 
 ## What’s Included
 
-- [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md) -
+- [`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md) -
   The signature function that adds overall columns, p-values, and clean
   styling
-- [`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md) -
+- [`clean_table()`](https://kyleGrealis.com/sumExtras/reference/clean_table.md) -
   Standardizes missing value display
-- [`add_auto_labels()`](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md) -
-  Automatic variable labeling from dictionaries
-- [`create_labels()`](https://www.kyleGrealis.com/sumExtras/reference/create_labels.md) -
-  Create a list of variable labels from a dataset using a dictionary
-- [`use_jama_theme()`](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md) -
+- [`add_auto_labels()`](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md) -
+  Smart automatic variable labeling from dictionaries or label
+  attributes
+- [`apply_labels_from_dictionary()`](https://kyleGrealis.com/sumExtras/reference/apply_labels_from_dictionary.md) -
+  Set label attributes on data for cross-package workflows (ggplot2, gt,
+  etc.)
+- [`use_jama_theme()`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md) -
   Apply JAMA compact theme to gtsummary tables
-- [`theme_gt_compact()`](https://www.kyleGrealis.com/sumExtras/reference/theme_gt_compact.md) -
+- [`theme_gt_compact()`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md) -
   JAMA-style compact themes for gt tables
-- [`group_styling()`](https://www.kyleGrealis.com/sumExtras/reference/group_styling.md) -
-  Enhanced formatting for grouped tables
-- [`get_group_rows()`](https://www.kyleGrealis.com/sumExtras/reference/get_group_rows.md) -
+- [`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md) -
+  Enhanced formatting for grouped tables with customizable indentation
+- [`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md) -
   Extract group row information from grouped tables
+
+### How Labels Work
+
+The labeling functions use the same native R attribute approach as
+popular packages like **haven**, **Hmisc**, and **ggplot2 4.0+**. Labels
+are stored as simple `'label'` attributes on data columns—no special
+packages or formats required.
+
+Your data may already have labels from various sources:  
+- Imported datasets (haven reads SPSS/Stata/SAS labels automatically)  
+- Other packages that set label attributes  
+- Manual labeling with `attr(data$column, "label") <- "Label"`  
+- Collaborative projects with pre-labeled data
+
+The
+[`add_auto_labels()`](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md)
+function intelligently reads both dictionary-based labels and existing
+label attributes from your data, letting you choose which takes
+precedence. Labels work seamlessly across the entire R
+ecosystem—compatible with **gtsummary**, **ggplot2**, **gt**, and other
+label-aware packages.
 
 ## Table Type Support
 
-The
-[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+The [`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md)
 function is designed to work with all gtsummary table types using a
-“warn-and-continue” philosophy: - It applies all compatible features to
-your table - For unsupported features, it issues a helpful warning and
-continues with what works - **The function always succeeds** - it never
-breaks your pipeline
+“warn-and-continue” philosophy:  
+\* It applies all compatible features to your table  
+\* For unsupported features, it issues a helpful warning and continues
+with what works  
+\* **The function always succeeds** - it never breaks your pipeline
 
 ### Feature Support by Table Type
 
@@ -103,18 +140,20 @@ breaks your pipeline
 | tbl_regression              |     ✅      |      ✅       |     ⚠️      |  ⚠️   | Partial support |
 | tbl_strata                  |     ✅      |      ✅       |     ⚠️      |  ⚠️   | Partial support |
 
-**Legend:** - ✅ Feature works and is applied - ⚠️ Feature not
-applicable to this table type (function warns but continues)
+**Legend:**  
+\* ✅ Feature works and is applied  
+\* ⚠️ Feature not applicable to this table type (function warns but
+continues)
 
 ### How It Works
 
 When you call
-[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
-on any table:
+[`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md) on
+any table:
 
-1.  **Always applied:** Bold labels and clean headers
+1.  **Always applied:** Bold labels and clean headers  
 2.  **Conditionally applied:** Overall column and p-values (only on
-    stratified summary tables)
+    stratified summary tables)  
 3.  **On unsupported features:** You’ll see a warning, but the function
     completes successfully
 
@@ -142,13 +181,13 @@ Get it?
 - **Bug reports & feature requests**:
   <https://github.com/kyleGrealis/sumExtras/issues>
 - **Documentation**: See the package vignette with
-  [`vignette("sumExtras-intro")`](https://www.kyleGrealis.com/sumExtras/articles/sumExtras-intro.md)
+  [`vignette("sumExtras-intro")`](https://kyleGrealis.com/sumExtras/articles/sumExtras-intro.md)
 - **Function help**:
-  [`?extras`](https://www.kyleGrealis.com/sumExtras/reference/extras.md),
-  [`?clean_table`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md),
-  [`?add_auto_labels`](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md),
-  [`?group_styling`](https://www.kyleGrealis.com/sumExtras/reference/group_styling.md),
-  [`?use_jama_theme`](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md)
+  - [`?extras`](https://kyleGrealis.com/sumExtras/reference/extras.md)  
+  - [`?clean_table`](https://kyleGrealis.com/sumExtras/reference/clean_table.md)  
+  - [`?add_auto_labels`](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md)  
+  - [`?group_styling`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
+  - [`?use_jama_theme`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md)  
 - **Examples**: Run `example(extras)` for quick demos
 
 ------------------------------------------------------------------------
@@ -157,14 +196,21 @@ Get it?
 
 sumExtras is thoroughly tested with:
 
-- 123 test assertions across 7 comprehensive test suites
+- 245 test assertions across 7 comprehensive test suites
 - Tests covering all core functions and edge cases
 - Comprehensive test suites for:
   - Main extras functionality (`test-extras.R`,
     `test-extras-warnings.R`)
   - Table cleaning and missing value handling (`test-clean_table.R`,
     `test-clean_table-regex.R`)
-  - Automatic label creation and application (`test-labels.R`)
+  - Automatic label creation and application (`test-labels.R`) - **51
+    tests** covering:
+    - Dictionary auto-discovery and session messaging
+    - Label priority logic (manual \> attributes \> dictionary)
+    - Comprehensive error validation with informative error classes
+    - Edge cases (NA values, empty/single-row data, long labels)
+    - All 9 vignette workflow scenarios
+    - Performance with large dictionaries (1000+ entries) and wide data
   - JAMA theme styling (`test-use_jama_theme.R`)
   - Grouped table formatting (`test-styling.R`)
 
@@ -180,9 +226,9 @@ We’re constantly improving sumExtras. Upcoming feature considerations
 include:
 
 - Additional gtsummary table type support (tbl_uvregression,
-  tbl_logistic)
-- More compact theme options for different journals and styles
-- Enhanced dictionary labeling features with validation
+  tbl_logistic)  
+- More compact theme options for different journals and styles  
+- Enhanced dictionary labeling features with validation  
 - Advanced row grouping and styling customization
 
 ------------------------------------------------------------------------
@@ -193,10 +239,10 @@ We welcome contributions and ideas! Here’s how you can help:
 
 - **Report bugs** - [Open an
   issue](https://github.com/kyleGrealis/sumExtras/issues) with a clear
-  description
+  description  
 - **Suggest features** - Have an idea? [Submit a feature
-  request](https://github.com/kyleGrealis/sumExtras/issues)
-- **Share feedback** - Let us know how sumExtras is working for you
+  request](https://github.com/kyleGrealis/sumExtras/issues)  
+- **Share feedback** - Let us know how sumExtras is working for you  
 - **Improve documentation** - Help us make docs clearer and more
   complete
 
@@ -215,14 +261,13 @@ See the LICENSE file for details.
 sumExtras is built with love using R and these amazing packages:
 
 - [gtsummary](https://www.danieldsjoberg.com/gtsummary/) - Easily create
-  publication-ready analytical tables
-- [gt](https://posit.co/blog/introducing-gt/) - The grammar of tables
-  for R
+  publication-ready analytical tables  
+- [gt](https://gt.rstudio.com/) - The grammar of tables for R  
 - [dplyr](https://dplyr.tidyverse.org/) - Data manipulation and
-  transformation
-- [rlang](https://rlang.r-lib.org/) - Low-level programming tools for R
-- [stringr](https://stringr.tidyverse.org/) - Simple string handling
-- [tibble](https://tibble.tidyverse.org/) - Modern data frames for R
+  transformation  
+- [rlang](https://rlang.r-lib.org/) - Low-level programming tools for
+  R  
+- [purrr](https://purrr.tidyverse.org/) - Functional programming tools
 
 ------------------------------------------------------------------------
 

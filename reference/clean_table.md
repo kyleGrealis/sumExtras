@@ -44,6 +44,8 @@ with "–":
 
 - `"0 (0%)"` - Zero counts with zero percentage
 
+- `"0% (0.000)"` - Zero percentage with decimal precision
+
 - `"NA (NA, NA)"` - Missing data with confidence intervals
 
 - `"NA, NA"` - Missing paired values (e.g., median and IQR)
@@ -62,7 +64,7 @@ This allows it to work seamlessly with `tbl_strata` objects which use
 - [`gtsummary::modify_table_body()`](https://www.danieldsjoberg.com/gtsummary/reference/modify_table_body.html)
   for general table body modifications
 
-- [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+- [`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md)
   which includes `clean_table()` in its styling pipeline
 
 ## Examples
@@ -199,9 +201,8 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\>
-[add_auto_labels](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
-\|\>
-[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
+[add_auto_labels](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
+\|\> [extras](https://kyleGrealis.com/sumExtras/reference/extras.md)()
 \|\> clean_table() \#\> Warning: Failed to add overall column. \#\> ✖
 Error: An error occured in \`add_overall()\`, and the overall statistic
 cannot be \#\> added. \#\> Have variable labels changed since the

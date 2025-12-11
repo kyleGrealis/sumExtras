@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">sumExtras</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,6 +19,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/sumExtras-intro.html">Introduction to sumExtras</a></li>
+    <li><a class="dropdown-item" href="../articles/labeling.html">Automatic Variable Labeling</a></li>
+    <li><a class="dropdown-item" href="../articles/styling.html">Table Styling and Formatting</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -42,11 +44,61 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.1" id="sumextras-011-development-version">sumExtras 0.1.1 (development version)<a class="anchor" aria-label="anchor" href="#sumextras-011-development-version"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-0-1-1">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-1"></a></h3>
+<ul><li>
+<code><a href="../reference/clean_table.html">clean_table()</a></code> now correctly handles additional percentage formats including <code>0% (0.000)</code> and <code>0.00% (0.00)</code>, which were previously not being converted to dashes</li>
+<li>
+<code><a href="../reference/apply_labels_from_dictionary.html">apply_labels_from_dictionary()</a></code> improved with clearer implementation using traditional for-loop instead of confusing <code>&lt;&lt;-</code> side-effect assignment</li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-1-1">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-1-1"></a></h3>
+<ul><li>Removed stringr dependency by replacing <code>str_detect()</code> with base R <code>grepl(..., perl = TRUE)</code>, reducing package dependency footprint</li>
+<li>Replaced <code><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">purrr::walk2()</a></code> with traditional for-loop in <code><a href="../reference/apply_labels_from_dictionary.html">apply_labels_from_dictionary()</a></code> for improved code clarity and maintainability</li>
+<li>
+<code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> now displays a clearer, more user-friendly message when automatically finding a dictionary in the environment: “Auto-labeling from ‘dictionary’ object in your environment (this message will only show once per session)”. The message now only appears once per R session to reduce clutter</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-0-1-1">Documentation<a class="anchor" aria-label="anchor" href="#documentation-0-1-1"></a></h3>
+<ul><li>Added package-level documentation (<code>sumExtras-package</code>) with notes about dependency on gtsummary internal structures and minimum version requirements</li>
+<li>Enhanced <code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> documentation with comprehensive explanation of R’s ecosystem label convention, including integration with haven, Hmisc, and ggplot2 4.0+. New documentation clarifies how labels work across the R ecosystem using standard <code>"label"</code> attributes without special packages or formats</li>
+<li>Added extensive documentation to <code><a href="../reference/apply_labels_from_dictionary.html">apply_labels_from_dictionary()</a></code> explaining the implementation approach using native R attributes and ecosystem compatibility</li>
+<li>Updated README with new “How Labels Work” section explaining how the labeling system uses R’s standard attribute convention, enabling seamless integration with ggplot2, gt, Hmisc, and other label-aware packages</li>
+<li>Added Fisher test documentation in <code><a href="../reference/extras.html">extras()</a></code> explaining why Monte Carlo simulation is used</li>
+<li>Created CITATION file for proper package attribution</li>
+<li>Added comprehensive new vignettes covering key sumExtras workflows:
+<ul><li>
+<code><a href="../articles/labeling.html">vignette("labeling")</a></code> - <strong>Automatic Variable Labeling</strong>: Detailed guide to unified labeling across gtsummary tables and ggplot2 plots. Covers R’s label attribute system, creating and maintaining data dictionaries, automatic label discovery with <code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code>, setting label attributes with <code><a href="../reference/apply_labels_from_dictionary.html">apply_labels_from_dictionary()</a></code>, label priority control via <code>sumExtras.preferDictionary</code> option, and cross-package workflows demonstrating seamless integration between gtsummary, ggplot2, and gt</li>
+<li>
+<code><a href="../articles/styling.html">vignette("styling")</a></code> - <strong>Table Styling and Formatting</strong>: Advanced techniques for creating publication-ready tables. Covers creating visually organized tables with group headers, styling group headers with text formatting via <code><a href="../reference/group_styling.html">group_styling()</a></code>, adding background colors for emphasis with <code><a href="../reference/get_group_rows.html">get_group_rows()</a></code>, theme management across gtsummary and gt with <code><a href="../reference/use_jama_theme.html">use_jama_theme()</a></code> and <code><a href="../reference/theme_gt_compact.html">theme_gt_compact()</a></code>, and combining techniques for professional table presentation</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="testing-0-1-1">Testing<a class="anchor" aria-label="anchor" href="#testing-0-1-1"></a></h3>
+<ul><li>
+<strong>Comprehensive labeling test suite added</strong> - 51 new test cases (826+ lines) in <code>test-labels.R</code> providing thorough coverage of the labeling system:
+<ul><li>Dictionary auto-discovery and session-scoped messaging behavior</li>
+<li>Label priority logic testing both default (attributes &gt; dictionary) and <code>preferDictionary = TRUE</code> modes</li>
+<li>Comprehensive error validation with proper error classes for invalid inputs</li>
+<li>Edge case coverage: NA values, empty/single-row data, very long labels</li>
+<li>Integration tests validating all 9 vignette workflow scenarios</li>
+<li>Performance testing with large dictionaries (1000+ entries) and wide data</li>
+<li>Robustness testing with special characters, unicode, and underscores</li>
+</ul></li>
+<li>Added unicode and emoji test to verify label handling of special characters (emoji, Greek letters, symbols)</li>
+<li>Updated all regex tests to use base R <code><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl()</a></code> instead of stringr</li>
+<li>Package now has 245 passing test assertions with 100% success rate</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="sumextras-010-2025-11-15">sumExtras 0.1.0 (2025-11-15)<a class="anchor" aria-label="anchor" href="#sumextras-010-2025-11-15"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-0-1-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-1-0"></a></h3>
 <ul><li>Removed automatic JAMA compact theme setting on package load to comply with CRAN policies</li>
 <li>Package no longer modifies global gtsummary theme automatically when loaded</li>
+<li>
+<code>create_labels()</code> has been deprecated and removed. Users should migrate to <code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> instead. Migration example: Instead of <code>tbl_summary(label = create_labels(data, dict))</code>, use <code>tbl_summary() |&gt; add_auto_labels(dict)</code>.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="new-features-0-1-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-1-0"></a></h3>
@@ -56,13 +108,25 @@
 <li>
 <code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> now supports <code>tbl_regression</code> and <code>tbl_uvregression</code> objects in addition to <code>tbl_summary</code> objects, enabling automatic variable labeling for regression tables from dictionary files (55bc540)</li>
 <li>
+<code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> now automatically searches the calling environment for a <code>dictionary</code> object when no dictionary is explicitly provided</li>
+<li>
+<code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> can now read label attributes directly from data as a fallback when no dictionary is found, enabling seamless integration with {haven}, {labelled}, and other packages that set label attributes</li>
+<li>
+<code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> implements a smart label priority hierarchy: Manual labels (set via <code>label = list()</code> in <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary()</a></code>) always take precedence, followed by dictionary/attribute labels (based on <code>sumExtras.preferDictionary</code> option), then default variable names</li>
+<li>Added <code><a href="../reference/apply_labels_from_dictionary.html">apply_labels_from_dictionary()</a></code> function to set label attributes on data from a dictionary, enabling cross-package workflows with ggplot2 4.0+ automatic axis labeling, gt, and other label-aware packages</li>
+<li>Added <code>options(sumExtras.preferDictionary)</code> to control label priority when both dictionary and attribute labels are available. Default is <code>FALSE</code> (attributes preferred over dictionary)</li>
+<li>
+<code><a href="../reference/group_styling.html">group_styling()</a></code> gains an <code>indent_labels</code> parameter (default <code>0L</code>) to control indentation of variable labels under group headers. Set to <code>4L</code> to preserve gtsummary’s default group indentation behavior</li>
+<li>
 <code><a href="../reference/extras.html">extras()</a></code> gains a <code>last</code> parameter to control Overall column position (default <code>FALSE</code> aligns with <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">gtsummary::add_overall()</a></code> behavior)</li>
 <li>
 <code><a href="../reference/extras.html">extras()</a></code> gains a <code>.args</code> parameter to accept a list of arguments, allowing programmatic control of <code>pval</code>, <code>overall</code>, and <code>last</code> parameters</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-0-1-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-1-0"></a></h3>
-<ul><li>Fixed missing import of <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html" class="external-link">gtsummary::all_tests()</a></code> in <code><a href="../reference/extras.html">extras()</a></code> function</li>
+<h3 id="minor-improvements-and-bug-fixes-0-1-0">Minor Improvements and Bug Fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-0-1-0"></a></h3>
+<ul><li>
+<code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> now gracefully handles missing dictionaries by falling back to label attributes instead of erroring, improving robustness in workflows where dictionary availability varies</li>
+<li>Fixed missing import of <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html" class="external-link">gtsummary::all_tests()</a></code> in <code><a href="../reference/extras.html">extras()</a></code> function</li>
 <li>Improved regex pattern in <code><a href="../reference/clean_table.html">clean_table()</a></code> to avoid false positives (e.g., matching <code>"..."</code> or <code>"   "</code>)</li>
 <li>
 <code><a href="../reference/extras.html">extras()</a></code> now warns when <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall()</a></code> or <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html" class="external-link">add_p()</a></code> fail instead of silently continuing</li>
@@ -87,7 +151,7 @@
 <ul><li>Initial development release of sumExtras</li>
 <li>Added <code><a href="../reference/extras.html">extras()</a></code> function for streamlined gtsummary table styling</li>
 <li>Added <code><a href="../reference/clean_table.html">clean_table()</a></code> for standardized missing value display</li>
-<li>Added <code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> and <code><a href="../reference/create_labels.html">create_labels()</a></code> for automatic variable labeling</li>
+<li>Added <code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> and <code>create_labels()</code> for automatic variable labeling</li>
 <li>Added <code><a href="../reference/theme_gt_compact.html">theme_gt_compact()</a></code> for JAMA-style gt table themes</li>
 <li>Added <code><a href="../reference/group_styling.html">group_styling()</a></code> for enhanced group header formatting</li>
 </ul></div>

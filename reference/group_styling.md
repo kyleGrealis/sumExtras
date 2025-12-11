@@ -10,7 +10,7 @@ variable labels.
 ## Usage
 
 ``` r
-group_styling(tbl, format = c("bold", "italic"))
+group_styling(tbl, format = c("bold", "italic"), indent_labels = 0L)
 ```
 
 ## Arguments
@@ -26,6 +26,13 @@ group_styling(tbl, format = c("bold", "italic"))
   Character vector specifying text formatting. Options include `"bold"`,
   `"italic"`, or both. Default is `c("bold", "italic")`.
 
+- indent_labels:
+
+  Integer specifying indentation level (in spaces) for variable labels
+  under group headers. Default is `0L` (left-aligned). Set to `4L` to
+  preserve gtsummary's default group indentation, or use any
+  non-negative integer for custom spacing.
+
 ## Value
 
 A gtsummary table object with specified formatting applied to variable
@@ -37,6 +44,11 @@ The function targets rows where `row_type == 'variable_group'` and
 applies the specified text formatting to the label column. This is
 particularly useful for tables with multiple sections or stratified
 analyses where clear visual hierarchy improves interpretation.
+
+By default, variable labels are left-aligned (`indent_labels = 0L`) to
+distinguish them from categorical levels and statistics. Use
+`indent_labels = 4L` to preserve the default gtsummary behavior where
+grouped variables are indented under their group headers.
 
 ## See also
 
@@ -148,6 +160,17 @@ header = "Demographics", variables = age ) \|\>
 gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
 header = "Clinical Measures", variables = marker:response ) \|\>
 group_styling()
+
+[TABLE]
+
+\# Custom indentation for grouped variables
+gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
+\|\>
+gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
+= trt, include = [c](https://rdrr.io/r/base/c.html)(age, marker)) \|\>
+gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
+header = "Patient Measures", variables = age:marker ) \|\>
+group_styling(indent_labels = 4L) \# Variables indented under header
 
 [TABLE]
 

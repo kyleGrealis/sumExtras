@@ -58,16 +58,16 @@ function, including
 and related functions.
 
 For visual consistency with regular gt tables, use
-[`theme_gt_compact()`](https://www.kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
+[`theme_gt_compact()`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
 which replicates the same styling for non-gtsummary tables.
 
 ## See also
 
-- [`theme_gt_compact`](https://www.kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
+- [`theme_gt_compact`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
   for applying JAMA-style formatting to regular gt tables
 
-- [`extras`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
-  for standard sumExtras table formatting
+- [`extras`](https://kyleGrealis.com/sumExtras/reference/extras.md) for
+  standard sumExtras table formatting
 
 - [`gtsummary::theme_gtsummary_compact()`](https://www.danieldsjoberg.com/gtsummary/reference/theme_gtsummary.html)
   for other compact theme options
@@ -221,10 +221,9 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt, include = [c](https://rdrr.io/r/base/c.html)(age, marker, stage))
+\|\> [extras](https://kyleGrealis.com/sumExtras/reference/extras.md)()
 \|\>
-[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
-\|\>
-[group_styling](https://www.kyleGrealis.com/sumExtras/reference/group_styling.md)()
+[group_styling](https://kyleGrealis.com/sumExtras/reference/group_styling.md)()
 
 [TABLE]
 

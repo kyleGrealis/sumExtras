@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">sumExtras</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,6 +36,8 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/sumExtras-intro.html">Introduction to sumExtras</a></li>
+    <li><a class="dropdown-item" href="articles/labeling.html">Automatic Variable Labeling</a></li>
+    <li><a class="dropdown-item" href="articles/styling.html">Table Styling and Formatting</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -97,9 +99,43 @@
 </div>
 </div>
 <div class="section level2">
+<h2 id="see-the-difference">See the Difference<a class="anchor" aria-label="anchor" href="#see-the-difference"></a>
+</h2>
+<table class="table">
+<tr>
+<td width="50%" valign="top">
+<p><strong>Standard gtsummary workflow</strong></p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">trial</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">add_overall</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">bold_labels</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">modify_header</span><span class="op">(</span><span class="va">label</span> <span class="op">~</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
+</td>
+<td width="50%" valign="top">
+<p><strong>Using extras()</strong></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">trial</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/extras.html">extras</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+<p><img src="reference/figures/table-a.png" width="100%"></p>
+</td>
+<td width="50%" valign="top">
+<p><img src="reference/figures/table-b.png" width="100%"></p>
+</td>
+</tr>
+</table>
+<p>Both produce identical output, but <code><a href="reference/extras.html">extras()</a></code> requires significantly less code and ensures consistency across your analysis.</p>
+</div>
+<div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">sumExtras</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ddsjoberg/gtsummary" class="external-link">gtsummary</a></span><span class="op">)</span></span>
 <span></span>
@@ -110,6 +146,11 @@
 <span><span class="va">trial</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="reference/extras.html">extras</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Adds overall, p-values, cleans missing values, and more!</span></span>
+<span></span>
+<span><span class="co"># Clean missing values independently</span></span>
+<span><span class="va">trial</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/clean_table.html">clean_table</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Standardizes missing/zero displays to "---"</span></span>
 <span></span>
 <span><span class="co"># With automatic labels from your dictionary</span></span>
 <span><span class="co"># First, create a dictionary with Variable and Description columns</span></span>
@@ -123,7 +164,7 @@
 <span></span>
 <span><span class="va">trial</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/add_auto_labels.html">add_auto_labels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/add_auto_labels.html">add_auto_labels</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span>  <span class="co"># Automatically finds 'dictionary' in your environment</span></span>
 <span>  <span class="fu"><a href="reference/extras.html">extras</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -135,23 +176,37 @@
 <li>
 <code><a href="reference/clean_table.html">clean_table()</a></code> - Standardizes missing value display</li>
 <li>
-<code><a href="reference/add_auto_labels.html">add_auto_labels()</a></code> - Automatic variable labeling from dictionaries</li>
+<code><a href="reference/add_auto_labels.html">add_auto_labels()</a></code> - Smart automatic variable labeling from dictionaries or label attributes</li>
 <li>
-<code><a href="reference/create_labels.html">create_labels()</a></code> - Create a list of variable labels from a dataset using a dictionary</li>
+<code><a href="reference/apply_labels_from_dictionary.html">apply_labels_from_dictionary()</a></code> - Set label attributes on data for cross-package workflows (ggplot2, gt, etc.)</li>
 <li>
 <code><a href="reference/use_jama_theme.html">use_jama_theme()</a></code> - Apply JAMA compact theme to gtsummary tables</li>
 <li>
 <code><a href="reference/theme_gt_compact.html">theme_gt_compact()</a></code> - JAMA-style compact themes for gt tables</li>
 <li>
-<code><a href="reference/group_styling.html">group_styling()</a></code> - Enhanced formatting for grouped tables</li>
+<code><a href="reference/group_styling.html">group_styling()</a></code> - Enhanced formatting for grouped tables with customizable indentation</li>
 <li>
 <code><a href="reference/get_group_rows.html">get_group_rows()</a></code> - Extract group row information from grouped tables</li>
 </ul>
+<div class="section level3">
+<h3 id="how-labels-work">How Labels Work<a class="anchor" aria-label="anchor" href="#how-labels-work"></a>
+</h3>
+<p>The labeling functions use the same native R attribute approach as popular packages like <strong>haven</strong>, <strong>Hmisc</strong>, and <strong>ggplot2 4.0+</strong>. Labels are stored as simple <code>'label'</code> attributes on data columns—no special packages or formats required.</p>
+<p>Your data may already have labels from various sources:<br>
+- Imported datasets (haven reads SPSS/Stata/SAS labels automatically)<br>
+- Other packages that set label attributes<br>
+- Manual labeling with <code>attr(data$column, "label") &lt;- "Label"</code><br>
+- Collaborative projects with pre-labeled data</p>
+<p>The <code><a href="reference/add_auto_labels.html">add_auto_labels()</a></code> function intelligently reads both dictionary-based labels and existing label attributes from your data, letting you choose which takes precedence. Labels work seamlessly across the entire R ecosystem—compatible with <strong>gtsummary</strong>, <strong>ggplot2</strong>, <strong>gt</strong>, and other label-aware packages.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="table-type-support">Table Type Support<a class="anchor" aria-label="anchor" href="#table-type-support"></a>
 </h2>
-<p>The <code><a href="reference/extras.html">extras()</a></code> function is designed to work with all gtsummary table types using a “warn-and-continue” philosophy: - It applies all compatible features to your table - For unsupported features, it issues a helpful warning and continues with what works - <strong>The function always succeeds</strong> - it never breaks your pipeline</p>
+<p>The <code><a href="reference/extras.html">extras()</a></code> function is designed to work with all gtsummary table types using a “warn-and-continue” philosophy:<br>
+* It applies all compatible features to your table<br>
+* For unsupported features, it issues a helpful warning and continues with what works<br>
+* <strong>The function always succeeds</strong> - it never breaks your pipeline</p>
 <div class="section level3">
 <h3 id="feature-support-by-table-type">Feature Support by Table Type<a class="anchor" aria-label="anchor" href="#feature-support-by-table-type"></a>
 </h3>
@@ -215,7 +270,9 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Legend:</strong> - ✅ Feature works and is applied - ⚠️ Feature not applicable to this table type (function warns but continues)</p>
+<p><strong>Legend:</strong><br>
+* ✅ Feature works and is applied<br>
+* ⚠️ Feature not applicable to this table type (function warns but continues)</p>
 </div>
 <div class="section level3">
 <h3 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
@@ -223,14 +280,16 @@
 <p>When you call <code><a href="reference/extras.html">extras()</a></code> on any table:</p>
 <ol style="list-style-type: decimal">
 <li>
-<strong>Always applied:</strong> Bold labels and clean headers</li>
+<strong>Always applied:</strong> Bold labels and clean headers<br>
+</li>
 <li>
-<strong>Conditionally applied:</strong> Overall column and p-values (only on stratified summary tables)</li>
+<strong>Conditionally applied:</strong> Overall column and p-values (only on stratified summary tables)<br>
+</li>
 <li>
 <strong>On unsupported features:</strong> You’ll see a warning, but the function completes successfully</li>
 </ol>
 <p>Example with an unstratified table:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trial</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span>  <span class="co"># No 'by' argument = unstratified</span></span>
 <span>  <span class="fu"><a href="reference/extras.html">extras</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Warns that overall/p-values aren't supported, but still bolds labels and cleans headers</span></span></code></pre></div>
@@ -254,7 +313,22 @@
 <strong>Documentation</strong>: See the package vignette with <code><a href="articles/sumExtras-intro.html">vignette("sumExtras-intro")</a></code>
 </li>
 <li>
-<strong>Function help</strong>: <code><a href="reference/extras.html">?extras</a></code>, <code><a href="reference/clean_table.html">?clean_table</a></code>, <code><a href="reference/add_auto_labels.html">?add_auto_labels</a></code>, <code><a href="reference/group_styling.html">?group_styling</a></code>, <code><a href="reference/use_jama_theme.html">?use_jama_theme</a></code>
+<strong>Function help</strong>:
+<ul>
+<li>
+<code><a href="reference/extras.html">?extras</a></code><br>
+</li>
+<li>
+<code><a href="reference/clean_table.html">?clean_table</a></code><br>
+</li>
+<li>
+<code><a href="reference/add_auto_labels.html">?add_auto_labels</a></code><br>
+</li>
+<li><code><a href="reference/group_styling.html">?group_styling</a></code></li>
+<li>
+<code><a href="reference/use_jama_theme.html">?use_jama_theme</a></code><br>
+</li>
+</ul>
 </li>
 <li>
 <strong>Examples</strong>: Run <code>example(extras)</code> for quick demos</li>
@@ -266,13 +340,22 @@
 </h2>
 <p>sumExtras is thoroughly tested with:</p>
 <ul>
-<li>123 test assertions across 7 comprehensive test suites</li>
+<li>245 test assertions across 7 comprehensive test suites</li>
 <li>Tests covering all core functions and edge cases</li>
 <li>Comprehensive test suites for:
 <ul>
 <li>Main extras functionality (<code>test-extras.R</code>, <code>test-extras-warnings.R</code>)</li>
 <li>Table cleaning and missing value handling (<code>test-clean_table.R</code>, <code>test-clean_table-regex.R</code>)</li>
-<li>Automatic label creation and application (<code>test-labels.R</code>)</li>
+<li>Automatic label creation and application (<code>test-labels.R</code>) - <strong>51 tests</strong> covering:
+<ul>
+<li>Dictionary auto-discovery and session messaging</li>
+<li>Label priority logic (manual &gt; attributes &gt; dictionary)</li>
+<li>Comprehensive error validation with informative error classes</li>
+<li>Edge cases (NA values, empty/single-row data, long labels)</li>
+<li>All 9 vignette workflow scenarios</li>
+<li>Performance with large dictionaries (1000+ entries) and wide data</li>
+</ul>
+</li>
 <li>JAMA theme styling (<code>test-use_jama_theme.R</code>)</li>
 <li>Grouped table formatting (<code>test-styling.R</code>)</li>
 </ul>
@@ -286,9 +369,12 @@
 </h2>
 <p>We’re constantly improving sumExtras. Upcoming feature considerations include:</p>
 <ul>
-<li>Additional gtsummary table type support (tbl_uvregression, tbl_logistic)</li>
-<li>More compact theme options for different journals and styles</li>
-<li>Enhanced dictionary labeling features with validation</li>
+<li>Additional gtsummary table type support (tbl_uvregression, tbl_logistic)<br>
+</li>
+<li>More compact theme options for different journals and styles<br>
+</li>
+<li>Enhanced dictionary labeling features with validation<br>
+</li>
 <li>Advanced row grouping and styling customization</li>
 </ul>
 <hr>
@@ -299,12 +385,14 @@
 <p>We welcome contributions and ideas! Here’s how you can help:</p>
 <ul>
 <li>
-<strong>Report bugs</strong> - <a href="https://github.com/kyleGrealis/sumExtras/issues" class="external-link">Open an issue</a> with a clear description</li>
-<li>
-<strong>Suggest features</strong> - Have an idea? <a href="https://github.com/kyleGrealis/sumExtras/issues" class="external-link">Submit a feature request</a>
+<strong>Report bugs</strong> - <a href="https://github.com/kyleGrealis/sumExtras/issues" class="external-link">Open an issue</a> with a clear description<br>
 </li>
 <li>
-<strong>Share feedback</strong> - Let us know how sumExtras is working for you</li>
+<strong>Suggest features</strong> - Have an idea? <a href="https://github.com/kyleGrealis/sumExtras/issues" class="external-link">Submit a feature request</a><br>
+</li>
+<li>
+<strong>Share feedback</strong> - Let us know how sumExtras is working for you<br>
+</li>
 <li>
 <strong>Improve documentation</strong> - Help us make docs clearer and more complete</li>
 </ul>
@@ -322,17 +410,19 @@
 <p>sumExtras is built with love using R and these amazing packages:</p>
 <ul>
 <li>
-<a href="https://www.danieldsjoberg.com/gtsummary/" class="external-link">gtsummary</a> - Easily create publication-ready analytical tables</li>
+<a href="https://www.danieldsjoberg.com/gtsummary/" class="external-link">gtsummary</a> - Easily create publication-ready analytical tables<br>
+</li>
 <li>
-<a href="https://posit.co/blog/introducing-gt/" class="external-link">gt</a> - The grammar of tables for R</li>
+<a href="https://gt.rstudio.com/" class="external-link">gt</a> - The grammar of tables for R<br>
+</li>
 <li>
-<a href="https://dplyr.tidyverse.org/" class="external-link">dplyr</a> - Data manipulation and transformation</li>
+<a href="https://dplyr.tidyverse.org/" class="external-link">dplyr</a> - Data manipulation and transformation<br>
+</li>
 <li>
-<a href="https://rlang.r-lib.org/" class="external-link">rlang</a> - Low-level programming tools for R</li>
+<a href="https://rlang.r-lib.org/" class="external-link">rlang</a> - Low-level programming tools for R<br>
+</li>
 <li>
-<a href="https://stringr.tidyverse.org/" class="external-link">stringr</a> - Simple string handling</li>
-<li>
-<a href="https://tibble.tidyverse.org/" class="external-link">tibble</a> - Modern data frames for R</li>
+<a href="https://purrr.tidyverse.org/" class="external-link">purrr</a> - Functional programming tools</li>
 </ul>
 <hr>
 <p><strong>Developed by <a href="https://github.com/kyleGrealis" class="external-link">Kyle Grealis</a></strong></p>
@@ -359,15 +449,17 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Kyle Grealis <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9223-8854" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/kyleGrealis/sumExtras" class="external-link"><img src="https://img.shields.io/badge/R_CMD_check-passing-brightgreen.svg" alt="R CMD check: passing"></a></li>
-<li><a href="https://lifecycle.r-lib.org/articles/stages.html#maturing" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
-<li><a href="https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat" class="external-link"><img src="https://img.shields.io/badge/tests-64_tests-brightblue.svg" alt="Tests: 64 tests"></a></li>
+<li><a href="https://github.com/kyleGrealis/sumExtras/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/kyleGrealis/sumExtras/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://CRAN.R-project.org/package=sumExtras" class="external-link"><img src="https://www.r-pkg.org/badges/version/sumExtras" alt="CRAN status"></a></li>
+<li><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></li>
+<li><a href="https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat" class="external-link"><img src="https://img.shields.io/badge/tests-245_passing-brightgreen.svg" alt="Tests: 245 passing"></a></li>
 </ul>
 </div>
 
