@@ -1,0 +1,27 @@
+bibentry(
+  bibtype  = "Manual",
+  title    = "sumExtras: Extra Functions for 'gtsummary' Table Styling",
+  author   = c(
+    person(
+      "Kyle", "Grealis", 
+      email = "kyleGrealis@proton.me", 
+      role = c("aut", "cre"),
+      comment = c(ORCID = "0000-0002-9223-8854")
+    ),
+    person(
+      "Raymond", "Balise", 
+      email = "balise@miami.edu", 
+      role = "ctb",
+      comment = c(ORCID = "0000-0002-9856-5901")
+    )
+  ),
+  year     = "2025",
+  note     = "R package version 0.1.1",
+  url      = "https://www.kyleGrealis.com/sumExtras/",
+  textVersion = paste(
+    "Grealis K, Balise R (2025).",
+    "sumExtras: Extra Functions for 'gtsummary' Table Styling.",
+    "R package version 0.1.1.",
+    "https://www.kyleGrealis.com/sumExtras/"
+  )
+)

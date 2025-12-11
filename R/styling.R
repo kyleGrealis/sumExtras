@@ -98,6 +98,10 @@ theme_gt_compact <- function(tbl) {
 #' @param tbl A gtsummary table object (e.g., from `tbl_summary()`, `tbl_regression()`)
 #' @param format Character vector specifying text formatting. Options include
 #'   `"bold"`, `"italic"`, or both. Default is `c("bold", "italic")`.
+#' @param indent_labels Integer specifying indentation level (in spaces) for
+#'   variable labels under group headers. Default is `0L` (left-aligned).
+#'   Set to `4L` to preserve gtsummary's default group indentation, or use
+#'   any non-negative integer for custom spacing.
 #'
 #' @returns A gtsummary table object with specified formatting applied to
 #'   variable group headers
@@ -106,6 +110,11 @@ theme_gt_compact <- function(tbl) {
 #'   applies the specified text formatting to the label column. This is
 #'   particularly useful for tables with multiple sections or stratified analyses
 #'   where clear visual hierarchy improves interpretation.
+#'
+#'   By default, variable labels are left-aligned (`indent_labels = 0L`) to
+#'   distinguish them from categorical levels and statistics. Use `indent_labels = 4L`
+#'   to preserve the default gtsummary behavior where grouped variables are
+#'   indented under their group headers.
 #'
 #' @importFrom gtsummary modify_table_styling modify_indent tbl_strata tbl_summary
 #'
@@ -141,6 +150,15 @@ theme_gt_compact <- function(tbl) {
 #'     variables = marker:response
 #'   ) |>
 #'   group_styling()
+#'
+#' # Custom indentation for grouped variables
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Patient Measures",
+#'     variables = age:marker
+#'   ) |>
+#'   group_styling(indent_labels = 4L)  # Variables indented under header
 #' }
 #'
 #' @seealso
@@ -148,7 +166,7 @@ theme_gt_compact <- function(tbl) {
 #' * `gtsummary::add_variable_group_header()` for creating variable group headers
 #'
 #' @export
-group_styling <- function(tbl, format = c('bold', 'italic')) {
+group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels = 0L) {
   # Validate tbl is a gtsummary object
   if (!inherits(tbl, "gtsummary")) {
     rlang::abort(
@@ -187,19 +205,46 @@ group_styling <- function(tbl, format = c('bold', 'italic')) {
     )
   }
 
+  # Validate indent_labels parameter
+  if (!is.numeric(indent_labels) || length(indent_labels) != 1) {
+    rlang::abort(
+      c(
+        "`indent_labels` must be a single integer.",
+        "x" = sprintf("You supplied an object of class: %s with length %d",
+                     class(indent_labels)[1], length(indent_labels)),
+        "i" = "Use a single non-negative integer like `0L` or `4L`."
+      ),
+      class = "group_styling_invalid_indent_type"
+    )
+  }
+
+  if (indent_labels < 0) {
+    rlang::abort(
+      c(
+        "`indent_labels` must be non-negative.",
+        "x" = sprintf("You supplied: %d", indent_labels),
+        "i" = "Use a non-negative integer like `0L`, `2L`, or `4L`."
+      ),
+      class = "group_styling_invalid_indent_value"
+    )
+  }
+
   tbl |>
     modify_table_styling(
       columns = label,
       rows = row_type == 'variable_group',
       text_format = format
     ) |>
-    # Modify the indentation of grouped variables. Default is to indent 2 spaces, but
-    # this causes the variable label and the value to be aligned vertically. This
-    # restores the original variable label indentation.
+    # Modify the indentation of grouped variables. By default, gtsummary indents
+    # all grouped variables by 4 spaces, which causes the variable label and
+    # categorical levels to be aligned vertically. Setting indent_labels = 0L
+    # (default) restores the original variable label indentation, distinguishing
+    # variable labels from categorical levels. Use indent_labels = 4L to preserve
+    # the default gtsummary grouping behavior.
     modify_indent(
       columns = "label",
       rows = row_type %in% 'label',
-      indent = 0L
+      indent = as.integer(indent_labels)
     )
 }
 
