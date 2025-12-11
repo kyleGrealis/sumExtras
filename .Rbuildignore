@@ -1,14 +1,15 @@
 ^sumExtras\.Rproj$
 ^\.Rproj\.user$
 dated_progress_notes.md
+PROJECT_STATUS.md
 inst/.gitkeep
 ^\.claude$
 ^LICENSE\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
-^\.github$
-^vignettes/\.quarto$
-
-# Nix files
-flake.*
+^\.github
+^vignettes/\.quarto
+^inst/WORDLIST$
+^doc$
+^Meta$

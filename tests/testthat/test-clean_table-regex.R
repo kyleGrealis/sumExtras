@@ -4,38 +4,32 @@
 # context("clean_table() - Regex pattern behavior")
 
 test_that("clean_table() current regex matches intended patterns", {
-  skip_if_not_installed("stringr")
-
   # Current pattern from R/clean_table.R:69
   current_pattern <- "\\bNA\\b|\\bInf\\b|^[0\\s%().,]+$"
 
   # Should match these (true positives)
-  expect_true(stringr::str_detect("NA", current_pattern))
-  expect_true(stringr::str_detect("Inf", current_pattern))
-  expect_true(stringr::str_detect("NA (NA)", current_pattern))
-  expect_true(stringr::str_detect("0 (0%)", current_pattern))
+  expect_true(grepl(current_pattern, "NA", perl = TRUE))
+  expect_true(grepl(current_pattern, "Inf", perl = TRUE))
+  expect_true(grepl(current_pattern, "NA (NA)", perl = TRUE))
+  expect_true(grepl(current_pattern, "0 (0%)", perl = TRUE))
 
   # Should NOT match real data (but might fail with current pattern)
-  expect_false(stringr::str_detect("15 (30%)", current_pattern))
-  expect_false(stringr::str_detect("0.5 (25%)", current_pattern))
-  expect_false(stringr::str_detect("45 (40, 50)", current_pattern))
+  expect_false(grepl(current_pattern, "15 (30%)", perl = TRUE))
+  expect_false(grepl(current_pattern, "0.5 (25%)", perl = TRUE))
+  expect_false(grepl(current_pattern, "45 (40, 50)", perl = TRUE))
 })
 
 test_that("clean_table() current regex has known false positives", {
-  skip_if_not_installed("stringr")
-
   current_pattern <- "\\bNA\\b|\\bInf\\b|^[0\\s%().,]+$"
 
   # These are FALSE POSITIVES - pattern matches but shouldn't
   # Documents the problem with current regex
-  expect_true(stringr::str_detect("...", current_pattern))  # Just dots
-  expect_true(stringr::str_detect("   ", current_pattern))  # Just spaces
-  expect_true(stringr::str_detect("()", current_pattern))   # Just parens
+  expect_true(grepl(current_pattern, "...", perl = TRUE))  # Just dots
+  expect_true(grepl(current_pattern, "   ", perl = TRUE))  # Just spaces
+  expect_true(grepl(current_pattern, "()", perl = TRUE))   # Just parens
 })
 
 test_that("clean_table() proposed regex fixes false positives", {
-  skip_if_not_installed("stringr")
-
   # Proposed pattern (Option B)
   proposed_pattern <- paste(c(
     "\\bNA\\b",
@@ -50,34 +44,32 @@ test_that("clean_table() proposed regex fixes false positives", {
   ), collapse = "|")
 
   # Should match intended patterns
-  expect_true(stringr::str_detect("NA", proposed_pattern))
-  expect_true(stringr::str_detect("Inf", proposed_pattern))
-  expect_true(stringr::str_detect("-Inf", proposed_pattern))
-  expect_true(stringr::str_detect("0 (0%)", proposed_pattern))
-  expect_true(stringr::str_detect("0 (NA%)", proposed_pattern))
-  expect_true(stringr::str_detect("NA (NA)", proposed_pattern))
-  expect_true(stringr::str_detect("NA (NA, NA)", proposed_pattern))
-  expect_true(stringr::str_detect("0.00 (0.00)", proposed_pattern))
-  expect_true(stringr::str_detect("0.00 (0.00%)", proposed_pattern))
-  expect_true(stringr::str_detect("NA, NA", proposed_pattern))
+  expect_true(grepl(proposed_pattern, "NA", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "Inf", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "-Inf", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "0 (0%)", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "0 (NA%)", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "NA (NA)", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "NA (NA, NA)", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "0.00 (0.00)", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "0.00 (0.00%)", perl = TRUE))
+  expect_true(grepl(proposed_pattern, "NA, NA", perl = TRUE))
 
   # Should NOT match false positives
-  expect_false(stringr::str_detect("...", proposed_pattern))
-  expect_false(stringr::str_detect("   ", proposed_pattern))
-  expect_false(stringr::str_detect("()", proposed_pattern))
+  expect_false(grepl(proposed_pattern, "...", perl = TRUE))
+  expect_false(grepl(proposed_pattern, "   ", perl = TRUE))
+  expect_false(grepl(proposed_pattern, "()", perl = TRUE))
 
   # Should NOT match real data
-  expect_false(stringr::str_detect("15 (30%)", proposed_pattern))
-  expect_false(stringr::str_detect("0.5 (25%)", proposed_pattern))
-  expect_false(stringr::str_detect("45 (40, 50)", proposed_pattern))
-  expect_false(stringr::str_detect("2.5, 3.8", proposed_pattern))
-  expect_false(stringr::str_detect("1.23 (0.45, 2.01)", proposed_pattern))
-  expect_false(stringr::str_detect("0.001", proposed_pattern))
+  expect_false(grepl(proposed_pattern, "15 (30%)", perl = TRUE))
+  expect_false(grepl(proposed_pattern, "0.5 (25%)", perl = TRUE))
+  expect_false(grepl(proposed_pattern, "45 (40, 50)", perl = TRUE))
+  expect_false(grepl(proposed_pattern, "2.5, 3.8", perl = TRUE))
+  expect_false(grepl(proposed_pattern, "1.23 (0.45, 2.01)", perl = TRUE))
+  expect_false(grepl(proposed_pattern, "0.001", perl = TRUE))
 })
 
 test_that("clean_table() proposed regex avoids partial matches", {
-  skip_if_not_installed("stringr")
-
   proposed_pattern <- paste(c(
     "\\bNA\\b",
     "\\bInf\\b",
@@ -91,8 +83,8 @@ test_that("clean_table() proposed regex avoids partial matches", {
   ), collapse = "|")
 
   # Should not match NA/Inf within larger words
-  expect_false(stringr::str_detect("BANANA", proposed_pattern))
-  expect_false(stringr::str_detect("Information", proposed_pattern))
+  expect_false(grepl(proposed_pattern, "BANANA", perl = TRUE))
+  expect_false(grepl(proposed_pattern, "Information", perl = TRUE))
 })
 
 test_that("clean_table() works with actual gtsummary table", {
