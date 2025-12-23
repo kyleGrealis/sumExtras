@@ -1,5 +1,5 @@
 
-# sumExtras <!-- <img src="man/figures/logo.png" align="right" height="130" alt="" /> -->
+# sumExtras <img src="man/figures/logo.png" align="right" height="130" alt="" />
 
 <!-- badges: start -->
 
