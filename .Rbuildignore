@@ -13,3 +13,4 @@ inst/.gitkeep
 ^inst/WORDLIST$
 ^doc$
 ^Meta$
+.claude
