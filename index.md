@@ -288,6 +288,4 @@ sumExtras is built with love using R and these amazing packages:
 
 ------------------------------------------------------------------------
 
-**Developed by [Kyle Grealis](https://github.com/kyleGrealis)**
-
 sumExtras adds some extras to your summary tables! ✨
