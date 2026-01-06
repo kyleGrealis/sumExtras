@@ -35,12 +35,25 @@ remotes::install_github("kyleGrealis/sumExtras")
 
 ## See the Difference
 
+``` r
+my_table <- trial |>
+  mutate(
+    stage = case_when(
+      trt == 'Drug A' & stage == 'T2' ~ NA,
+      trt == 'Drug B' & stage == 'T4' ~ NA,
+      .default = stage
+    )
+  ) |>
+  select(age, marker, grade, stage, trt) 
+```
+
 [TABLE]
 
-Both produce identical output, but
-[`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md)
-requires significantly less code and ensures consistency across your
-analysis.
+The basic approach creates a functional table, but sumExtras makes it
+shine with group headers, custom formatting, background colors, and
+clean missing value display—all while maintaining readable code. The
+right example shows what’s possible when you need publication-ready
+tables.
 
 ## Quick Start
 
@@ -94,8 +107,11 @@ trial |>
   Apply JAMA compact theme to gtsummary tables
 - [`theme_gt_compact()`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md) -
   JAMA-style compact themes for gt tables
-- [`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md) -
-  Enhanced formatting for grouped tables with customizable indentation
+- [`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md) -
+  Enhanced text formatting for grouped tables with customizable
+  indentation
+- [`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md) -
+  Convenience function for group colors with automatic gt conversion
 - [`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md) -
   Extract group row information from grouped tables
 
@@ -167,7 +183,7 @@ trial |>
 
 You’ll see a warning like: “This table is not stratified. Overall column
 and p-values require stratification. Applying only bold_labels() and
-modify_header().” - but your table is still successfully formatted!
+modify_header().” but your table is still successfully formatted!
 
 ## The Name
 
@@ -186,7 +202,8 @@ Get it?
   - [`?extras`](https://kyleGrealis.com/sumExtras/reference/extras.md)  
   - [`?clean_table`](https://kyleGrealis.com/sumExtras/reference/clean_table.md)  
   - [`?add_auto_labels`](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md)  
-  - [`?group_styling`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
+  - [`?add_group_styling`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)  
+  - [`?add_group_colors`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)  
   - [`?use_jama_theme`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md)  
 - **Examples**: Run `example(extras)` for quick demos
 

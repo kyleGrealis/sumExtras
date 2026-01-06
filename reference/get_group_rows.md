@@ -37,7 +37,7 @@ objects.
 
 ## See also
 
-- [`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
+- [`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
   for applying text formatting to group headers
 
 - [`gtsummary::add_variable_group_header()`](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)
@@ -61,7 +61,7 @@ my_tbl <- gtsummary::trial |>
     header = "Clinical",
     variables = marker:stage
   ) |>
-  group_styling()
+  add_group_styling()
 
 # Get group row numbers before conversion
 group_rows <- get_group_rows(my_tbl)

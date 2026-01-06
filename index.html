@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Extra Functions for gtsummary Table Styling • sumExtras</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -13,6 +18,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Extra Functions for gtsummary Table Styling">
 <meta name="description" content="Provides additional convenience functions for gtsummary &amp; gt tables, including automatic variable labeling from dictionaries, standardized missing value display, and consistent formatting helpers for streamlined table styling workflows.">
 <meta property="og:description" content="Provides additional convenience functions for gtsummary &amp; gt tables, including automatic variable labeling from dictionaries, standardized missing value display, and consistent formatting helpers for streamlined table styling workflows.">
+<meta property="og:image" content="https://kyleGrealis.com/sumExtras/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +28,7 @@
 
     <a class="navbar-brand me-2" href="index.html">sumExtras</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,9 +68,10 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="sumextras-">sumExtras <!-- <img src="man/figures/logo.png" align="right" height="130" alt="" /> -->
-<a class="anchor" aria-label="anchor" href="#sumextras-"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="sumextras-">sumExtras <a class="anchor" aria-label="anchor" href="#sumextras-"></a>
+</h1>
+</div>
 <!-- badges: start -->
 
 <!-- badges: end -->
@@ -101,41 +108,58 @@
 <div class="section level2">
 <h2 id="see-the-difference">See the Difference<a class="anchor" aria-label="anchor" href="#see-the-difference"></a>
 </h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_table</span> <span class="op">&lt;-</span> <span class="va">trial</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">mutate</span><span class="op">(</span></span>
+<span>    stage <span class="op">=</span> <span class="fu">case_when</span><span class="op">(</span></span>
+<span>      <span class="va">trt</span> <span class="op">==</span> <span class="st">'Drug A'</span> <span class="op">&amp;</span> <span class="va">stage</span> <span class="op">==</span> <span class="st">'T2'</span> <span class="op">~</span> <span class="cn">NA</span>,</span>
+<span>      <span class="va">trt</span> <span class="op">==</span> <span class="st">'Drug B'</span> <span class="op">&amp;</span> <span class="va">stage</span> <span class="op">==</span> <span class="st">'T4'</span> <span class="op">~</span> <span class="cn">NA</span>,</span>
+<span>      .default <span class="op">=</span> <span class="va">stage</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">age</span>, <span class="va">marker</span>, <span class="va">grade</span>, <span class="va">stage</span>, <span class="va">trt</span><span class="op">)</span> </span></code></pre></div>
 <table class="table">
 <tr>
 <td width="50%" valign="top">
-<p><strong>Standard gtsummary workflow</strong></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trial</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">add_overall</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">bold_labels</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">modify_header</span><span class="op">(</span><span class="va">label</span> <span class="op">~</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
+<p><strong>Basic gtsummary</strong></p>
+<p><img src="reference/figures/table-basic.png" width="100%"></p>
 </td>
 <td width="50%" valign="top">
-<p><strong>Using extras()</strong></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trial</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="reference/extras.html">extras</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><strong>sumExtras with Advanced Styling</strong></p>
+<p><img src="reference/figures/table-styled.png" width="100%"></p>
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
-<p><img src="reference/figures/table-a.png" width="100%"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_table</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">add_overall</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">add_p</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </td>
 <td width="50%" valign="top">
-<p><img src="reference/figures/table-b.png" width="100%"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Apply JAMA theme</span></span>
+<span><span class="fu"><a href="reference/use_jama_theme.html">use_jama_theme</a></span><span class="op">(</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">my_table</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tbl_summary</span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/extras.html">extras</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">add_variable_group_header</span><span class="op">(</span></span>
+<span>    header <span class="op">=</span> <span class="st">"Baseline Characteristics"</span>,</span>
+<span>    variables <span class="op">=</span> <span class="va">age</span><span class="op">:</span><span class="va">stage</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/add_group_styling.html">add_group_styling</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="reference/add_group_colors.html">add_group_colors</a></span><span class="op">(</span>color <span class="op">=</span> <span class="st">"#E3F2FD"</span><span class="op">)</span></span></code></pre></div>
 </td>
 </tr>
 </table>
-<p>Both produce identical output, but <code><a href="reference/extras.html">extras()</a></code> requires significantly less code and ensures consistency across your analysis.</p>
+<p>The basic approach creates a functional table, but sumExtras makes it shine with group headers, custom formatting, background colors, and clean missing value display—all while maintaining readable code. The right example shows what’s possible when you need publication-ready tables.</p>
 </div>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">sumExtras</span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/ddsjoberg/gtsummary" class="external-link">gtsummary</a></span><span class="op">)</span></span>
 <span></span>
@@ -184,7 +208,9 @@
 <li>
 <code><a href="reference/theme_gt_compact.html">theme_gt_compact()</a></code> - JAMA-style compact themes for gt tables</li>
 <li>
-<code><a href="reference/group_styling.html">group_styling()</a></code> - Enhanced formatting for grouped tables with customizable indentation</li>
+<code><a href="reference/add_group_styling.html">add_group_styling()</a></code> - Enhanced text formatting for grouped tables with customizable indentation</li>
+<li>
+<code><a href="reference/add_group_colors.html">add_group_colors()</a></code> - Convenience function for group colors with automatic gt conversion</li>
 <li>
 <code><a href="reference/get_group_rows.html">get_group_rows()</a></code> - Extract group row information from grouped tables</li>
 </ul>
@@ -289,11 +315,11 @@
 <strong>On unsupported features:</strong> You’ll see a warning, but the function completes successfully</li>
 </ol>
 <p>Example with an unstratified table:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trial</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span>  <span class="co"># No 'by' argument = unstratified</span></span>
 <span>  <span class="fu"><a href="reference/extras.html">extras</a></span><span class="op">(</span><span class="op">)</span>  <span class="co"># Warns that overall/p-values aren't supported, but still bolds labels and cleans headers</span></span></code></pre></div>
-<p>You’ll see a warning like: “This table is not stratified. Overall column and p-values require stratification. Applying only bold_labels() and modify_header().” - but your table is still successfully formatted!</p>
+<p>You’ll see a warning like: “This table is not stratified. Overall column and p-values require stratification. Applying only bold_labels() and modify_header().” but your table is still successfully formatted!</p>
 </div>
 </div>
 <div class="section level2">
@@ -324,7 +350,12 @@
 <li>
 <code><a href="reference/add_auto_labels.html">?add_auto_labels</a></code><br>
 </li>
-<li><code><a href="reference/group_styling.html">?group_styling</a></code></li>
+<li>
+<code><a href="reference/add_group_styling.html">?add_group_styling</a></code><br>
+</li>
+<li>
+<code><a href="reference/add_group_colors.html">?add_group_colors</a></code><br>
+</li>
 <li>
 <code><a href="reference/use_jama_theme.html">?use_jama_theme</a></code><br>
 </li>

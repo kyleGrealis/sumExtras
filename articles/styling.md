@@ -63,20 +63,20 @@ trial |>
 This creates section headers but they don’t stand out much from regular
 variables. Let’s fix that.
 
-## Styling Group Headers with `group_styling()`
+## Styling Group Headers with `add_group_styling()`
 
 The
-[`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
+[`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
 function adds visual emphasis to group headers, making section breaks
 clear and improving table readability.
 
 ### Default Styling: Bold and Italic
 
 By default,
-[`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
+[`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
 applies both bold and italic formatting:
 
-#### Without group_styling()
+#### Without add_group_styling()
 
 ``` r
 trial |>
@@ -93,7 +93,7 @@ trial |>
   )
 ```
 
-#### With group_styling()
+#### With add_group_styling()
 
 ``` r
 trial |>
@@ -108,7 +108,7 @@ trial |>
     header = "Clinical Measures",
     variables = marker:response
   ) |>
-  group_styling()
+  add_group_styling()
 ```
 
 [TABLE]
@@ -133,7 +133,7 @@ trial |>
     header = "Patient Characteristics",
     variables = age:stage
   ) |>
-  group_styling(format = "bold")
+  add_group_styling(format = "bold")
 ```
 
 [TABLE]
@@ -149,7 +149,7 @@ trial |>
     header = "Patient Characteristics",
     variables = age:stage
   ) |>
-  group_styling(format = "italic")
+  add_group_styling(format = "italic")
 ```
 
 [TABLE]
@@ -165,7 +165,7 @@ trial |>
     header = "Patient Characteristics",
     variables = age:stage
   ) |>
-  group_styling(format = c("bold", "italic"))
+  add_group_styling(format = c("bold", "italic"))
 ```
 
 [TABLE]
@@ -173,18 +173,18 @@ trial |>
 ### Important: Indentation Restoration
 
 Using
-[`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
+[`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
 also restores the original left-justified variable label indentation.
 The default behavior of
 [`add_variable_group_header()`](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)
 aligns variable labels with categorical levels or “Unknown” display,
 which can look unbalanced.
-[`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
+[`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
 fixes this automatically.
 
 Compare these two approaches:
 
-#### Without group_styling()
+#### Without add_group_styling()
 
 *Indentation may look off*
 
@@ -199,7 +199,7 @@ trial |>
   )
 ```
 
-#### With group_styling()
+#### With add_group_styling()
 
 *Proper indentation restored*
 
@@ -212,7 +212,7 @@ trial |>
     header = "Patient Variables",
     variables = age:stage
   ) |>
-  group_styling()
+  add_group_styling()
 ```
 
 [TABLE]
@@ -222,15 +222,14 @@ trial |>
 ## Background Colors: Enhanced Visual Distinction
 
 For additional visual emphasis, you can add background colors to group
-headers. This requires converting to a gt table and using the
-[`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md)
-helper function.
+headers using the
+[`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)
+convenience function.
 
 ### Basic Background Color Styling
 
 ``` r
-# Create table with groups and styling
-my_table <- trial |>
+trial |>
   select(age, marker, grade, stage, response, trt) |>
   tbl_summary(by = trt) |>
   extras() |>
@@ -242,25 +241,14 @@ my_table <- trial |>
     header = "Clinical Measures",
     variables = marker:response
   ) |>
-  group_styling()
-
-# Get group row numbers before converting to gt
-group_rows <- get_group_rows(my_table)
-
-# Convert to gt and apply gray background
-my_table |>
-  as_gt() |>
-  gt::tab_style(
-    style = gt::cell_fill(color = "#E8E8E8"),
-    locations = gt::cells_body(rows = group_rows)
-  )
+  add_group_styling() |> 
+  add_group_colors()  # Default light gray background
 ```
 
 [TABLE]
 
-This pattern combines text formatting (bold/italic) with a light gray
-background (#E8E8E8) to create clear visual separation between table
-sections.
+This applies text formatting (bold/italic) with a light gray background
+(#E8E8E8) to create clear visual separation between table sections.
 
 ### Understanding `get_group_rows()`
 
@@ -296,7 +284,32 @@ which you can then target with
 
 ### Custom Background Colors
 
-You can use any color you prefer:
+You can specify any color with the `color` argument:
+
+``` r
+trial |>
+  select(age, marker, grade, stage, trt) |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Baseline Characteristics",
+    variables = age:stage
+  ) |>
+  add_group_styling() |> 
+  add_group_colors(color = "#E3F2FD")  # Light blue
+```
+
+[TABLE]
+
+### Manual Pattern vs. Convenience Function
+
+For most use cases,
+[`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)
+provides the simplest approach. However, understanding the manual
+pattern helps when you need complex gt styling beyond simple background
+colors.
+
+#### Manual Pattern
 
 ``` r
 my_table <- trial |>
@@ -307,20 +320,63 @@ my_table <- trial |>
     header = "Baseline Characteristics",
     variables = age:stage
   ) |>
-  group_styling()
+  add_group_styling()
 
 group_rows <- get_group_rows(my_table)
 
-# Use a light blue background
 my_table |>
   as_gt() |>
   gt::tab_style(
-    style = gt::cell_fill(color = "#E3F2FD"),  # Light blue
+    style = gt::cell_fill(color = "#E3F2FD"),
     locations = gt::cells_body(rows = group_rows)
   )
 ```
 
+#### With add_group_colors()
+
+``` r
+trial |>
+  select(age, marker, grade, stage, trt) |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Baseline Characteristics",
+    variables = age:stage
+  ) |>
+  add_group_styling() |> 
+  add_group_colors(color = "#E3F2FD")
+```
+
 [TABLE]
+
+[TABLE]
+
+Both approaches produce identical results, but
+[`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)
+is significantly cleaner—no intermediate objects, no manual
+[`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md)
+call, fully pipeable.
+
+#### When to Use Which Approach
+
+**Use
+[`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)**
+when:
+
+- You want a simple, clean workflow with text formatting and background
+  colors
+- The default light gray (#E8E8E8) or a single custom color works for
+  your needs
+- You’re creating straightforward publication-ready tables
+
+**Use the manual pattern** when:
+
+- You need complex gt styling beyond background colors
+- You want alternating row colors or row-specific styling
+- You’re applying multiple different
+  [`gt::tab_style()`](https://gt.rstudio.com/reference/tab_style.html)
+  operations
+- You need fine-grained control over every styling detail
 
 ## Combining Styling Techniques
 
@@ -344,7 +400,7 @@ trial |>
     header = "Tumor Characteristics",
     variables = grade:response
   ) |>
-  group_styling(format = "bold")  # Bold only, no italic
+  add_group_styling(format = "bold")  # Bold only, no italic
 ```
 
 [TABLE]
@@ -366,7 +422,7 @@ my_table <- trial |>
     header = "TUMOR CHARACTERISTICS",
     variables = grade:response
   ) |>
-  group_styling()  # Bold + italic
+  add_group_styling()  # Bold + italic
 
 group_rows <- get_group_rows(my_table)
 
@@ -409,7 +465,7 @@ my_table <- trial |>
     header = "Outcomes",
     variables = response:death
   ) |>
-  group_styling()
+  add_group_styling()
 
 group_rows <- get_group_rows(my_table)
 
@@ -586,7 +642,7 @@ my_table <- trial |>
     header = "Disease",
     variables = grade:stage
   ) |>
-  group_styling()
+  add_group_styling()
 
 group_rows <- get_group_rows(my_table)
 
@@ -625,7 +681,7 @@ my_table <- trial |>
     header = "Disease & Outcome",
     variables = grade:response
   ) |>
-  group_styling()
+  add_group_styling()
 
 group_rows <- get_group_rows(my_table)
 
@@ -666,7 +722,7 @@ my_table <- trial |>
     header = "Tumor Factors",
     variables = grade:stage
   ) |>
-  group_styling()
+  add_group_styling()
 
 group_rows <- get_group_rows(my_table)
 
@@ -706,7 +762,7 @@ dictionary <- tibble::tribble(
 )
 
 # Build the styled table
-final_table <- trial |>
+trial |>
   select(trt, age, marker, grade, stage, response, death) |>
   tbl_summary(by = trt, missing = "no") |>
   add_auto_labels(dictionary = dictionary) |>
@@ -723,20 +779,8 @@ final_table <- trial |>
     header = "OUTCOMES",
     variables = response:death
   ) |>
-  group_styling()
-
-# Get group rows and apply styling
-group_rows <- get_group_rows(final_table)
-
-final_table |>
-  as_gt() |>
-  gt::tab_style(
-    style = list(
-      gt::cell_fill(color = "#E8E8E8"),
-      gt::cell_text(weight = "bold")
-    ),
-    locations = gt::cells_body(rows = group_rows)
-  ) |>
+  add_group_styling() |> 
+  add_group_colors(color = "#E8E8E8") |> 
   gt::tab_header(
     title = "Patient Characteristics and Outcomes by Treatment",
     subtitle = "Clinical Trial Dataset"
@@ -751,11 +795,11 @@ final_table |>
 This table demonstrates professional formatting suitable for
 publication:
 
-- Clear section headers with visual emphasis
-- Automatic variable labeling from dictionary
-- Clean display of missing values
-- Consistent styling throughout
-- Informative title and subtitle
+- Clear section headers with visual emphasis  
+- Automatic variable labeling from dictionary  
+- Clean display of missing values  
+- Consistent styling throughout  
+- Informative title and subtitle  
 - Source note for transparency
 
 ## Best Practices
@@ -774,11 +818,11 @@ publication:
 
 ### Don’ts
 
-1.  **Don’t overuse colors** - Too many colors create visual noise
+1.  **Don’t overuse colors** - Too many colors create visual noise  
 2.  **Don’t make headers too large** - Group headers should organize,
-    not dominate
-3.  **Don’t mix styling approaches** - Be consistent within a document
-4.  **Don’t forget accessibility** - Ensure sufficient color contrast
+    not dominate  
+3.  **Don’t mix styling approaches** - Be consistent within a document  
+4.  **Don’t forget accessibility** - Ensure sufficient color contrast  
 5.  **Don’t sacrifice readability** - Style should enhance, not hinder,
     comprehension
 
@@ -786,12 +830,14 @@ publication:
 
 sumExtras provides powerful tools for creating visually polished tables:
 
-- **[`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)** -
-  Add text formatting (bold/italic) to group headers
+- **[`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)** -
+  Add text formatting (bold/italic) to group headers  
+- **[`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)** -
+  Convenience function for group colors with automatic gt conversion  
 - **[`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md)** -
-  Identify group header rows for further styling
+  Identify group header rows for further styling  
 - **[`use_jama_theme()`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md)** -
-  Apply JAMA compact theme to gtsummary tables
+  Apply JAMA compact theme to gtsummary tables  
 - **[`theme_gt_compact()`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)** -
   Match gt table styling to gtsummary theme
 
@@ -801,15 +847,17 @@ table appearance.
 For more information:
 
 - [`vignette("sumExtras-intro")`](https://kyleGrealis.com/sumExtras/articles/sumExtras-intro.md) -
-  Getting started with sumExtras
+  Getting started with sumExtras  
 - [`vignette("labeling")`](https://kyleGrealis.com/sumExtras/articles/labeling.md) -
-  Automatic variable labeling workflows
-- [`?group_styling`](https://kyleGrealis.com/sumExtras/reference/group_styling.md) -
-  Function documentation
+  Automatic variable labeling workflows  
+- [`?add_group_styling`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md) -
+  Function documentation  
+- [`?add_group_colors`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md) -
+  Function documentation  
 - [`?get_group_rows`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md) -
-  Function documentation
+  Function documentation  
 - [`?use_jama_theme`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md) -
-  Function documentation
+  Function documentation  
 - [`?theme_gt_compact`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md) -
   Function documentation
 

@@ -31,7 +31,9 @@ Apply JAMA-style compact themes for consistent professional formatting
 
 Enhanced formatting for variable group headers in summary tables
 
-- [`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
+- [`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
   : Apply styling to variable group headers in gtsummary tables
+- [`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)
+  : Add background colors to group headers with automatic gt conversion
 - [`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md)
   : Get row numbers of variable group headers for gt styling

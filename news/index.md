@@ -1,5 +1,41 @@
 # Changelog
 
+## sumExtras 0.2.0
+
+### Breaking Changes
+
+- `group_styling()` renamed to
+  [`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
+  to follow gtsummary’s `add_*()` naming convention
+
+### New Features
+
+- New
+  [`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)
+  function provides a clean, pipeable way to add background colors to
+  group headers
+  - Combines text formatting, gt conversion, and color application in
+    one step
+  - Eliminates need for manual
+    [`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md)
+    and
+    [`as_gt()`](https://www.danieldsjoberg.com/gtsummary/reference/as_gt.html)
+    calls
+  - Perfect for creating publication-ready tables quickly
+  - Reduces typical styling code from 20+ lines to ~11 lines (45%
+    reduction)
+
+### Documentation
+
+- Updated all examples and vignettes to use new function names
+- Improved README with cleaner side-by-side comparison showcasing the
+  new API
+- Added comprehensive
+  [`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)
+  section to styling vignette with side-by-side manual vs. convenience
+  pattern comparison
+- Updated all function references across documentation
+
 ## sumExtras 0.1.1 (development version)
 
 ### Bug Fixes
@@ -68,8 +104,7 @@
     **Table Styling and Formatting**: Advanced techniques for creating
     publication-ready tables. Covers creating visually organized tables
     with group headers, styling group headers with text formatting via
-    [`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md),
-    adding background colors for emphasis with
+    `group_styling()`, adding background colors for emphasis with
     [`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md),
     theme management across gtsummary and gt with
     [`use_jama_theme()`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md)
@@ -146,10 +181,9 @@
 - Added `options(sumExtras.preferDictionary)` to control label priority
   when both dictionary and attribute labels are available. Default is
   `FALSE` (attributes preferred over dictionary)
-- [`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
-  gains an `indent_labels` parameter (default `0L`) to control
-  indentation of variable labels under group headers. Set to `4L` to
-  preserve gtsummary’s default group indentation behavior
+- `group_styling()` gains an `indent_labels` parameter (default `0L`) to
+  control indentation of variable labels under group headers. Set to
+  `4L` to preserve gtsummary’s default group indentation behavior
 - [`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md)
   gains a `last` parameter to control Overall column position (default
   `FALSE` aligns with
@@ -180,10 +214,9 @@
   fail instead of silently continuing
 - Fixed
   [`modify_indent()`](https://www.danieldsjoberg.com/gtsummary/reference/modify_indent.html)
-  column parameter in
-  [`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md) -
-  column name now properly quoted as “label” to ensure correct
-  indentation when rendering vignettes in pkgdown
+  column parameter in `group_styling()` - column name now properly
+  quoted as “label” to ensure correct indentation when rendering
+  vignettes in pkgdown
 - Enhanced
   [`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md) to
   warn when called with unsupported table types (tbl_regression,
@@ -226,6 +259,4 @@
 - Added
   [`theme_gt_compact()`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
   for JAMA-style gt table themes
-- Added
-  [`group_styling()`](https://kyleGrealis.com/sumExtras/reference/group_styling.md)
-  for enhanced group header formatting
+- Added `group_styling()` for enhanced group header formatting

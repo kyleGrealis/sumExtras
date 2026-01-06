@@ -223,7 +223,7 @@ gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_
 = trt, include = [c](https://rdrr.io/r/base/c.html)(age, marker, stage))
 \|\> [extras](https://kyleGrealis.com/sumExtras/reference/extras.md)()
 \|\>
-[group_styling](https://kyleGrealis.com/sumExtras/reference/group_styling.md)()
+[add_group_styling](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
 
 [TABLE]
 

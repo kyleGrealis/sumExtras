@@ -336,7 +336,7 @@ gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_
 = trt) \|\>
 [add_auto_labels](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
 \|\> extras(pval = TRUE) \|\>
-[group_styling](https://kyleGrealis.com/sumExtras/reference/group_styling.md)()
+[add_group_styling](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
 \#\> Warning: Failed to add overall column. \#\> ✖ Error: An error
 occured in \`add_overall()\`, and the overall statistic cannot be \#\>
 added. \#\> Have variable labels changed since the original call to
