@@ -6,6 +6,8 @@
 \alias{sumExtras-package}
 \title{sumExtras: Extra Functions for 'gtsummary' Table Styling}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Provides additional convenience functions for gtsummary & gt tables, including automatic variable labeling from dictionaries, standardized missing value display, and consistent formatting helpers for streamlined table styling workflows.
 
 Provides additional convenience functions for gtsummary & gt tables,
@@ -22,7 +24,8 @@ table styling workflows.
 \item \code{\link[=apply_labels_from_dictionary]{apply_labels_from_dictionary()}} - Set label attributes on data for cross-package workflows
 \item \code{\link[=use_jama_theme]{use_jama_theme()}} - Apply JAMA compact theme to gtsummary tables
 \item \code{\link[=theme_gt_compact]{theme_gt_compact()}} - JAMA-style compact themes for gt tables
-\item \code{\link[=group_styling]{group_styling()}} - Enhanced formatting for grouped tables
+\item \code{\link[=add_group_styling]{add_group_styling()}} - Enhanced text formatting for grouped tables
+\item \code{\link[=add_group_colors]{add_group_colors()}} - Convenience function for group colors with automatic gt conversion
 }
 }
 
@@ -40,6 +43,26 @@ versions ensure the necessary internal structures are available.
 especially major version changes.
 }
 
+\examples{
+\donttest{
+# Basic workflow with extras()
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  extras()
+
+# Complete workflow with styling
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt, include = c(age, marker, grade, stage)) |>
+  extras() |>
+  gtsummary::add_variable_group_header(
+    header = "Patient Characteristics",
+    variables = age:stage
+  ) |>
+  add_group_styling() |>
+  add_group_colors()
+}
+
+}
 \seealso{
 \itemize{
 \item gtsummary package: \url{https://www.danieldsjoberg.com/gtsummary/}

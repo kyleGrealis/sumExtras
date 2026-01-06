@@ -42,49 +42,68 @@ remotes::install_github("kyleGrealis/sumExtras")
 
 ## See the Difference
 
+```r
+my_table <- trial |>
+  mutate(
+    stage = case_when(
+      trt == 'Drug A' & stage == 'T2' ~ NA,
+      trt == 'Drug B' & stage == 'T4' ~ NA,
+      .default = stage
+    )
+  ) |>
+  select(age, marker, grade, stage, trt) 
+```
+
 <table>
 <tr>
 <td width="50%" valign="top">
 
-**Standard gtsummary workflow**
+**Basic gtsummary**
 
-```r
-trial |>
-  tbl_summary(by = trt) |>
-  add_overall() |>
-  add_p() |>
-  bold_labels() |>
-  modify_header(label ~ "")
-```
+<img src="man/figures/table-basic.png" width="100%">
 
 </td>
 <td width="50%" valign="top">
 
-**Using extras()**
+**sumExtras with Advanced Styling**
 
-```r
-trial |>
-  tbl_summary(by = trt) |>
-  extras()
-```
+<img src="man/figures/table-styled.png" width="100%">
 
 </td>
 </tr>
 <tr>
 <td width="50%" valign="top">
 
-<img src="man/figures/table-a.png" width="100%">
+```r
+my_table |> 
+  tbl_summary(by = trt) |>
+  add_overall() |>
+  add_p()
+```
 
 </td>
 <td width="50%" valign="top">
 
-<img src="man/figures/table-b.png" width="100%">
+```r
+# Apply JAMA theme
+use_jama_theme()
+
+my_table |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Baseline Characteristics",
+    variables = age:stage
+  ) |>
+  add_group_styling() |>
+  add_group_colors(color = "#E3F2FD")
+```
 
 </td>
 </tr>
 </table>
 
-Both produce identical output, but `extras()` requires significantly less code and ensures consistency across your analysis.
+The basic approach creates a functional table, but sumExtras makes it shine with group headers, custom formatting, background colors, and clean missing value display—all while maintaining readable code. The right example shows what's possible when you need publication-ready tables.
 
 ## Quick Start
 
@@ -129,7 +148,8 @@ trial |>
 * `apply_labels_from_dictionary()` - Set label attributes on data for cross-package workflows (ggplot2, gt, etc.)
 * `use_jama_theme()` - Apply JAMA compact theme to gtsummary tables
 * `theme_gt_compact()` - JAMA-style compact themes for gt tables
-* `group_styling()` - Enhanced formatting for grouped tables with customizable indentation
+* `add_group_styling()` - Enhanced text formatting for grouped tables with customizable indentation
+* `add_group_colors()` - Convenience function for group colors with automatic gt conversion
 * `get_group_rows()` - Extract group row information from grouped tables
 
 ### How Labels Work
@@ -174,13 +194,14 @@ When you call `extras()` on any table:
 3. **On unsupported features:** You'll see a warning, but the function completes successfully  
 
 Example with an unstratified table:
+
 ```r
 trial |>
   tbl_summary() |>  # No 'by' argument = unstratified
   extras()  # Warns that overall/p-values aren't supported, but still bolds labels and cleans headers
 ```
 
-You'll see a warning like: "This table is not stratified. Overall column and p-values require stratification. Applying only bold_labels() and modify_header()." - but your table is still successfully formatted!
+You'll see a warning like: "This table is not stratified. Overall column and p-values require stratification. Applying only bold_labels() and modify_header()." but your table is still successfully formatted!
 
 ## The Name
 
@@ -192,11 +213,12 @@ Get it?
 
 * **Bug reports & feature requests**: <https://github.com/kyleGrealis/sumExtras/issues>
 * **Documentation**: See the package vignette with `vignette("sumExtras-intro")`
-* **Function help**: 
+* **Function help**:  
   - `?extras`  
   - `?clean_table`  
   - `?add_auto_labels`  
-  - `?group_styling`
+  - `?add_group_styling`  
+  - `?add_group_colors`  
   - `?use_jama_theme`  
 * **Examples**: Run `example(extras)` for quick demos
 

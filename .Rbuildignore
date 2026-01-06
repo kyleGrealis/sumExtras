@@ -14,3 +14,7 @@ inst/.gitkeep
 ^doc$
 ^Meta$
 .claude
+.gemini
+CLAUDE.md
+GEMINI.md
+cran-comments.md

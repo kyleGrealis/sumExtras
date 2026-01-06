@@ -37,5 +37,6 @@ reference:
   - title: "Group Header Styling"
     desc: "Enhanced formatting for variable group headers in summary tables"
     contents:
-      - group_styling
+      - add_group_styling
+      - add_group_colors
       - get_group_rows

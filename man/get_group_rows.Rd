@@ -39,7 +39,7 @@ my_tbl <- gtsummary::trial |>
     header = "Clinical",
     variables = marker:stage
   ) |>
-  group_styling()
+  add_group_styling()
 
 # Get group row numbers before conversion
 group_rows <- get_group_rows(my_tbl)
@@ -56,7 +56,7 @@ my_tbl |>
 }
 \seealso{
 \itemize{
-\item \code{group_styling()} for applying text formatting to group headers
+\item \code{add_group_styling()} for applying text formatting to group headers
 \item \code{gtsummary::add_variable_group_header()} for creating variable groups
 \item \code{gt::tab_style()} for applying gt-specific styling
 }

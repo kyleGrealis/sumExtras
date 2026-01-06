@@ -127,7 +127,7 @@ theme_gt_compact <- function(tbl) {
 #'     header = "Patient Characteristics",
 #'     variables = age:grade
 #'   ) |>
-#'   group_styling()
+#'   add_group_styling()
 #'
 #' # Bold only
 #' gtsummary::trial |>
@@ -136,7 +136,7 @@ theme_gt_compact <- function(tbl) {
 #'     header = "Demographics",
 #'     variables = age:marker
 #'   ) |>
-#'   group_styling(format = "bold")
+#'   add_group_styling(format = "bold")
 #'
 #' # Multiple group headers
 #' gtsummary::trial |>
@@ -149,7 +149,7 @@ theme_gt_compact <- function(tbl) {
 #'     header = "Clinical Measures",
 #'     variables = marker:response
 #'   ) |>
-#'   group_styling()
+#'   add_group_styling()
 #'
 #' # Custom indentation for grouped variables
 #' gtsummary::trial |>
@@ -158,7 +158,7 @@ theme_gt_compact <- function(tbl) {
 #'     header = "Patient Measures",
 #'     variables = age:marker
 #'   ) |>
-#'   group_styling(indent_labels = 4L)  # Variables indented under header
+#'   add_group_styling(indent_labels = 4L)  # Variables indented under header
 #' }
 #'
 #' @seealso
@@ -166,7 +166,7 @@ theme_gt_compact <- function(tbl) {
 #' * `gtsummary::add_variable_group_header()` for creating variable group headers
 #'
 #' @export
-group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels = 0L) {
+add_group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels = 0L) {
   # Validate tbl is a gtsummary object
   if (!inherits(tbl, "gtsummary")) {
     rlang::abort(
@@ -280,7 +280,7 @@ group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels = 0L)
 #'     header = "Clinical",
 #'     variables = marker:stage
 #'   ) |>
-#'   group_styling()
+#'   add_group_styling()
 #'
 #' # Get group row numbers before conversion
 #' group_rows <- get_group_rows(my_tbl)
@@ -295,7 +295,7 @@ group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels = 0L)
 #' }
 #'
 #' @seealso
-#' * `group_styling()` for applying text formatting to group headers
+#' * `add_group_styling()` for applying text formatting to group headers
 #' * `gtsummary::add_variable_group_header()` for creating variable groups
 #' * `gt::tab_style()` for applying gt-specific styling
 #'
@@ -336,4 +336,133 @@ get_group_rows <- function(tbl) {
   }
 
   which(tbl$table_body$row_type == 'variable_group')
+}
+
+
+#' Add background colors to group headers with automatic gt conversion
+#'
+#' @description Convenience function that adds background colors to variable group
+#'   headers and converts the table to gt. This is a terminal operation that combines
+#'   `get_group_rows()`, `gtsummary::as_gt()`, and `gt::tab_style()` into a single
+#'   pipeable function.
+#'
+#'   For text formatting (bold/italic), use `add_group_styling()` before calling this
+#'   function. This composable design keeps each function focused on doing one thing well.
+#'
+#' @param tbl A gtsummary table object with variable group headers created by
+#'   `gtsummary::add_variable_group_header()`
+#' @param color Background color for group headers. Default `"#E8E8E8"` (light gray).
+#'   Can be any valid CSS color (hex code, color name, rgb(), etc.).
+#'
+#' @returns A gt table object with colored group headers.
+#'   **Note:** This is a terminal operation that converts to gt. You cannot pipe
+#'   to additional gtsummary functions after calling this function.
+#'
+#' @details This function:
+#'   1. Identifies group header rows with `get_group_rows()`
+#'   2. Converts the table to gt with `gtsummary::as_gt()`
+#'   3. Applies background color using `gt::tab_style()`
+#'
+#'   Since this function converts to gt, it should be used as the final styling
+#'   step in your pipeline. Apply all gtsummary functions (like `modify_caption()`,
+#'   `modify_footnote()`, etc.) and text formatting with `add_group_styling()`
+#'   before calling `add_group_colors()`.
+#'
+#' @importFrom gtsummary as_gt
+#' @importFrom gt tab_style cell_fill cells_body
+#'
+#' @examples
+#' \donttest{
+#' # Basic usage - text formatting then color
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   extras() |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Patient Characteristics",
+#'     variables = age:stage
+#'   ) |>
+#'   add_group_styling() |>
+#'   add_group_colors()
+#'
+#' # Custom color - light blue
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   extras() |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Baseline Characteristics",
+#'     variables = age:marker
+#'   ) |>
+#'   add_group_styling() |>
+#'   add_group_colors(color = "#E3F2FD")
+#'
+#' # Bold only formatting with custom color
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   extras() |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Clinical Measures",
+#'     variables = marker:stage
+#'   ) |>
+#'   add_group_styling(format = "bold") |>
+#'   add_group_colors(color = "#FFF9E6")
+#'
+#' # Multiple group headers
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   extras() |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Demographics",
+#'     variables = age
+#'   ) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Disease Measures",
+#'     variables = marker:response
+#'   ) |>
+#'   add_group_styling() |>
+#'   add_group_colors(color = "#E8E8E8")
+#' }
+#'
+#' @seealso
+#' * `add_group_styling()` for text formatting only (stays gtsummary)
+#' * `get_group_rows()` for identifying group header rows
+#' * `gtsummary::add_variable_group_header()` for creating variable groups
+#' * `gt::tab_style()` for additional gt-specific styling
+#'
+#' @export
+add_group_colors <- function(tbl, color = "#E8E8E8") {
+  # Validate tbl is a gtsummary object
+  if (!inherits(tbl, "gtsummary")) {
+    rlang::abort(
+      c(
+        "`tbl` must be a gtsummary object.",
+        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
+        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+      ),
+      class = "add_group_colors_invalid_input"
+    )
+  }
+
+  # Validate color is a character string
+  if (!is.character(color) || length(color) != 1) {
+    rlang::abort(
+      c(
+        "`color` must be a single character string.",
+        "x" = sprintf("You supplied an object of class: %s with length %d",
+                     class(color)[1], length(color)),
+        "i" = "Use a valid CSS color like \"#E8E8E8\", \"lightgray\", or \"rgb(200,200,200)\"."
+      ),
+      class = "add_group_colors_invalid_color"
+    )
+  }
+
+  # Get group rows while still gtsummary
+  group_rows <- get_group_rows(tbl)
+
+  # Convert to gt and apply background color
+  tbl |>
+    gtsummary::as_gt() |>
+    gt::tab_style(
+      style = gt::cell_fill(color = color),
+      locations = gt::cells_body(rows = group_rows)
+    )
 }
