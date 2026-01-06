@@ -13,3 +13,8 @@ inst/.gitkeep
 ^inst/WORDLIST$
 ^doc$
 ^Meta$
+.claude
+.gemini
+CLAUDE.md
+GEMINI.md
+cran-comments.md
