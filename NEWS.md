@@ -1,3 +1,24 @@
+# sumExtras 0.2.0
+
+## Breaking Changes
+
+* `group_styling()` renamed to `add_group_styling()` to follow gtsummary's `add_*()` naming convention
+
+## New Features
+
+* New `add_group_colors()` function provides a clean, pipeable way to add background colors to group headers
+  - Combines text formatting, gt conversion, and color application in one step
+  - Eliminates need for manual `get_group_rows()` and `as_gt()` calls
+  - Perfect for creating publication-ready tables quickly
+  - Reduces typical styling code from 20+ lines to ~11 lines (45% reduction)
+
+## Documentation
+
+* Updated all examples and vignettes to use new function names
+* Improved README with cleaner side-by-side comparison showcasing the new API
+* Added comprehensive `add_group_colors()` section to styling vignette with side-by-side manual vs. convenience pattern comparison
+* Updated all function references across documentation
+
 # sumExtras 0.1.1 (development version)
 
 ## Bug Fixes

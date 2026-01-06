@@ -100,7 +100,7 @@ gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>
   add_auto_labels() |>
   extras(pval = TRUE) |>
-  group_styling()
+  add_group_styling()
 }
 
 }
