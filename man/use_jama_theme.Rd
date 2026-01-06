@@ -66,7 +66,7 @@ use_jama_theme()
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt, include = c(age, marker, stage)) |>
   extras() |>
-  group_styling()
+  add_group_styling()
 
 # Reset to default theme if needed
 gtsummary::reset_gtsummary_theme()

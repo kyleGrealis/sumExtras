@@ -21,7 +21,8 @@ NULL
 #' * [apply_labels_from_dictionary()] - Set label attributes on data for cross-package workflows
 #' * [use_jama_theme()] - Apply JAMA compact theme to gtsummary tables
 #' * [theme_gt_compact()] - JAMA-style compact themes for gt tables
-#' * [group_styling()] - Enhanced formatting for grouped tables
+#' * [add_group_styling()] - Enhanced text formatting for grouped tables
+#' * [add_group_colors()] - Convenience function for group colors with automatic gt conversion
 #'
 #' @section Important Notes on Package Dependencies:
 #' **gtsummary Internals:** This package depends on internal structures of the
@@ -38,6 +39,25 @@ NULL
 #' @seealso
 #' * gtsummary package: <https://www.danieldsjoberg.com/gtsummary/>
 #' * Package website: <https://kyleGrealis.com/sumExtras/>
+#'
+#' @examples
+#' \donttest{
+#' # Basic workflow with extras()
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   extras()
+#'
+#' # Complete workflow with styling
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt, include = c(age, marker, grade, stage)) |>
+#'   extras() |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Patient Characteristics",
+#'     variables = age:stage
+#'   ) |>
+#'   add_group_styling() |>
+#'   add_group_colors()
+#' }
 #'
 #' @name sumExtras-package
 NULL

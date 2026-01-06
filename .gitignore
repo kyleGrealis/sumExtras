@@ -160,3 +160,8 @@ _site/
 # Vignettes
 inst/doc/
 inst/docs/
+**/*.quarto_ipynb
+
+# Other
+.claude
+.gemini
