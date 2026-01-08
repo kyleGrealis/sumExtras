@@ -145,6 +145,7 @@ _bookdown_files/
 
 # R packages
 *.tar
+*.tar.gz
 
 # Archives
 *.zip
