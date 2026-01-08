@@ -18,7 +18,7 @@ Authors@R:
             comment = c(ORCID = "0000-0002-9856-5901")
         )
     )
-Description: Provides additional convenience functions for gtsummary & gt tables, 
+Description: Provides additional convenience functions for 'gtsummary' & 'gt' tables, 
     including automatic variable labeling from dictionaries, standardized 
     missing value display, and consistent formatting helpers for streamlined table styling workflows.
 License: MIT + file LICENSE
