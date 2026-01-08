@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Provides additional convenience functions for gtsummary & gt tables, including automatic variable labeling from dictionaries, standardized missing value display, and consistent formatting helpers for streamlined table styling workflows.
+Provides additional convenience functions for 'gtsummary' & 'gt' tables, including automatic variable labeling from dictionaries, standardized missing value display, and consistent formatting helpers for streamlined table styling workflows.
 
 Provides additional convenience functions for gtsummary & gt tables,
 including automatic variable labeling from dictionaries, standardized
