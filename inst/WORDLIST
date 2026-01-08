@@ -11,6 +11,7 @@ README
 RStudio
 Stata
 bc
+composable
 dplyr
 erroring
 ggplot
@@ -20,12 +21,14 @@ gtsummary's
 jama
 labelled
 mary
+pipeable
 pkgdown
 pre
 preferDictionary
 purrr
 pval
 px
+rgb
 rlang
 scannable
 stringr
