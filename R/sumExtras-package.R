@@ -38,7 +38,7 @@ NULL
 #'
 #' @seealso
 #' * gtsummary package: <https://www.danieldsjoberg.com/gtsummary/>
-#' * Package website: <https://kyleGrealis.com/sumExtras/>
+#' * Package website: <https://www.kyleGrealis.com/sumExtras/>
 #'
 #' @examples
 #' \donttest{
