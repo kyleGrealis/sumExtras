@@ -66,7 +66,7 @@ gtsummary::trial |>
 \seealso{
 \itemize{
 \item gtsummary package: \url{https://www.danieldsjoberg.com/gtsummary/}
-\item Package website: \url{https://kyleGrealis.com/sumExtras/}
+\item Package website: \url{https://www.kyleGrealis.com/sumExtras/}
 }
 }
 \author{
