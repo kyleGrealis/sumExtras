@@ -10,6 +10,9 @@
 
 ## Citation
 
+Source:
+[`inst/CITATION`](https://github.com/kyleGrealis/sumExtras/blob/main/inst/CITATION)
+
 Grealis K, Balise R (2025). sumExtras: Extra Functions for 'gtsummary'
 Table Styling. R package version 0.1.1.
 https://www.kyleGrealis.com/sumExtras/

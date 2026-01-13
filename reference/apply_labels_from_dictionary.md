@@ -182,8 +182,7 @@ Tumor Grade
 
 ¹ Median (Q1, Q3); n (%)
 
-\# And in ggplot2 4.0+ (automatic axis labels!) if (FALSE) { \#
-\dontrun{ if
+\# And in ggplot2 4.0+ (automatic axis labels!) if
 ([requireNamespace](https://rdrr.io/r/base/ns-load.html)("ggplot2",
 quietly = TRUE) &&
 utils::[packageVersion](https://rdrr.io/r/utils/packageDescription.html)("ggplot2")
@@ -194,8 +193,10 @@ trial_labeled \|\>
 = age, y = marker, color =
 [factor](https://rdrr.io/r/base/factor.html)(trt))) +
 [geom_point](https://ggplot2.tidyverse.org/reference/geom_point.html)()
-\# Axes and legend automatically labeled! } } \# } \# Check that labels
-were applied
+\# Axes and legend automatically labeled! } \#\> Warning: Removed 21
+rows containing missing values or values outside the scale range \#\>
+(\`geom_point()\`). ![](apply_labels_from_dictionary-1.png) \# Check
+that labels were applied
 [attr](https://rdrr.io/r/base/attr.html)(trial_labeled\$age, "label") \#
 "Age at Enrollment (years)" \#\> \[1\] "Age at Enrollment (years)" \#
 Preserve existing labels trial_partial \<-
