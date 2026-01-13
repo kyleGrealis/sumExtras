@@ -18,9 +18,11 @@ Authors@R:
             comment = c(ORCID = "0000-0002-9856-5901")
         )
     )
-Description: Provides additional convenience functions for 'gtsummary' & 'gt' tables, 
+Description: Provides additional convenience functions for 'gtsummary' 
+    (Sjoberg et al. (2021) <doi:10.32614/RJ-2021-053>) & 'gt' tables, 
     including automatic variable labeling from dictionaries, standardized 
-    missing value display, and consistent formatting helpers for streamlined table styling workflows.
+    missing value display, and consistent formatting helpers for streamlined 
+    table styling workflows.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -46,3 +48,5 @@ Imports:
     gtsummary (>= 1.7.0),
     purrr,
     rlang
+URL: https://github.com/kyleGrealis/sumExtras
+BugReports: https://github.com/kyleGrealis/sumExtras/issues
