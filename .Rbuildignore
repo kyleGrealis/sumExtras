@@ -18,3 +18,4 @@ inst/.gitkeep
 CLAUDE.md
 GEMINI.md
 cran-comments.md
+^CRAN-SUBMISSION$
