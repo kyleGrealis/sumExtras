@@ -9,7 +9,8 @@ NULL
 #' sumExtras: Extra Functions for 'gtsummary' Table Styling
 #'
 #' @description
-#' Provides additional convenience functions for gtsummary & gt tables,
+#' Provides additional convenience functions for 'gtsummary'
+#' (Sjoberg et al. (2021) <doi:10.32614/RJ-2021-053>) & 'gt' tables,
 #' including automatic variable labeling from dictionaries, standardized
 #' missing value display, and consistent formatting helpers for streamlined
 #' table styling workflows.

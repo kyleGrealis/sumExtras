@@ -83,14 +83,12 @@ trial_labeled |>
   gtsummary::tbl_summary(by = trt, include = c(age, marker, grade))
 
 # And in ggplot2 4.0+ (automatic axis labels!)
-\dontrun{
 if (requireNamespace("ggplot2", quietly = TRUE) &&
     utils::packageVersion("ggplot2") >= "4.0.0") {
   library(ggplot2)
   trial_labeled |>
     ggplot(aes(x = age, y = marker, color = factor(trt))) +
     geom_point()  # Axes and legend automatically labeled!
-}
 }
 
 # Check that labels were applied
