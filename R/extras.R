@@ -14,6 +14,10 @@
 #'   from \code{gtsummary::add_overall()}.
 #' @param .args Optional list of arguments to use instead of individual parameters.
 #'   When provided, overrides `pval`, `overall`, and `last` arguments.
+#' @param .add_p_args Optional named list of arguments to pass to `gtsummary::add_p()`.
+#'   Allows customization of statistical tests and p-value formatting. User-provided
+#'   arguments override the default arguments (`pvalue_fun` and `test.args`).
+#'   See `gtsummary::add_p()` documentation for available arguments.
 #'
 #' @returns A gtsummary table object with standard formatting applied
 #'
@@ -73,6 +77,14 @@
 #'   gtsummary::tbl_summary(by = trt) |>
 #'   extras(pval = FALSE)
 #'
+#' # Customize add_p() behavior
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   extras(.add_p_args = list(
+#'     test = list(all_continuous() ~ "t.test"),
+#'     pvalue_fun = ~ gtsummary::style_pvalue(.x, digits = 2)
+#'   ))
+#'
 #' # Chain with other functions
 #' # Create required dictionary first
 #' dictionary <- tibble::tribble(
@@ -94,7 +106,7 @@
 #' * `clean_table()` for additional table styling
 #'
 #' @export
-extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL) {
+extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL, .add_p_args = NULL) {
 
   # Validate tbl is a gtsummary object
   if (!inherits(tbl, "gtsummary")) {
@@ -209,19 +221,39 @@ extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL)
 
   # Only add p-values if table is stratified, warn on failure rather than silently ignoring
   if (pval && is_stratified) {
+    # Define default add_p() arguments
+    default_add_p_args <- list(
+      pvalue_fun = ~ style_pvalue(.x, digits = 3),
+      # Use Monte Carlo simulation for Fisher's exact test to prevent
+      # computational errors and excessive runtime on large tables (r>2 or c>2).
+      # Trades exact p-values for computational feasibility. Default B=2000
+      # iterations provides adequate precision.
+      # Reference: https://stat.ethz.ch/R-manual/R-devel/library/stats/html/fisher.test.html
+      test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)
+    )
+
+    # Validate .add_p_args if provided
+    if (!is.null(.add_p_args)) {
+      if (!is.list(.add_p_args)) {
+        rlang::abort(
+          c(
+            "`.add_p_args` must be a list.",
+            "x" = sprintf("You supplied an object of class: %s", class(.add_p_args)[1]),
+            "i" = "Use a named list like `list(test = list(...), pvalue_fun = ...)`."
+          ),
+          class = "extras_invalid_add_p_args"
+        )
+      }
+      # Merge user args with defaults (user args override defaults)
+      add_p_args <- utils::modifyList(default_add_p_args, .add_p_args)
+    } else {
+      add_p_args <- default_add_p_args
+    }
+
     result <- tryCatch(
       {
         suppressMessages(
-          result |>
-            add_p(
-              pvalue_fun = ~ style_pvalue(.x, digits = 3),
-              # Use Monte Carlo simulation for Fisher's exact test to prevent
-              # computational errors and excessive runtime on large tables (r>2 or c>2).
-              # Trades exact p-values for computational feasibility. Default B=2000
-              # iterations provides adequate precision.
-              # Reference: https://stat.ethz.ch/R-manual/R-devel/library/stats/html/fisher.test.html
-              test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)
-            )
+          do.call(add_p, c(list(x = result), add_p_args))
         )
       },
       error = function(e) {

@@ -92,9 +92,12 @@ clean_table <- function(tbl) {
             "\\bNA\\b",                  # Literal NA
             "\\bInf\\b",                 # Literal Inf
             "-Inf",                      # Negative Inf
+            "^0 \\(0\\)$",               # Exact: 0 (0)
             "^0 \\(0%\\)$",              # Exact: 0 (0%)
             "^0% \\(0\\.0+\\)$",         # Exact: 0% (0.000)
             "^0 \\(NA%\\)$",             # Exact: 0 (NA%)
+            "^0 \\(NA\\)$",              # Exact: 0 (NA)
+            "^NA \\(0\\)$",              # Exact: NA (0)
             "^NA \\(NA\\)$",             # Exact: NA (NA)
             "^NA \\(NA, NA\\)$",         # Exact: NA (NA, NA)
             "^0\\.0+ \\(0\\.0+%?\\)$",   # 0.00 (0.00) or 0.00 (0.00%)
