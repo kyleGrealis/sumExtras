@@ -1,3 +1,17 @@
+# sumExtras 0.3.0
+
+## New Features
+
+* New `.add_p_args` argument to `extras()` allows for passing `gtsummary::add_p()` arguments, such as:
+  - `test` for specifying statistical tests for each variable (i.e., `"t.test"`, `"fisher.test"`). Thank you, Daniel Maya.
+  - `pvalue_fun` for formatting p-values
+  - `group`, `include`, etc.
+  - See `?gtsummary::add_p.tbl_summary` for more information of proper usage.
+
+## Improvements
+
+* Extended list of zero or `NA` value recognition used by `clean_table`. This fixes the funcion previously not recognizing `0 (0)` for Mean (SD).
+
 # sumExtras 0.2.0
 
 ## Breaking Changes

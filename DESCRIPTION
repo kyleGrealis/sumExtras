@@ -1,6 +1,6 @@
 Package: sumExtras
 Title: Extra Functions for 'gtsummary' Table Styling
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: 
     c(
         person(
@@ -16,6 +16,13 @@ Authors@R:
             role = c("ctb"),
             email = "balise@miami.edu",
             comment = c(ORCID = "0000-0002-9856-5901")
+        ),
+        person(
+            "Daniel",
+            "Maya",
+            email = "dheal.maya@gmail.com",
+            role = 'ctb',
+            comment = c(ORCID = "0000-0002-0164-7768")
         )
     )
 Description: Provides additional convenience functions for 'gtsummary' 

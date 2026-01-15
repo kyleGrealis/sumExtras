@@ -83,6 +83,7 @@ Useful links:
 Other contributors:
 \itemize{
   \item Raymond Balise \email{balise@miami.edu} (\href{https://orcid.org/0000-0002-9856-5901}{ORCID}) [contributor]
+  \item Daniel Maya \email{dheal.maya@gmail.com} (\href{https://orcid.org/0000-0002-0164-7768}{ORCID}) [contributor]
 }
 
 }
