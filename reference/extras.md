@@ -9,7 +9,14 @@ warning about unsupported features.
 ## Usage
 
 ``` r
-extras(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL)
+extras(
+  tbl,
+  pval = TRUE,
+  overall = TRUE,
+  last = FALSE,
+  .args = NULL,
+  .add_p_args = NULL
+)
 ```
 
 ## Arguments
@@ -41,6 +48,16 @@ extras(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL)
 
   Optional list of arguments to use instead of individual parameters.
   When provided, overrides `pval`, `overall`, and `last` arguments.
+
+- .add_p_args:
+
+  Optional named list of arguments to pass to
+  [`gtsummary::add_p()`](https://www.danieldsjoberg.com/gtsummary/reference/add_p.html).
+  Allows customization of statistical tests and p-value formatting.
+  User-provided arguments override the default arguments (`pvalue_fun`
+  and `test.args`). See
+  [`gtsummary::add_p()`](https://www.danieldsjoberg.com/gtsummary/reference/add_p.html)
+  documentation for available arguments.
 
 ## Value
 
@@ -322,6 +339,24 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\> extras(pval = FALSE)
+
+[TABLE]
+
+\# Customize add_p() behavior
+gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
+\|\>
+gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
+= trt) \|\> extras(.add_p_args =
+[list](https://rdrr.io/r/base/list.html)( test =
+[list](https://rdrr.io/r/base/list.html)([all_continuous](https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html)()
+~ "t.test"), pvalue_fun = ~
+gtsummary::[style_pvalue](https://www.danieldsjoberg.com/gtsummary/reference/style_pvalue.html)(.x,
+digits = 2) )) \#\> Warning: Failed to add p-values. \#\> ✖ Error: Error
+processing \`test\` argument. \#\> ! Caused by error in
+\`all_continuous()\`: ! could not find function \#\> "all_continuous"
+\#\> ℹ Select among columns "age", "marker", "stage", "grade",
+"response", "death", \#\> and "ttdeath" \#\> ℹ Continuing without
+p-values.
 
 [TABLE]
 
