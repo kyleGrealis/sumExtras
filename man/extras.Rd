@@ -4,7 +4,14 @@
 \alias{extras}
 \title{Add standard styling and formatting to gtsummary tables}
 \usage{
-extras(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL)
+extras(
+  tbl,
+  pval = TRUE,
+  overall = TRUE,
+  last = FALSE,
+  .args = NULL,
+  .add_p_args = NULL
+)
 }
 \arguments{
 \item{tbl}{A gtsummary table object (e.g., from \code{tbl_summary()}, \code{tbl_regression()})}
@@ -20,6 +27,11 @@ from \code{gtsummary::add_overall()}.}
 
 \item{.args}{Optional list of arguments to use instead of individual parameters.
 When provided, overrides \code{pval}, \code{overall}, and \code{last} arguments.}
+
+\item{.add_p_args}{Optional named list of arguments to pass to \code{gtsummary::add_p()}.
+Allows customization of statistical tests and p-value formatting. User-provided
+arguments override the default arguments (\code{pvalue_fun} and \code{test.args}).
+See \code{gtsummary::add_p()} documentation for available arguments.}
 }
 \value{
 A gtsummary table object with standard formatting applied
@@ -87,6 +99,14 @@ gtsummary::trial |>
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>
   extras(pval = FALSE)
+
+# Customize add_p() behavior
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  extras(.add_p_args = list(
+    test = list(all_continuous() ~ "t.test"),
+    pvalue_fun = ~ gtsummary::style_pvalue(.x, digits = 2)
+  ))
 
 # Chain with other functions
 # Create required dictionary first
