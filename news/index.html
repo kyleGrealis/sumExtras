@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">sumExtras</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,25 @@
       <small>Source: <a href="https://github.com/kyleGrealis/sumExtras/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="sumextras-030">sumExtras 0.3.0<a class="anchor" aria-label="anchor" href="#sumextras-030"></a></h2>
+<div class="section level3">
+<h3 id="new-features-0-3-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-3-0"></a></h3>
+<ul><li>New <code>.add_p_args</code> argument to <code><a href="../reference/extras.html">extras()</a></code> allows for passing <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.html" class="external-link">gtsummary::add_p()</a></code> arguments, such as:
+<ul><li>
+<code>test</code> for specifying statistical tests for each variable (i.e., <code>"t.test"</code>, <code>"fisher.test"</code>). Thank you, Daniel Maya.</li>
+<li>
+<code>pvalue_fun</code> for formatting p-values</li>
+<li>
+<code>group</code>, <code>include</code>, etc.</li>
+<li>See <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_p.tbl_summary.html" class="external-link">?gtsummary::add_p.tbl_summary</a></code> for more information of proper usage.</li>
+</ul></li>
+</ul></div>
+<div class="section level3">
+<h3 id="improvements-0-3-0">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-0"></a></h3>
+<ul><li>Extended list of zero or <code>NA</code> value recognition used by <code>clean_table</code>. This fixes the funcion previously not recognizing <code>0 (0)</code> for Mean (SD).</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="sumextras-020">sumExtras 0.2.0<a class="anchor" aria-label="anchor" href="#sumextras-020"></a></h2>
 <div class="section level3">

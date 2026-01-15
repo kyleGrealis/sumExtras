@@ -80,6 +80,9 @@ Other contributors:
 - Raymond Balise <balise@miami.edu>
   ([ORCID](https://orcid.org/0000-0002-9856-5901)) \[contributor\]
 
+- Daniel Maya <dheal.maya@gmail.com>
+  ([ORCID](https://orcid.org/0000-0002-0164-7768)) \[contributor\]
+
 ## Examples
 
 ``` r

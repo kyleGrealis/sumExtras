@@ -8,6 +8,9 @@
 - **Raymond Balise**. Contributor.
   [](https://orcid.org/0000-0002-9856-5901)
 
+- **Daniel Maya**. Contributor.
+  [](https://orcid.org/0000-0002-0164-7768)
+
 ## Citation
 
 Source:
