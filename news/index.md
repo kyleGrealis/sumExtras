@@ -25,6 +25,8 @@
 
 ## sumExtras 0.2.0
 
+CRAN release: 2026-01-19
+
 ### Breaking Changes
 
 - `group_styling()` renamed to
