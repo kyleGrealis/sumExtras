@@ -5,6 +5,7 @@
 
 [![R-CMD-check](https://github.com/kyleGrealis/sumExtras/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kyleGrealis/sumExtras/actions/workflows/R-CMD-check.yaml)
 [![CRAN status](https://www.r-pkg.org/badges/version/sumExtras)](https://CRAN.R-project.org/package=sumExtras)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/sumExtras)](https://cran.r-project.org/package=sumExtras)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 [![Tests: 245 passing](https://img.shields.io/badge/tests-245_passing-brightgreen.svg)](https://github.com/kyleGrealis/sumExtras/tree/main/tests/testthat)
 
