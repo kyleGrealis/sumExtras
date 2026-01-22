@@ -66,9 +66,12 @@ test_that("extras() works with non-stratified tables", {
   skip_if_not_installed("gtsummary")
 
   # Should work without error even without 'by' argument
-  tbl <- gtsummary::trial |>
-    gtsummary::tbl_summary() |>
-    extras()
+  expect_warning(
+    tbl <- gtsummary::trial |>
+      gtsummary::tbl_summary() |>
+      extras(),
+    "not stratified"
+  )
 
   expect_s3_class(tbl, "gtsummary")
 })
@@ -78,8 +81,10 @@ test_that("extras() handles regression tables", {
   skip_if_not_installed("broom")
 
   mod <- lm(age ~ grade + marker, data = gtsummary::trial)
-  tbl <- gtsummary::tbl_regression(mod) |>
-    extras()
+  tbl <- suppressWarnings(
+    gtsummary::tbl_regression(mod) |>
+      extras()
+  )
 
   expect_s3_class(tbl, "gtsummary")
 })
