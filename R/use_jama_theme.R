@@ -5,6 +5,9 @@
 #'   for use with sumExtras functions, providing professional medical journal
 #'   formatting with reduced padding and consistent styling. The theme remains
 #'   active for the entire R session or until changed with another theme.
+#' 
+#' @param quiet Logical. Output message "Applied JAMA compact theme to {gtsummary}".
+#'   Default is TRUE.
 #'
 #' @returns Invisibly returns the theme list object from
 #'   \code{gtsummary::theme_gtsummary_compact("jama")}. The theme is applied
@@ -74,13 +77,18 @@
 #'
 #' @family theme functions
 #' @export
-use_jama_theme <- function() {
+use_jama_theme <- function(quiet = TRUE) {
   if (!requireNamespace("gtsummary", quietly = TRUE)) {
     stop("Package 'gtsummary' is required. Please install it.", call. = FALSE)
   }
 
   theme <- gtsummary::theme_gtsummary_compact("jama")
-  gtsummary::set_gtsummary_theme(theme)
-  message("Applied JAMA compact theme to {gtsummary}")
+  
+  if (!quiet) {
+    gtsummary::set_gtsummary_theme(theme)
+    message("Applied JAMA compact theme to {gtsummary}")
+  } else {
+    suppressMessages(gtsummary::set_gtsummary_theme(theme))
+  }
   invisible(theme)
 }
