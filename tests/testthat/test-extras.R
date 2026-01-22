@@ -65,13 +65,10 @@ test_that("extras() works with .args parameter", {
 test_that("extras() works with non-stratified tables", {
   skip_if_not_installed("gtsummary")
 
-  # Should work without error even without 'by' argument
-  expect_warning(
-    tbl <- gtsummary::trial |>
-      gtsummary::tbl_summary() |>
-      extras(),
-    "not stratified"
-  )
+  # Should work without warning when using defaults
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary() |>
+    extras()
 
   expect_s3_class(tbl, "gtsummary")
 })

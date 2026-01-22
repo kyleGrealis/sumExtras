@@ -7,7 +7,7 @@
 use_jama_theme(quiet = TRUE)
 }
 \arguments{
-\item{quiet}{Logical. Output message "Applied JAMA compact theme to {gtsummary}".
+\item{quiet}{Logical. Output message "Applied JAMA compact theme to \{gtsummary\}".
 Default is TRUE.}
 }
 \value{
