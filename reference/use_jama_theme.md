@@ -10,8 +10,15 @@ theme.
 ## Usage
 
 ``` r
-use_jama_theme()
+use_jama_theme(quiet = TRUE)
 ```
+
+## Arguments
+
+- quiet:
+
+  Logical. Output message "Applied JAMA compact theme to gtsummary".
+  Default is TRUE.
 
 ## Value
 
@@ -84,8 +91,6 @@ which replicates the same styling for non-gtsummary tables.
 # \donttest{
 # Apply theme at the start of your analysis
 use_jama_theme()
-#> Setting theme "Compact"
-#> Applied JAMA compact theme to {gtsummary}
 
 # All subsequent gtsummary tables will use JAMA formatting
 gtsummary::trial |>
@@ -215,8 +220,7 @@ gtsummary::[tbl_regression](https://www.danieldsjoberg.com/gtsummary/reference/t
 
 [TABLE]
 
-\# Combine with sumExtras styling functions use_jama_theme() \#\>
-Setting theme "Compact" \#\> Applied JAMA compact theme to {gtsummary}
+\# Combine with sumExtras styling functions use_jama_theme()
 gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by

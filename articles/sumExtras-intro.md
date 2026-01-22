@@ -242,8 +242,6 @@ to apply this theme to all gtsummary tables in your session:
 ``` r
 # Apply JAMA compact theme (typically done once at the beginning)
 use_jama_theme()
-#> Setting theme "Compact"
-#> Applied JAMA compact theme to {gtsummary}
 ```
 
 This is equivalent to calling
@@ -275,8 +273,6 @@ my_dictionary <- tibble::tribble(
 
 # 2. Set the recommended theme (once per session)
 use_jama_theme()
-#> Setting theme "Compact"
-#> Applied JAMA compact theme to {gtsummary}
 
 # 3. Create a clean, labeled table with one function call
 trial |>

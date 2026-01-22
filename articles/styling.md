@@ -495,8 +495,6 @@ session:
 ``` r
 # Apply JAMA compact theme (typically done once at the beginning)
 use_jama_theme()
-#> Setting theme "Compact"
-#> Applied JAMA compact theme to {gtsummary}
 
 # Now all gtsummary tables use this theme
 trial |>
