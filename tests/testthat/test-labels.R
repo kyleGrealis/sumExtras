@@ -997,7 +997,7 @@ test_that("apply_labels_from_dictionary() preserves data structure and values", 
 # INTEGRATION TESTS - VIGNETTE SCENARIOS
 # ==============================================================================
 
-context("Integration Tests - Vignette Workflows")
+# Integration Tests - Vignette Workflows
 
 test_that("Vignette scenario: dictionary passed explicitly to add_auto_labels()", {
   skip_if_not_installed("gtsummary")
