@@ -6,6 +6,9 @@
 ## usethis namespace: end
 NULL
 
+# Suppress R CMD check notes for NSE variables used in dplyr
+utils::globalVariables("variable")
+
 #' sumExtras: Extra Functions for 'gtsummary' Table Styling
 #'
 #' @description
