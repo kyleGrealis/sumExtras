@@ -209,10 +209,11 @@ add_auto_labels <- function(tbl, dictionary) {
       # Extract variable names from the table body
       table_vars <- unique(tbl$table_body$variable)
 
-      # Filter dictionary to matching variables
+      # Filter dictionary to matching variables and de-duplicate
       dict_filtered <- dictionary |>
         dplyr::filter(Variable %in% table_vars) |>
-        dplyr::select(variable = Variable, dict_label = Description)
+        dplyr::select(variable = Variable, dict_label = Description) |>
+        dplyr::distinct(variable, .keep_all = TRUE)
     }
   }
 
