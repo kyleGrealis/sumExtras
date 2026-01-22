@@ -1,3 +1,9 @@
+# sumExtras 0.3.1
+
+## Improvements
+
+* Added `quiet = TRUE` default to `use_jama_theme()` to suppress messages from {gtsummary} and {sumExtras}. Resolves issue #12 (thank you @RaymondBalise).
+
 # sumExtras 0.3.0
 
 ## New Features
