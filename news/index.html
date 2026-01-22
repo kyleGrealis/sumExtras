@@ -47,7 +47,16 @@
 <h2 class="pkg-version" data-toc-text="0.3.1" id="sumextras-031">sumExtras 0.3.1<a class="anchor" aria-label="anchor" href="#sumextras-031"></a></h2>
 <div class="section level3">
 <h3 id="improvements-0-3-1">Improvements<a class="anchor" aria-label="anchor" href="#improvements-0-3-1"></a></h3>
-<ul><li>Added <code>quiet = TRUE</code> default to <code><a href="../reference/use_jama_theme.html">use_jama_theme()</a></code> to suppress messages from {gtsummary} and {sumExtras}. Resolves issue <a href="https://github.com/kyleGrealis/sumExtras/issues/12" class="external-link">#12</a> (thank you <a href="https://github.com/RaymondBalise" class="external-link">@RaymondBalise</a>).</li>
+<ul><li><p>Added <code>quiet = TRUE</code> default to <code><a href="../reference/use_jama_theme.html">use_jama_theme()</a></code> to suppress messages from {gtsummary} and {sumExtras}. Resolves issue <a href="https://github.com/kyleGrealis/sumExtras/issues/12" class="external-link">#12</a> (thank you <a href="https://github.com/RaymondBalise" class="external-link">@RaymondBalise</a>).</p></li>
+<li>
+<p><code><a href="../reference/extras.html">extras()</a></code> no longer warns when called with default arguments on non-stratified tables. Previously, calling <code>extras(tbl)</code> on a table without a <code>by</code> argument would warn even though the user didn’t explicitly request <code>overall</code> or <code>pval</code> features. Now warnings only fire when users <strong>explicitly</strong> request features that can’t be applied:</p>
+<ul><li>
+<code>extras(non_stratified_tbl)</code> - Silent (applies basic formatting)</li>
+<li>
+<code>extras(non_stratified_tbl, overall = TRUE)</code> - Warns (user explicitly requested)</li>
+<li>
+<code>extras(non_stratified_tbl, pval = TRUE)</code> - Warns (user explicitly requested)</li>
+</ul></li>
 </ul></div>
 </div>
     <div class="section level2">

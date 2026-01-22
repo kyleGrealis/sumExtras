@@ -649,9 +649,6 @@ trial |>
   tbl_summary(include = c(age, marker, grade)) |>
   add_auto_labels(dictionary = combined_dict) |>
   extras()
-#> Warning: This table is not stratified (missing `by` argument).
-#> ℹ Overall column and p-values require stratification.
-#> ℹ Applying only `bold_labels()` and `modify_header(label ~ '')`.
 ```
 
 [TABLE]

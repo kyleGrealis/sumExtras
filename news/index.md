@@ -10,6 +10,19 @@
   [\#12](https://github.com/kyleGrealis/sumExtras/issues/12) (thank you
   [@RaymondBalise](https://github.com/RaymondBalise)).
 
+- [`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md) no
+  longer warns when called with default arguments on non-stratified
+  tables. Previously, calling `extras(tbl)` on a table without a `by`
+  argument would warn even though the user didn’t explicitly request
+  `overall` or `pval` features. Now warnings only fire when users
+  **explicitly** request features that can’t be applied:
+
+  - `extras(non_stratified_tbl)` - Silent (applies basic formatting)
+  - `extras(non_stratified_tbl, overall = TRUE)` - Warns (user
+    explicitly requested)
+  - `extras(non_stratified_tbl, pval = TRUE)` - Warns (user explicitly
+    requested)
+
 ## sumExtras 0.3.0
 
 CRAN release: 2026-01-22

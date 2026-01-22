@@ -17,7 +17,7 @@ use_jama_theme(quiet = TRUE)
 
 - quiet:
 
-  Logical. Output message "Applied JAMA compact theme to gtsummary".
+  Logical. Output message "Applied JAMA compact theme to {gtsummary}".
   Default is TRUE.
 
 ## Value
