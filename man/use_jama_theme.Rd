@@ -4,7 +4,11 @@
 \alias{use_jama_theme}
 \title{Apply JAMA Compact Theme to gtsummary Tables}
 \usage{
-use_jama_theme()
+use_jama_theme(quiet = TRUE)
+}
+\arguments{
+\item{quiet}{Logical. Output message "Applied JAMA compact theme to {gtsummary}".
+Default is TRUE.}
 }
 \value{
 Invisibly returns the theme list object from
