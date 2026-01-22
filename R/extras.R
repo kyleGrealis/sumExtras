@@ -107,6 +107,9 @@
 #'
 #' @export
 extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL, .add_p_args = NULL) {
+  # Capture whether user explicitly passed pval/overall before .args override
+  pval_explicit <- !missing(pval)
+  overall_explicit <- !missing(overall)
 
   # Validate tbl is a gtsummary object
   if (!inherits(tbl, "gtsummary")) {
@@ -148,9 +151,17 @@ extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL,
       )
     }
 
-    pval <- .args$pval %||% TRUE
-    overall <- .args$overall %||% TRUE
-    last <- .args$last %||% FALSE
+    if (!is.null(.args$pval)) {
+      pval <- .args$pval
+      pval_explicit <- TRUE
+    }
+    if (!is.null(.args$overall)) {
+      overall <- .args$overall
+      overall_explicit <- TRUE
+    }
+    if (!is.null(.args$last)) {
+      last <- .args$last
+    }
   }
 
   # Detect if table is stratified (has a 'by' argument)
@@ -182,7 +193,8 @@ extras <- function(tbl, pval = TRUE, overall = TRUE, last = FALSE, .args = NULL,
     )
   }
 
-  if (!is_stratified && (overall || pval)) {
+  # Only warn if user explicitly requested features that can't apply
+  if (!is_stratified && ((overall && overall_explicit) || (pval && pval_explicit))) {
     rlang::warn(
       c(
         "This table is not stratified (missing `by` argument).",

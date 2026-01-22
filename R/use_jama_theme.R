@@ -6,7 +6,7 @@
 #'   formatting with reduced padding and consistent styling. The theme remains
 #'   active for the entire R session or until changed with another theme.
 #' 
-#' @param quiet Logical. Output message "Applied JAMA compact theme to {gtsummary}".
+#' @param quiet Logical. Output message "Applied JAMA compact theme to \{gtsummary\}".
 #'   Default is TRUE.
 #'
 #' @returns Invisibly returns the theme list object from

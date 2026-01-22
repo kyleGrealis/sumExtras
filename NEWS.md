@@ -4,6 +4,11 @@
 
 * Added `quiet = TRUE` default to `use_jama_theme()` to suppress messages from {gtsummary} and {sumExtras}. Resolves issue #12 (thank you @RaymondBalise).
 
+* `extras()` no longer warns when called with default arguments on non-stratified tables. Previously, calling `extras(tbl)` on a table without a `by` argument would warn even though the user didn't explicitly request `overall` or `pval` features. Now warnings only fire when users **explicitly** request features that can't be applied:
+  - `extras(non_stratified_tbl)` - Silent (applies basic formatting)
+  - `extras(non_stratified_tbl, overall = TRUE)` - Warns (user explicitly requested)
+  - `extras(non_stratified_tbl, pval = TRUE)` - Warns (user explicitly requested)
+
 # sumExtras 0.3.0
 
 ## New Features
