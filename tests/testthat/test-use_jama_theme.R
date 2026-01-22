@@ -3,10 +3,7 @@
 test_that("use_jama_theme() runs without error", {
   skip_if_not_installed("gtsummary")
 
-  expect_message(
-    use_jama_theme(),
-    "Applied JAMA compact theme"
-  )
+  expect_no_message(use_jama_theme())
 })
 
 test_that("use_jama_theme() sets gtsummary theme", {
@@ -42,8 +39,8 @@ test_that("use_jama_theme() returns theme invisibly", {
 test_that("use_jama_theme() can be called multiple times", {
   skip_if_not_installed("gtsummary")
 
-  expect_message(use_jama_theme())
-  expect_message(use_jama_theme())
+  expect_no_message(use_jama_theme())
+  expect_no_message(use_jama_theme())
 
   # Reset theme after test
   gtsummary::reset_gtsummary_theme()
