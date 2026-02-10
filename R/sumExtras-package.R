@@ -6,39 +6,36 @@
 ## usethis namespace: end
 NULL
 
-# Suppress R CMD check notes for NSE variables used in dplyr
-utils::globalVariables("variable")
-
 #' sumExtras: Extra Functions for 'gtsummary' Table Styling
 #'
 #' @description
 #' Provides additional convenience functions for 'gtsummary'
 #' (Sjoberg et al. (2021) <doi:10.32614/RJ-2021-053>) & 'gt' tables,
 #' including automatic variable labeling from dictionaries, standardized
-#' missing value display, and consistent formatting helpers for streamlined
+#' missing value display, and formatting helpers for common
 #' table styling workflows.
 #'
 #' @section Main Functions:
-#' * [extras()] - The signature function that adds overall columns, p-values, and clean styling
-#' * [clean_table()] - Standardizes missing value display
-#' * [add_auto_labels()] - Smart automatic variable labeling from dictionaries or label attributes
-#' * [apply_labels_from_dictionary()] - Set label attributes on data for cross-package workflows
-#' * [use_jama_theme()] - Apply JAMA compact theme to gtsummary tables
-#' * [theme_gt_compact()] - JAMA-style compact themes for gt tables
-#' * [add_group_styling()] - Enhanced text formatting for grouped tables
-#' * [add_group_colors()] - Convenience function for group colors with automatic gt conversion
+#' * [extras()] - Overall columns, p-values, clean styling
+#' * [clean_table()] - Standardize missing value display
+#' * [add_auto_labels()] - Automatic variable labeling
+#' * [use_jama_theme()] - JAMA compact theme for gtsummary
+#' * [theme_gt_compact()] - JAMA-style compact theme for gt
+#' * [add_group_styling()] - Format grouped table headers
+#' * [add_group_colors()] - Group colors with gt conversion
 #'
 #' @section Important Notes on Package Dependencies:
-#' **gtsummary Internals:** This package depends on internal structures of the
-#' gtsummary package (specifically `tbl$call_list`, `tbl$inputs`, and `tbl$table_body`).
-#' While we make every effort to maintain compatibility, major updates to gtsummary
-#' may require corresponding updates to sumExtras.
+#' **gtsummary Internals:** This package depends on internal
+#' structures of the gtsummary package (specifically
+#' `tbl$call_list`, `tbl$inputs`, and `tbl$table_body`).
+#' Compatibility is maintained where possible, but major
+#' gtsummary updates may require sumExtras updates.
 #'
-#' **Minimum Versions:** Requires gtsummary >= 1.7.0 and gt >= 0.9.0. These minimum
-#' versions ensure the necessary internal structures are available.
+#' **Minimum Versions:** Requires gtsummary >= 1.7.0 and
+#' gt >= 0.9.0 for the necessary internal structures.
 #'
-#' **Testing:** We recommend testing your workflows after any gtsummary updates,
-#' especially major version changes.
+#' **Testing:** Test your workflows after gtsummary
+#' updates, especially major version changes.
 #'
 #' @seealso
 #' * gtsummary package: <https://www.danieldsjoberg.com/gtsummary/>

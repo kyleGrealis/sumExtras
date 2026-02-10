@@ -1,0 +1,142 @@
+---
+title: "Themes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Themes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+options(gtsummary.print_engine = "gt")
+```
+
+```{r setup}
+#| eval: false
+library(sumExtras)
+library(gtsummary)
+library(gt)
+```
+
+```{r setup2}
+#| echo: false
+#| message: false
+#| warning: false
+library(sumExtras)
+library(gtsummary)
+library(gt)
+```
+
+## `use_jama_theme()`
+
+`use_jama_theme()` sets the gtsummary theme to JAMA compact styling for the rest of your session. It reduces padding, tightens font sizes, and produces tables suited for publication or reports.
+
+```{r}
+use_jama_theme()
+
+trial |>
+  tbl_summary(by = trt) |>
+  extras()
+```
+
+This is equivalent to calling `gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))` but shorter to type.
+
+To reset back to the default gtsummary theme:
+
+```{r, eval=FALSE}
+gtsummary::reset_gtsummary_theme()
+```
+
+## `theme_gt_compact()`
+
+When you mix gtsummary tables with plain gt tables in the same document, the styling mismatch is noticeable. `theme_gt_compact()` applies the same JAMA compact look to gt tables.
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### Default gt
+
+```{r gt-default, eval=FALSE}
+trial |>
+  select(trt, age, grade) |>
+  head(10) |>
+  gt::gt()
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### With theme_gt_compact()
+
+```{r gt-compact, eval=FALSE}
+trial |>
+  select(trt, age, grade) |>
+  head(10) |>
+  gt::gt() |>
+  theme_gt_compact()
+```
+
+:::
+
+::::::
+
+```{r build-gt-theme, echo=FALSE}
+table_gt_default <- trial |>
+  dplyr::select(trt, age, grade) |>
+  head(10) |>
+  gt::gt()
+
+table_gt_compact <- trial |>
+  dplyr::select(trt, age, grade) |>
+  head(10) |>
+  gt::gt() |>
+  theme_gt_compact()
+```
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 30px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-gt-default, echo=FALSE}
+table_gt_default
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-gt-compact, echo=FALSE}
+table_gt_compact
+```
+
+:::
+
+::::::
+
+You can layer additional gt styling on top:
+
+```{r}
+trial |>
+  dplyr::select(trt, age, grade, marker) |>
+  head(8) |>
+  gt::gt() |>
+  theme_gt_compact() |>
+  gt::tab_header(
+    title = "Trial Patient Sample",
+    subtitle = "First 8 patients"
+  )
+```
+
+## More Vignettes
+
+- `vignette("sumExtras-intro")` -- getting started with extras()
+- `vignette("labeling")` -- dictionary-based labeling
+- `vignette("styling")` -- group headers and advanced formatting
+- `vignette("options")` -- .Rprofile options for automatic labeling

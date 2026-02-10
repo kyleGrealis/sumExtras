@@ -1,6 +1,6 @@
 Package: sumExtras
 Title: Extra Functions for 'gtsummary' Table Styling
-Version: 0.3.1
+Version: 1.0.0
 Authors@R: 
     c(
         person(
@@ -39,11 +39,8 @@ Depends:
 Suggests:
     broom (>= 1.0.5),
     broom.helpers (>= 1.20.0),
-    ggplot2,
     knitr,
     labelled,
-    quarto,
-    scales,
     survey,
     testthat (>= 3.0.0),
     tibble
@@ -53,7 +50,7 @@ Imports:
     dplyr,
     gt (>= 0.9.0),
     gtsummary (>= 1.7.0),
-    purrr,
     rlang
-URL: https://github.com/kyleGrealis/sumExtras
+URL: https://github.com/kyleGrealis/sumExtras,
+    https://www.kyleGrealis.com/sumExtras/
 BugReports: https://github.com/kyleGrealis/sumExtras/issues

@@ -7,40 +7,40 @@
 add_auto_labels(tbl, dictionary)
 }
 \arguments{
-\item{tbl}{A gtsummary table object created by \code{tbl_summary()}, \code{tbl_svysummary()},
-or \code{tbl_regression()}.}
+\item{tbl}{A gtsummary table object created by
+\code{tbl_summary()}, \code{tbl_svysummary()}, or
+\code{tbl_regression()}.}
 
-\item{dictionary}{A data frame or tibble with \code{Variable} and \code{Description} columns.
-If not provided (missing), the function will search for a \code{dictionary} object in
-the calling environment. If no dictionary is found, the function will attempt to
-read label attributes from the data. Set to \code{NULL} explicitly to skip dictionary
-search and only use attributes.}
+\item{dictionary}{A data frame or tibble with \code{Variable}
+and \code{Description} columns. If not provided (missing),
+the function will search for a \code{dictionary} object in
+the calling environment. If no dictionary is found, the
+function will attempt to read label attributes from the
+data. Set to \code{NULL} explicitly to skip dictionary search
+and only use attributes.}
 }
 \value{
 A gtsummary table object with labels applied. Manual labels set via
 \code{label = list(...)} in the original table call are always preserved.
 }
 \description{
-Automatically apply variable labels from a dictionary or label
+Applies variable labels from a dictionary or label
 attributes to \code{tbl_summary}, \code{tbl_svysummary}, or \code{tbl_regression} objects.
-Intelligently preserves manual label overrides set in the original table call
-while applying dictionary labels or reading label attributes from data.
-The dictionary can be passed explicitly or will be searched for in the calling
-environment. If no dictionary is found, the function will attempt to read
-label attributes from the underlying data.
+Preserves manual label overrides set in the original table
+call. The dictionary can be passed explicitly or will be
+searched for in the calling environment. If no dictionary
+is found, the function reads label attributes from the
+underlying data.
 }
 \details{
 \subsection{Label Priority Hierarchy}{
 
 The function applies labels according to this priority (highest to lowest):
 \enumerate{
-\item \strong{Manual labels} - Labels set via \code{label = list(...)} in \code{tbl_summary()} etc.
-are always preserved
-\item \strong{Dictionary vs Attributes} - Controlled by \code{options(sumExtras.preferDictionary)}:
-\itemize{
-\item If \code{TRUE}: Dictionary labels take precedence over attribute labels
-\item If \code{FALSE} (default): Attribute labels take precedence over dictionary labels
-}
+\item \strong{Manual labels} - Labels set via \code{label = list(...)}
+in \code{tbl_summary()} etc. are always preserved
+\item \strong{Attribute labels} - Labels from \code{attr(data$var, "label")}
+\item \strong{Dictionary labels} - Labels from the dictionary data frame
 \item \strong{Default} - If no label source is available, uses variable name
 }
 }
@@ -56,40 +56,22 @@ The dictionary must be a data frame with columns:
 
 \subsection{Label Attributes}{
 
-The function reads label attributes from data using \code{attr(data$var, "label")},
-following the same label convention used by \strong{haven}, \strong{Hmisc}, and \strong{ggplot2 4.0+}.
-
-Your data may already have labels from various sources - imported from statistical
-software packages, set by other R packages, added manually, or from collaborative
-projects. This function discovers and applies them seamlessly within gtsummary tables.
-
-Because sumExtras uses native R's attribute storage, labels work across any package
-that respects the \code{"label"} attribute convention, including:
-\itemize{
-\item \strong{ggplot2 4.0+} - automatic axis and legend labels
-\item \strong{gt} - table label support
-\item \strong{Hmisc} - label utilities and display functions
-}
-
-This approach requires zero package dependencies and is fully compatible with the
-labelled package if you choose to use it, but does not require it.
+The function reads label attributes from data using
+\code{attr(data$var, "label")}, following the same convention
+used by \strong{haven}, \strong{Hmisc}, and \strong{ggplot2 4.0+}.
+If your data already has labels (from imported files,
+other packages, or manual assignment), this function
+picks them up automatically.
 }
 
 \subsection{Implementation Note}{
 
 \strong{This function relies on internal gtsummary structures} (\code{tbl$call_list},
-\code{tbl$inputs}, \code{tbl$table_body}) to detect manually set labels. While robust
-error handling is implemented, major updates to gtsummary may require
-corresponding updates to sumExtras. Requires gtsummary >= 1.7.0.
+\code{tbl$inputs}, \code{tbl$table_body}) to detect manually set labels. Major updates
+to gtsummary may require corresponding updates to sumExtras.
+Requires gtsummary >= 1.7.0.
 }
 }
-\section{Options}{
-
-Set \code{options(sumExtras.preferDictionary = TRUE)} to prioritize dictionary labels
-over label attributes when both are available. Default is \code{FALSE}, which prioritizes
-attributes over dictionary labels.
-}
-
 \examples{
 \donttest{
 # Create a dictionary
@@ -109,7 +91,7 @@ gtsummary::trial |>
 dictionary <- my_dict
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
-  add_auto_labels()  # Finds dictionary automatically
+  add_auto_labels() # Finds dictionary automatically
 
 # Working with pre-labeled data (no dictionary needed)
 labeled_data <- gtsummary::trial
@@ -118,41 +100,23 @@ attr(labeled_data$marker, "label") <- "Marker Level (ng/mL)"
 
 labeled_data |>
   gtsummary::tbl_summary(include = c(age, marker)) |>
-  add_auto_labels()  # Reads from label attributes
+  add_auto_labels() # Reads from label attributes
 
 # Manual overrides always win
 gtsummary::trial |>
   gtsummary::tbl_summary(
     by = trt,
     include = c(age, grade),
-    label = list(age ~ "Custom Age Label")  # Manual override
+    label = list(age ~ "Custom Age Label") # Manual override
   ) |>
-  add_auto_labels(dictionary = my_dict)  # grade gets dict label, age keeps manual
+  add_auto_labels(dictionary = my_dict) # grade: dict, age: manual
 
-# Control priority with options
-options(sumExtras.preferDictionary = TRUE)  # Dictionary over attributes
-
-# Data has both dictionary and attributes
-labeled_trial <- gtsummary::trial
-attr(labeled_trial$age, "label") <- "Age from Attribute"
-dictionary <- tibble::tribble(
-  ~Variable, ~Description,
-  "age", "Age from Dictionary"
-)
-
-labeled_trial |>
-  gtsummary::tbl_summary(include = age) |>
-  add_auto_labels()  # Uses "Age from Dictionary" (option = TRUE)
 }
 
 }
 \seealso{
 \itemize{
-\item \code{apply_labels_from_dictionary()} for setting label attributes on data for ggplot2/other packages
-\item \code{gtsummary::modify_table_body()} for advanced table customization
+\item \code{gtsummary::modify_table_body()} for advanced table
+customization
 }
-
-Other labeling functions: 
-\code{\link{apply_labels_from_dictionary}()}
 }
-\concept{labeling functions}
