@@ -11,17 +11,22 @@ get_group_rows(tbl)
 \code{gtsummary::add_variable_group_header()}}
 }
 \value{
-An integer vector of row numbers where variable_group headers are located
+An integer vector of row numbers where
+variable_group headers are located
 }
 \description{
-Extracts the row indices of variable group headers from a
-gtsummary table. This is useful for applying background colors or other
-gt-specific styling after converting a gtsummary table to gt with \code{as_gt()}.
+Extracts the row indices of variable
+group headers from a gtsummary table. This is useful
+for applying background colors or other gt-specific
+styling after converting a gtsummary table to gt
+with \code{as_gt()}.
 }
 \details{
-Variable group headers are identified by \code{row_type == 'variable_group'}
-in the table body. The returned row numbers can be used with \code{gt::tab_style()}
-to apply styling like background colors after converting to a gt table.
+Variable group headers are identified by
+\code{row_type == 'variable_group'} in the table body.
+The returned row numbers can be used with
+\code{gt::tab_style()} to apply styling like background
+colors after converting to a gt table.
 
 This function should be called BEFORE converting the table with \code{as_gt()},
 as the row type information is only available in gtsummary table objects.

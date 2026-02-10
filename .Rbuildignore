@@ -20,3 +20,5 @@ GEMINI.md
 cran-comments.md
 ^CRAN-SUBMISSION$
 test_updates.R
+^.pre-commit-config.yaml
+^.lintr

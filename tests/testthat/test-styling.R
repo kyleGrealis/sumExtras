@@ -1,4 +1,5 @@
-# Tests for styling functions (theme_gt_compact, add_group_styling, get_group_rows)
+# Tests for styling functions
+# (theme_gt_compact, add_group_styling, get_group_rows)
 
 test_that("theme_gt_compact() works with gt tables", {
   skip_if_not_installed("gt")
@@ -336,13 +337,15 @@ test_that("add_group_colors() errors with invalid color type", {
 
   expect_error(
     add_group_colors(tbl, color = 123),
-    "must be a single character string"
+    class = "add_group_colors_invalid_color"
   )
 })
 
-test_that("add_group_colors() errors with color vector", {
+test_that("add_group_colors() errors with wrong number of colors", {
   skip_if_not_installed("gtsummary")
+  skip_if_not_installed("gt")
 
+  # 1 group, 2 colors = mismatch
   tbl <- gtsummary::trial |>
     gtsummary::tbl_summary(by = trt, include = c(age, marker)) |>
     gtsummary::add_variable_group_header(
@@ -352,7 +355,114 @@ test_that("add_group_colors() errors with color vector", {
 
   expect_error(
     add_group_colors(tbl, color = c("#E8E8E8", "#E3F2FD")),
-    "must be a single character string"
+    class = "add_group_colors_length_mismatch"
   )
 })
 
+test_that("add_group_colors() accepts per-group colors", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("gt")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade, stage)) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 1",
+      variables = age
+    ) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 2",
+      variables = marker:stage
+    ) |>
+    add_group_colors(color = c("#E3F2FD", "#FFF9E6"))
+
+  expect_s3_class(tbl, "gt_tbl")
+})
+
+test_that("add_group_colors() recycles single color for multiple groups", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("gt")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade)) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 1",
+      variables = age
+    ) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 2",
+      variables = marker:grade
+    ) |>
+    add_group_colors(color = "#E8E8E8")
+
+  expect_s3_class(tbl, "gt_tbl")
+})
+
+# =============================================================================
+# Input validation error tests
+# =============================================================================
+
+test_that("theme_gt_compact() errors with non-gt input", {
+  expect_error(
+    theme_gt_compact(mtcars),
+    class = "theme_gt_compact_invalid_input"
+  )
+})
+
+test_that("add_group_styling() errors with non-gtsummary input", {
+  expect_error(
+    add_group_styling(mtcars),
+    class = "group_styling_invalid_input"
+  )
+})
+
+test_that("add_group_styling() errors with invalid format value", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age) |>
+    gtsummary::add_variable_group_header(
+      header = "Test",
+      variables = age
+    )
+
+  expect_error(
+    add_group_styling(tbl, format = "underline"),
+    class = "group_styling_invalid_format_value"
+  )
+})
+
+test_that("add_group_styling() errors with non-character format", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age) |>
+    gtsummary::add_variable_group_header(
+      header = "Test",
+      variables = age
+    )
+
+  expect_error(
+    add_group_styling(tbl, format = 123),
+    class = "group_styling_invalid_format_type"
+  )
+})
+
+test_that("add_group_colors() errors with 3 colors for 2 groups", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = c(age, marker, grade)) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 1",
+      variables = age
+    ) |>
+    gtsummary::add_variable_group_header(
+      header = "Group 2",
+      variables = marker:grade
+    )
+
+  expect_error(
+    add_group_colors(tbl, color = c("#E8E8E8", "#E3F2FD", "#FFF9E6")),
+    class = "add_group_colors_length_mismatch"
+  )
+})

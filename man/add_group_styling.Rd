@@ -7,36 +7,42 @@
 add_group_styling(tbl, format = c("bold", "italic"), indent_labels = 0L)
 }
 \arguments{
-\item{tbl}{A gtsummary table object (e.g., from \code{tbl_summary()}, \code{tbl_regression()})}
+\item{tbl}{A gtsummary table object (e.g., from
+\code{tbl_summary()}, \code{tbl_regression()})}
 
-\item{format}{Character vector specifying text formatting. Options include
-\code{"bold"}, \code{"italic"}, or both. Default is \code{c("bold", "italic")}.}
+\item{format}{Character vector specifying text
+formatting. Options include \code{"bold"}, \code{"italic"},
+or both. Default is \code{c("bold", "italic")}.}
 
-\item{indent_labels}{Integer specifying indentation level (in spaces) for
-variable labels under group headers. Default is \code{0L} (left-aligned).
-Set to \code{4L} to preserve gtsummary's default group indentation, or use
-any non-negative integer for custom spacing.}
+\item{indent_labels}{Integer specifying indentation
+level (in spaces) for variable labels under group
+headers. Default is \code{0L} (left-aligned). Set to
+\code{4L} to preserve gtsummary's default group
+indentation, or use any non-negative integer for
+custom spacing.}
 }
 \value{
 A gtsummary table object with specified formatting applied to
 variable group headers
 }
 \description{
-Adds customizable formatting to variable group headers in
-gtsummary tables. Variable groups are created using
-\code{gtsummary::add_variable_group_header()} to organize variables into sections.
-This function enhances table readability by making group headers visually
-distinct from individual variable labels.
+Adds customizable formatting to variable
+group headers in gtsummary tables. Variable groups are
+created using \code{gtsummary::add_variable_group_header()}
+to organize variables into sections. This function
+makes group headers stand out from individual variable
+labels.
 }
 \details{
-The function targets rows where \code{row_type == 'variable_group'} and
-applies the specified text formatting to the label column. This is
-particularly useful for tables with multiple sections or stratified analyses
-where clear visual hierarchy improves interpretation.
+The function targets rows where
+\code{row_type == 'variable_group'} and applies the
+specified text formatting to the label column.
 
-By default, variable labels are left-aligned (\code{indent_labels = 0L}) to
-distinguish them from categorical levels and statistics. Use \code{indent_labels = 4L}
-to preserve the default gtsummary behavior where grouped variables are
+By default, variable labels are left-aligned
+(\code{indent_labels = 0L}) to distinguish them from
+categorical levels and statistics. Use
+\code{indent_labels = 4L} to preserve the default
+gtsummary behavior where grouped variables are
 indented under their group headers.
 }
 \examples{
@@ -79,13 +85,14 @@ gtsummary::trial |>
     header = "Patient Measures",
     variables = age:marker
   ) |>
-  add_group_styling(indent_labels = 4L)  # Variables indented under header
+  add_group_styling(indent_labels = 4L) # Variables indented under header
 }
 
 }
 \seealso{
 \itemize{
 \item \code{gtsummary::modify_table_styling()} for general table styling options
-\item \code{gtsummary::add_variable_group_header()} for creating variable group headers
+\item \code{gtsummary::add_variable_group_header()} for
+creating variable group headers
 }
 }

@@ -1,18 +1,19 @@
 #' Apply compact JAMA-style theme to gt tables
 #'
-#' @description Applies a compact table theme to gt tables that matches the
-#'   'jama' theme from gtsummary. This ensures visual consistency when mixing
-#'   gtsummary tables (using `theme_gtsummary_compact("jama")`) with regular
-#'   gt tables in the same document. The theme reduces padding, adjusts font
-#'   sizes, and applies JAMA journal styling conventions.
+#' @description Applies a compact table theme to gt tables
+#'   that matches the 'jama' theme from gtsummary, so
+#'   gtsummary and plain gt tables look the same in one
+#'   document. Reduces padding, adjusts font sizes, and
+#'   applies JAMA journal styling.
 #'
 #' @param tbl A gt table object created with `gt::gt()`
 #'
-#' @returns A gt table object with compact JAMA-style formatting applied
+#' @returns A gt table object with compact JAMA-style
+#'   formatting applied
 #'
-#' @details This function replicates the visual appearance of
-#'   `gtsummary::theme_gtsummary_compact("jama")` for use with regular gt tables.
-#'   Key styling includes:
+#' @details This function replicates the visual appearance
+#'   of `gtsummary::theme_gtsummary_compact("jama")` for
+#'   use with regular gt tables. Key styling includes:
 #'   * Reduced font size (13px) for compact appearance
 #'   * Minimal padding (1px) on all row types
 #'   * Bold column headers and table titles
@@ -61,62 +62,69 @@ theme_gt_compact <- function(tbl) {
     rlang::abort(
       c(
         "`tbl` must be a gt table object.",
-        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
-        "i" = "Create a gt table using `gt::gt()` or convert a gtsummary table with `gtsummary::as_gt()`."
+        "x" = sprintf(
+          "You supplied an object of class: %s",
+          class(tbl)[1]
+        ),
+        "i" = "Use `gt::gt()` or `gtsummary::as_gt()`."
       ),
       class = "theme_gt_compact_invalid_input"
     )
   }
 
   tbl |>
-   gt::tab_options(
-     table.font.size = gt::px(13),
-     data_row.padding = gt::px(1),
-     summary_row.padding = gt::px(1),
-     grand_summary_row.padding = gt::px(1),
-     footnotes.padding = gt::px(1),
-     source_notes.padding = gt::px(1),
-     row_group.padding = gt::px(1),
-     heading.title.font.weight = "bold",
-     column_labels.font.weight = "bold",
-     table.border.top.style = "hidden",
-     table.border.bottom.style = "hidden"
-   )
+    gt::tab_options(
+      table.font.size = gt::px(13),
+      data_row.padding = gt::px(1),
+      summary_row.padding = gt::px(1),
+      grand_summary_row.padding = gt::px(1),
+      footnotes.padding = gt::px(1),
+      source_notes.padding = gt::px(1),
+      row_group.padding = gt::px(1),
+      heading.title.font.weight = "bold",
+      column_labels.font.weight = "bold",
+      table.border.top.style = "hidden",
+      table.border.bottom.style = "hidden"
+    )
 }
-
-
 
 
 #' Apply styling to variable group headers in gtsummary tables
 #'
-#' @description Adds customizable formatting to variable group headers in
-#'   gtsummary tables. Variable groups are created using
-#'   `gtsummary::add_variable_group_header()` to organize variables into sections.
-#'   This function enhances table readability by making group headers visually
-#'   distinct from individual variable labels.
+#' @description Adds customizable formatting to variable
+#'   group headers in gtsummary tables. Variable groups are
+#'   created using `gtsummary::add_variable_group_header()`
+#'   to organize variables into sections. This function
+#'   makes group headers stand out from individual variable
+#'   labels.
 #'
-#' @param tbl A gtsummary table object (e.g., from `tbl_summary()`, `tbl_regression()`)
-#' @param format Character vector specifying text formatting. Options include
-#'   `"bold"`, `"italic"`, or both. Default is `c("bold", "italic")`.
-#' @param indent_labels Integer specifying indentation level (in spaces) for
-#'   variable labels under group headers. Default is `0L` (left-aligned).
-#'   Set to `4L` to preserve gtsummary's default group indentation, or use
-#'   any non-negative integer for custom spacing.
+#' @param tbl A gtsummary table object (e.g., from
+#'   `tbl_summary()`, `tbl_regression()`)
+#' @param format Character vector specifying text
+#'   formatting. Options include `"bold"`, `"italic"`,
+#'   or both. Default is `c("bold", "italic")`.
+#' @param indent_labels Integer specifying indentation
+#'   level (in spaces) for variable labels under group
+#'   headers. Default is `0L` (left-aligned). Set to
+#'   `4L` to preserve gtsummary's default group
+#'   indentation, or use any non-negative integer for
+#'   custom spacing.
 #'
 #' @returns A gtsummary table object with specified formatting applied to
 #'   variable group headers
 #'
-#' @details The function targets rows where `row_type == 'variable_group'` and
-#'   applies the specified text formatting to the label column. This is
-#'   particularly useful for tables with multiple sections or stratified analyses
-#'   where clear visual hierarchy improves interpretation.
+#' @details The function targets rows where
+#'   `row_type == 'variable_group'` and applies the
+#'   specified text formatting to the label column.
 #'
-#'   By default, variable labels are left-aligned (`indent_labels = 0L`) to
-#'   distinguish them from categorical levels and statistics. Use `indent_labels = 4L`
-#'   to preserve the default gtsummary behavior where grouped variables are
+#'   By default, variable labels are left-aligned
+#'   (`indent_labels = 0L`) to distinguish them from
+#'   categorical levels and statistics. Use
+#'   `indent_labels = 4L` to preserve the default
+#'   gtsummary behavior where grouped variables are
 #'   indented under their group headers.
 #'
-#' @importFrom gtsummary modify_table_styling modify_indent tbl_strata tbl_summary
+#' @importFrom gtsummary modify_table_styling modify_indent
 #'
 #' @examples
 #' \donttest{
@@ -158,22 +166,30 @@ theme_gt_compact <- function(tbl) {
 #'     header = "Patient Measures",
 #'     variables = age:marker
 #'   ) |>
-#'   add_group_styling(indent_labels = 4L)  # Variables indented under header
+#'   add_group_styling(indent_labels = 4L) # Variables indented under header
 #' }
 #'
 #' @seealso
 #' * `gtsummary::modify_table_styling()` for general table styling options
-#' * `gtsummary::add_variable_group_header()` for creating variable group headers
+#' * `gtsummary::add_variable_group_header()` for
+#'   creating variable group headers
 #'
 #' @export
-add_group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels = 0L) {
+add_group_styling <- function(
+  tbl,
+  format = c("bold", "italic"),
+  indent_labels = 0L
+) {
   # Validate tbl is a gtsummary object
   if (!inherits(tbl, "gtsummary")) {
     rlang::abort(
       c(
         "`tbl` must be a gtsummary object.",
-        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
-        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+        "x" = sprintf(
+          "You supplied an object of class: %s",
+          class(tbl)[1]
+        ),
+        "i" = "Use `tbl_summary()` or `tbl_regression()`."
       ),
       class = "group_styling_invalid_input"
     )
@@ -185,7 +201,7 @@ add_group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels =
       c(
         "`format` must be a character vector.",
         "x" = sprintf("You supplied an object of class: %s", class(format)[1]),
-        "i" = "Use a character vector like `c('bold', 'italic')` or `'bold'`."
+        "i" = "Use `c(\"bold\", \"italic\")` or `\"bold\"`."
       ),
       class = "group_styling_invalid_format_type"
     )
@@ -198,8 +214,14 @@ add_group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels =
     rlang::abort(
       c(
         "`format` contains invalid formatting options.",
-        "x" = sprintf("Invalid option(s): %s", paste(invalid_formats, collapse = ", ")),
-        "i" = sprintf("Valid options are: %s", paste(valid_formats, collapse = ", "))
+        "x" = sprintf(
+          "Invalid option(s): %s",
+          paste(invalid_formats, collapse = ", ")
+        ),
+        "i" = sprintf(
+          "Valid options are: %s",
+          paste(valid_formats, collapse = ", ")
+        )
       ),
       class = "group_styling_invalid_format_value"
     )
@@ -210,8 +232,10 @@ add_group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels =
     rlang::abort(
       c(
         "`indent_labels` must be a single integer.",
-        "x" = sprintf("You supplied an object of class: %s with length %d",
-                     class(indent_labels)[1], length(indent_labels)),
+        "x" = sprintf(
+          "You supplied an object of class: %s with length %d",
+          class(indent_labels)[1], length(indent_labels)
+        ),
         "i" = "Use a single non-negative integer like `0L` or `4L`."
       ),
       class = "group_styling_invalid_indent_type"
@@ -232,18 +256,21 @@ add_group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels =
   tbl |>
     modify_table_styling(
       columns = label,
-      rows = row_type == 'variable_group',
+      rows = row_type == "variable_group",
       text_format = format
     ) |>
-    # Modify the indentation of grouped variables. By default, gtsummary indents
-    # all grouped variables by 4 spaces, which causes the variable label and
-    # categorical levels to be aligned vertically. Setting indent_labels = 0L
-    # (default) restores the original variable label indentation, distinguishing
-    # variable labels from categorical levels. Use indent_labels = 4L to preserve
-    # the default gtsummary grouping behavior.
+    # Modify the indentation of grouped variables.
+    # By default, gtsummary indents all grouped variables
+    # by 4 spaces, which causes the variable label and
+    # categorical levels to be aligned vertically.
+    # Setting indent_labels = 0L (default) restores the
+    # original variable label indentation, distinguishing
+    # variable labels from categorical levels.
+    # Use indent_labels = 4L to preserve the default
+    # gtsummary grouping behavior.
     modify_indent(
       columns = "label",
-      rows = row_type %in% 'label',
+      rows = row_type %in% "label",
       indent = as.integer(indent_labels)
     )
 }
@@ -251,18 +278,23 @@ add_group_styling <- function(tbl, format = c('bold', 'italic'), indent_labels =
 
 #' Get row numbers of variable group headers for gt styling
 #'
-#' @description Extracts the row indices of variable group headers from a
-#'   gtsummary table. This is useful for applying background colors or other
-#'   gt-specific styling after converting a gtsummary table to gt with `as_gt()`.
+#' @description Extracts the row indices of variable
+#'   group headers from a gtsummary table. This is useful
+#'   for applying background colors or other gt-specific
+#'   styling after converting a gtsummary table to gt
+#'   with `as_gt()`.
 #'
 #' @param tbl A gtsummary table object with variable group headers created by
 #'   `gtsummary::add_variable_group_header()`
 #'
-#' @returns An integer vector of row numbers where variable_group headers are located
+#' @returns An integer vector of row numbers where
+#'   variable_group headers are located
 #'
-#' @details Variable group headers are identified by `row_type == 'variable_group'`
-#'   in the table body. The returned row numbers can be used with `gt::tab_style()`
-#'   to apply styling like background colors after converting to a gt table.
+#' @details Variable group headers are identified by
+#'   `row_type == 'variable_group'` in the table body.
+#'   The returned row numbers can be used with
+#'   `gt::tab_style()` to apply styling like background
+#'   colors after converting to a gt table.
 #'
 #'   This function should be called BEFORE converting the table with `as_gt()`,
 #'   as the row type information is only available in gtsummary table objects.
@@ -306,8 +338,11 @@ get_group_rows <- function(tbl) {
     rlang::abort(
       c(
         "`tbl` must be a gtsummary object.",
-        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
-        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+        "x" = sprintf(
+          "You supplied an object of class: %s",
+          class(tbl)[1]
+        ),
+        "i" = "Use `tbl_summary()` or `tbl_regression()`."
       ),
       class = "get_group_rows_invalid_input"
     )
@@ -329,30 +364,35 @@ get_group_rows <- function(tbl) {
     rlang::abort(
       c(
         "The table body does not contain a `row_type` column.",
-        "i" = "This function requires a gtsummary table with row type information."
+        "i" = "Requires a gtsummary table with row type info."
       ),
       class = "get_group_rows_missing_row_type"
     )
   }
 
-  which(tbl$table_body$row_type == 'variable_group')
+  which(tbl$table_body$row_type == "variable_group")
 }
 
 
 #' Add background colors to group headers with automatic gt conversion
 #'
-#' @description Convenience function that adds background colors to variable group
-#'   headers and converts the table to gt. This is a terminal operation that combines
-#'   `get_group_rows()`, `gtsummary::as_gt()`, and `gt::tab_style()` into a single
-#'   pipeable function.
+#' @description Convenience function that adds background
+#'   colors to variable group headers and converts the
+#'   table to gt. This is a terminal operation that
+#'   combines `get_group_rows()`, `gtsummary::as_gt()`,
+#'   and `gt::tab_style()` into a single pipeable
+#'   function.
 #'
-#'   For text formatting (bold/italic), use `add_group_styling()` before calling this
-#'   function. This composable design keeps each function focused on doing one thing well.
+#'   For text formatting (bold/italic), use
+#'   `add_group_styling()` before calling this function.
 #'
 #' @param tbl A gtsummary table object with variable group headers created by
 #'   `gtsummary::add_variable_group_header()`
-#' @param color Background color for group headers. Default `"#E8E8E8"` (light gray).
-#'   Can be any valid CSS color (hex code, color name, rgb(), etc.).
+#' @param color Background color(s) for group headers.
+#'   Default `"#E8E8E8"` (light gray). Accepts a single
+#'   color (applied to all groups) or a vector of colors
+#'   (one per group). Can be any valid CSS color (hex
+#'   code, color name, rgb(), etc.).
 #'
 #' @returns A gt table object with colored group headers.
 #'   **Note:** This is a terminal operation that converts to gt. You cannot pipe
@@ -363,10 +403,12 @@ get_group_rows <- function(tbl) {
 #'   2. Converts the table to gt with `gtsummary::as_gt()`
 #'   3. Applies background color using `gt::tab_style()`
 #'
-#'   Since this function converts to gt, it should be used as the final styling
-#'   step in your pipeline. Apply all gtsummary functions (like `modify_caption()`,
-#'   `modify_footnote()`, etc.) and text formatting with `add_group_styling()`
-#'   before calling `add_group_colors()`.
+#'   Since this function converts to gt, it should be
+#'   used as the final styling step in your pipeline.
+#'   Apply all gtsummary functions (like
+#'   `modify_caption()`, `modify_footnote()`, etc.) and
+#'   text formatting with `add_group_styling()` before
+#'   calling `add_group_colors()`.
 #'
 #' @importFrom gtsummary as_gt
 #' @importFrom gt tab_style cell_fill cells_body
@@ -406,7 +448,7 @@ get_group_rows <- function(tbl) {
 #'   add_group_styling(format = "bold") |>
 #'   add_group_colors(color = "#FFF9E6")
 #'
-#' # Multiple group headers
+#' # Multiple group headers with same color
 #' gtsummary::trial |>
 #'   gtsummary::tbl_summary(by = trt) |>
 #'   extras() |>
@@ -420,6 +462,21 @@ get_group_rows <- function(tbl) {
 #'   ) |>
 #'   add_group_styling() |>
 #'   add_group_colors(color = "#E8E8E8")
+#'
+#' # Different colors per group
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   extras() |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Demographics",
+#'     variables = age
+#'   ) |>
+#'   gtsummary::add_variable_group_header(
+#'     header = "Disease Measures",
+#'     variables = marker:response
+#'   ) |>
+#'   add_group_styling() |>
+#'   add_group_colors(color = c("#E3F2FD", "#FFF9E6"))
 #' }
 #'
 #' @seealso
@@ -435,21 +492,26 @@ add_group_colors <- function(tbl, color = "#E8E8E8") {
     rlang::abort(
       c(
         "`tbl` must be a gtsummary object.",
-        "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
-        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+        "x" = sprintf(
+          "You supplied an object of class: %s",
+          class(tbl)[1]
+        ),
+        "i" = "Use `tbl_summary()` or `tbl_regression()`."
       ),
       class = "add_group_colors_invalid_input"
     )
   }
 
-  # Validate color is a character string
-  if (!is.character(color) || length(color) != 1) {
+  # Validate color is a character vector
+  if (!is.character(color) || length(color) == 0) {
     rlang::abort(
       c(
-        "`color` must be a single character string.",
-        "x" = sprintf("You supplied an object of class: %s with length %d",
-                     class(color)[1], length(color)),
-        "i" = "Use a valid CSS color like \"#E8E8E8\", \"lightgray\", or \"rgb(200,200,200)\"."
+        "`color` must be a character string or character vector.",
+        "x" = sprintf(
+          "You supplied an object of class: %s with length %d",
+          class(color)[1], length(color)
+        ),
+        "i" = "Use a CSS color like \"#E8E8E8\" or a vector of colors."
       ),
       class = "add_group_colors_invalid_color"
     )
@@ -458,11 +520,38 @@ add_group_colors <- function(tbl, color = "#E8E8E8") {
   # Get group rows while still gtsummary
   group_rows <- get_group_rows(tbl)
 
-  # Convert to gt and apply background color
-  tbl |>
-    gtsummary::as_gt() |>
-    gt::tab_style(
-      style = gt::cell_fill(color = color),
-      locations = gt::cells_body(rows = group_rows)
+  # Validate color length: must be 1 (recycled) or match group count
+  n_groups <- length(group_rows)
+  if (length(color) != 1 && length(color) != n_groups) {
+    rlang::abort(
+      c(
+        sprintf(
+          "`color` must be length 1 or match the number of groups (%d).",
+          n_groups
+        ),
+        "x" = sprintf("You supplied %d color(s).", length(color)),
+        "i" = "Use one color for all groups, or one color per group."
+      ),
+      class = "add_group_colors_length_mismatch"
     )
+  }
+
+  # Recycle single color to match group count
+  if (length(color) == 1) {
+    color <- rep(color, n_groups)
+  }
+
+  # Convert to gt
+  gt_tbl <- gtsummary::as_gt(tbl)
+
+  # Apply each color to its group row
+  for (i in seq_along(group_rows)) {
+    gt_tbl <- gt_tbl |>
+      gt::tab_style(
+        style = gt::cell_fill(color = color[i]),
+        locations = gt::cells_body(rows = group_rows[i])
+      )
+  }
+
+  gt_tbl
 }

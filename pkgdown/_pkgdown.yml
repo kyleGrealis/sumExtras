@@ -1,4 +1,15 @@
-url: https://kyleGrealis.com/sumExtras/
+url: https://www.kyleGrealis.com/sumExtras/
+
+development:
+  mode: auto
+
+repo:
+  url:
+    home: https://github.com/kyleGrealis/sumExtras/
+    source: https://github.com/kyleGrealis/sumExtras/blob/HEAD/
+    issue: https://github.com/kyleGrealis/sumExtras/issues/
+    user: https://github.com/
+
 template:
   bootstrap: 5
   light-switch: true
@@ -14,6 +25,8 @@ articles:
       - sumExtras-intro
       - labeling
       - styling
+      - themes
+      - options
 
 reference:
   - title: "Core Table Styling"
@@ -26,7 +39,6 @@ reference:
     desc: "Functions for managing variable labels from data dictionaries"
     contents:
       - add_auto_labels
-      - apply_labels_from_dictionary
 
   - title: "Theme Functions"
     desc: "Apply JAMA-style compact themes for consistent professional formatting"

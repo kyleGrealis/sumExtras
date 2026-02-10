@@ -9,12 +9,15 @@ extras(
   pval = TRUE,
   overall = TRUE,
   last = FALSE,
+  header = "",
+  symbol = "---",
   .args = NULL,
   .add_p_args = NULL
 )
 }
 \arguments{
-\item{tbl}{A gtsummary table object (e.g., from \code{tbl_summary()}, \code{tbl_regression()})}
+\item{tbl}{A gtsummary table object (e.g., from
+\code{tbl_summary()}, \code{tbl_regression()})}
 
 \item{pval}{Logical indicating whether to add p-values. Default is \code{TRUE}.
 When \code{TRUE}, uses gtsummary's default statistical tests (Kruskal-Wallis for
@@ -22,64 +25,86 @@ continuous variables with 3+ groups, chi-square for categorical variables).}
 
 \item{overall}{Logical indicating whether to add overall column}
 
-\item{last}{Logical indicating if Overall column should be last. Aligns with default
-from \code{gtsummary::add_overall()}.}
+\item{last}{Logical indicating if Overall column
+should be last. Aligns with default from
+\code{gtsummary::add_overall()}.}
 
-\item{.args}{Optional list of arguments to use instead of individual parameters.
+\item{header}{Character string for the label column
+header. Default is \code{""} (blank). Use \code{"Characteristic"}
+or any custom text.}
+
+\item{symbol}{Character string for missing value
+replacement in \code{clean_table()}. Default is \code{"---"}.
+Passed directly to \code{clean_table(symbol = ...)}.}
+
+\item{.args}{Optional list of arguments to use
+instead of individual parameters.
 When provided, overrides \code{pval}, \code{overall}, and \code{last} arguments.}
 
-\item{.add_p_args}{Optional named list of arguments to pass to \code{gtsummary::add_p()}.
-Allows customization of statistical tests and p-value formatting. User-provided
-arguments override the default arguments (\code{pvalue_fun} and \code{test.args}).
+\item{.add_p_args}{Optional named list of arguments
+to pass to \code{gtsummary::add_p()}. Allows customization
+of statistical tests and p-value formatting.
+User-provided arguments override the default arguments
+(\code{pvalue_fun} and \code{test.args}).
 See \code{gtsummary::add_p()} documentation for available arguments.}
 }
 \value{
 A gtsummary table object with standard formatting applied
 }
 \description{
-Applies a consistent set of formatting options to gtsummary tables
-including overall column, bold labels, clean headers, and optional p-values.
-Streamlines the common workflow of adding multiple formatting functions.
-The function always succeeds by applying what works and warning about unsupported features.
+Applies a consistent set of formatting
+options to gtsummary tables including overall column,
+bold labels, clean headers, and optional p-values.
+Wraps the common workflow of adding multiple formatting
+functions into one call. Always succeeds by applying
+what works and warning about the rest.
 }
 \details{
-The function applies the following modifications:
-\itemize{
+The function applies the following modifications (in order):
+\enumerate{
 \item Bolds variable labels for emphasis (all table types)
 \item Removes the "Characteristic" header label (all table types)
 \item Adds an "Overall" column (only stratified summary tables)
-\item Optionally adds p-values (only stratified summary tables)
+\item Optionally adds p-values with bold significance (only stratified
+summary tables)
+\item Applies automatic labels if options are set (see Options section)
 \item Applies \code{clean_table()} styling (all table types)
 }
 
-The function automatically detects whether the input table is stratified (has a \code{by}
-argument) and what type of table it is (tbl_summary, tbl_regression, tbl_strata, etc.).
+The function automatically detects whether the input
+table is stratified (has a \code{by} argument) and what
+type of table it is (tbl_summary, tbl_regression,
+tbl_strata, etc.).
 
-For tables that don't support overall columns or p-values (non-stratified tables,
-regression tables, or stacked tables), the function will issue a warning and
-continue by applying only the universally supported features (bold_labels and
-modify_header). This ensures the function always succeeds rather than failing
-midway through the pipeline.
+For tables that don't support overall columns or
+p-values (non-stratified tables, regression tables,
+or stacked tables), the function warns and applies
+only basic formatting (bold_labels and modify_header).
 
-If any individual formatting step fails (e.g., due to unexpected table structure),
-the function will issue a warning and continue without that feature. This provides
-robustness while keeping you informed of what was skipped.
+For merged tables (\code{tbl_merge}), call \code{extras()} on each
+sub-table before merging — all formatting carries through.
+
+If any individual step fails (e.g., due to unexpected
+table structure), the function warns and continues
+without that feature.
 }
+\section{Options}{
+
+Set \code{options(sumExtras.auto_labels = TRUE)} for automatic labeling.
+See \code{vignette("options")} for details.
+}
+
+\section{Pipeline Ordering}{
+
+Call \code{extras()} before \code{add_variable_group_header()} and
+\code{add_group_colors()} last. See \code{vignette("sumExtras-intro")}.
+}
+
 \section{Table Type Support}{
 
-The function applies features based on table type and stratification:
-
-\itemize{
-\item \strong{bold_labels()} and \strong{modify_header()}: Work on all table types
-\item \strong{add_overall()}: Only works on stratified summary tables (tbl_summary with \code{by})
-\item \strong{add_p()}: Only works on stratified summary tables (tbl_summary with \code{by})
-}
-
-\strong{Full feature support:} tbl_summary and tbl_svysummary with \code{by} argument
-
-\strong{Partial support (basic formatting only):} tbl_regression, tbl_strata, and
-non-stratified tables. When applied to these table types and overall/pval = TRUE,
-the function warns about unsupported features but applies the formatting that works.
+Full features (overall, p-values) require stratified \code{tbl_summary} or
+\code{tbl_svysummary}. Regression and stacked tables get basic formatting
+only (bold labels, clean header). Unsupported features trigger a warning.
 }
 
 \examples{
@@ -100,6 +125,11 @@ gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>
   extras(pval = FALSE)
 
+# Custom header text
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  extras(header = "Variable")
+
 # Customize add_p() behavior
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>
@@ -112,9 +142,9 @@ gtsummary::trial |>
 # Create required dictionary first
 dictionary <- tibble::tribble(
   ~Variable, ~Description,
-  'record_id', 'Participant ID',
-  'age', 'Age at enrollment',
-  'sex', 'Biological sex'
+  "record_id", "Participant ID",
+  "age", "Age at enrollment",
+  "sex", "Biological sex"
 )
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>

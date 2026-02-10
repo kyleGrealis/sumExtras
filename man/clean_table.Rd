@@ -4,43 +4,52 @@
 \alias{clean_table}
 \title{Standardize missing value display across all gtsummary table types}
 \usage{
-clean_table(tbl)
+clean_table(tbl, symbol = "---")
 }
 \arguments{
-\item{tbl}{A gtsummary table object (e.g., from \code{tbl_summary()}, \code{tbl_svysummary()},
-\code{tbl_regression()}, or \code{tbl_strata()})}
+\item{tbl}{A gtsummary table object (e.g., from
+\code{tbl_summary()}, \code{tbl_svysummary()}, \code{tbl_regression()},
+or \code{tbl_strata()})}
+
+\item{symbol}{Character string to replace missing values
+with. Default is \code{"---"} (em-dash style). Common
+alternatives: \code{"\\u2014"} (em-dash), \code{"\\u2013"}
+(en-dash), \code{"--"}, or \code{"N/A"}.}
 }
 \value{
 A gtsummary table object with standardized missing value display
 }
 \description{
-Improves table readability by replacing various missing value
-representations with a consistent "--" symbol. This makes it easier to
-distinguish between actual data and missing/undefined values in summary
-tables, creating a cleaner and more professional appearance.
+Replaces various missing value representations
+with a consistent symbol (default \code{"---"}) so it is
+easier to tell actual data from missing/undefined values.
 
-Works seamlessly with all gtsummary table types, including stacked tables
-(\code{tbl_strata}) and survey-weighted summaries (\code{tbl_svysummary}).
-Automatically handles tables with or without the standard \code{var_type} column.
+Works with all gtsummary table types, including stacked
+tables (\code{tbl_strata}) and survey-weighted summaries
+(\code{tbl_svysummary}). Handles tables with or without the
+standard \code{var_type} column.
 }
 \details{
 The function uses \code{gtsummary::modify_table_body()} to transform
-character columns and replace common missing value patterns with "--":
+character columns and replace missing, undefined, and zero-valued
+patterns with a consistent symbol. Matched patterns include:
 \itemize{
-\item \code{"0 (NA\%)"} - No events occurred and percentages cannot be calculated
-\item \code{"NA (NA)"} - Completely missing data for both count and percentage
-\item \code{"0 (0\%)"} - Zero counts with zero percentage
-\item \code{"0\% (0.000)"} - Zero percentage with decimal precision
-\item \code{"NA (NA, NA)"} - Missing data with confidence intervals
-\item \code{"NA, NA"} - Missing paired values (e.g., median and IQR)
+\item Literal \code{NA} and \code{Inf} / \code{-Inf} values
+\item Count/percent pairs: \code{"0 (0\%)"}, \code{"0 (NA\%)"}, \code{"0 (NA)"}, \code{"NA (0)"},
+\code{"NA (NA)"}
+\item Decimal variants: \code{"0.00 (0.00)"}, \code{"0.00\% (0.00)"}, \code{"0\% (0.000)"}
+\item Paired values: \code{"NA, NA"}
+\item Confidence intervals: \code{"NA (NA, NA)"}, \code{"0\% (0.000) (0\%, 0\%)"},
+\code{"0.00 (0.00) (0.00, 0.00)"}, and similar zero-CI patterns
 }
 
-This standardization makes tables more scannable and reduces visual clutter
-from various "empty" data representations.
+Replacing these patterns with a single symbol keeps
+the table easier to read.
 
-Note: The function checks for the presence of \code{var_type} column before applying
-\code{modify_missing_symbol()}. This allows it to work seamlessly with \code{tbl_strata}
-objects which use \code{var_type_1}, \code{var_type_2}, etc. instead of \code{var_type}.
+Note: The function checks for the presence of \code{var_type}
+column before applying \code{modify_missing_symbol()}. This
+allows it to work with \code{tbl_strata} objects which use
+\code{var_type_1}, \code{var_type_2}, etc. instead of \code{var_type}.
 }
 \examples{
 \donttest{
@@ -53,16 +62,21 @@ gtsummary::trial |>
 # Create a test dictionary for add_auto_labels():
 dictionary <- tibble::tribble(
   ~Variable, ~Description,
-  'age', 'Age at enrollment',
-  'stage', 'T Stage',
-  'grade', 'Grade',
-  'response', 'Tumor Response'
+  "age", "Age at enrollment",
+  "stage", "T Stage",
+  "grade", "Grade",
+  "response", "Tumor Response"
 )
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>
   add_auto_labels() |>
   extras() |>
   clean_table()
+
+# Custom missing symbol
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  clean_table(symbol = "\u2014") # em-dash
 
 # Works with regression tables too
 lm(age ~ trt + grade, data = gtsummary::trial) |>

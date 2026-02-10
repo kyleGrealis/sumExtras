@@ -1,27 +1,30 @@
+year <- sub("-.*", "", meta$Date %||% format(Sys.Date(), "%Y"))
+note <- sprintf("R package version %s", meta$Version)
+
 bibentry(
   bibtype  = "Manual",
   title    = "sumExtras: Extra Functions for 'gtsummary' Table Styling",
   author   = c(
     person(
-      "Kyle", "Grealis", 
-      email = "kyleGrealis@proton.me", 
+      "Kyle", "Grealis",
+      email = "kyleGrealis@proton.me",
       role = c("aut", "cre"),
       comment = c(ORCID = "0000-0002-9223-8854")
     ),
     person(
-      "Raymond", "Balise", 
-      email = "balise@miami.edu", 
+      "Raymond", "Balise",
+      email = "balise@miami.edu",
       role = "ctb",
       comment = c(ORCID = "0000-0002-9856-5901")
+    ),
+    person(
+      "Daniel", "Maya",
+      email = "dheal.maya@gmail.com",
+      role = "ctb",
+      comment = c(ORCID = "0000-0002-0164-7768")
     )
   ),
-  year     = "2025",
-  note     = "R package version 0.1.1",
-  url      = "https://www.kyleGrealis.com/sumExtras/",
-  textVersion = paste(
-    "Grealis K, Balise R (2025).",
-    "sumExtras: Extra Functions for 'gtsummary' Table Styling.",
-    "R package version 0.1.1.",
-    "https://www.kyleGrealis.com/sumExtras/"
-  )
+  year     = year,
+  note     = note,
+  url      = "https://www.kyleGrealis.com/sumExtras/"
 )
