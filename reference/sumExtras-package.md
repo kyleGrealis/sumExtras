@@ -10,57 +10,52 @@ for streamlined table styling workflows.
 Provides additional convenience functions for 'gtsummary' (Sjoberg et
 al. (2021) <doi:10.32614/RJ-2021-053>) & 'gt' tables, including
 automatic variable labeling from dictionaries, standardized missing
-value display, and consistent formatting helpers for streamlined table
-styling workflows.
+value display, and formatting helpers for common table styling
+workflows.
 
 ## Main Functions
 
-- [`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md) -
-  The signature function that adds overall columns, p-values, and clean
-  styling
+- [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md) -
+  Overall columns, p-values, clean styling
 
-- [`clean_table()`](https://kyleGrealis.com/sumExtras/reference/clean_table.md) -
-  Standardizes missing value display
+- [`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md) -
+  Standardize missing value display
 
-- [`add_auto_labels()`](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md) -
-  Smart automatic variable labeling from dictionaries or label
-  attributes
+- [`add_auto_labels()`](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md) -
+  Automatic variable labeling
 
-- [`apply_labels_from_dictionary()`](https://kyleGrealis.com/sumExtras/reference/apply_labels_from_dictionary.md) -
-  Set label attributes on data for cross-package workflows
+- [`use_jama_theme()`](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md) -
+  JAMA compact theme for gtsummary
 
-- [`use_jama_theme()`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md) -
-  Apply JAMA compact theme to gtsummary tables
+- [`theme_gt_compact()`](https://www.kyleGrealis.com/sumExtras/reference/theme_gt_compact.md) -
+  JAMA-style compact theme for gt
 
-- [`theme_gt_compact()`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md) -
-  JAMA-style compact themes for gt tables
+- [`add_group_styling()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md) -
+  Format grouped table headers
 
-- [`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md) -
-  Enhanced text formatting for grouped tables
-
-- [`add_group_colors()`](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md) -
-  Convenience function for group colors with automatic gt conversion
+- [`add_group_colors()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_colors.md) -
+  Group colors with gt conversion
 
 ## Important Notes on Package Dependencies
 
 **gtsummary Internals:** This package depends on internal structures of
 the gtsummary package (specifically `tbl$call_list`, `tbl$inputs`, and
-`tbl$table_body`). While we make every effort to maintain compatibility,
-major updates to gtsummary may require corresponding updates to
-sumExtras.
+`tbl$table_body`). Compatibility is maintained where possible, but major
+gtsummary updates may require sumExtras updates.
 
-**Minimum Versions:** Requires gtsummary \>= 1.7.0 and gt \>= 0.9.0.
-These minimum versions ensure the necessary internal structures are
-available.
+**Minimum Versions:** Requires gtsummary \>= 1.7.0 and gt \>= 0.9.0 for
+the necessary internal structures.
 
-**Testing:** We recommend testing your workflows after any gtsummary
-updates, especially major version changes.
+**Testing:** Test your workflows after gtsummary updates, especially
+major version changes.
 
 ## See also
 
 Useful links:
 
 - <https://github.com/kyleGrealis/sumExtras>
+
+- <https://www.kyleGrealis.com/sumExtras/>
 
 - Report bugs at <https://github.com/kyleGrealis/sumExtras/issues>
 
@@ -287,12 +282,13 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt, include = [c](https://rdrr.io/r/base/c.html)(age, marker, grade,
 stage)) \|\>
-[extras](https://kyleGrealis.com/sumExtras/reference/extras.md)() \|\>
+[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
+\|\>
 gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
 header = "Patient Characteristics", variables = age:stage ) \|\>
-[add_group_styling](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
+[add_group_styling](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
 \|\>
-[add_group_colors](https://kyleGrealis.com/sumExtras/reference/add_group_colors.md)()
+[add_group_colors](https://www.kyleGrealis.com/sumExtras/reference/add_group_colors.md)()
 
 [TABLE]
 

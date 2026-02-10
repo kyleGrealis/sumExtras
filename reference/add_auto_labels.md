@@ -1,12 +1,11 @@
 # Add automatic labels from dictionary to a gtsummary table
 
-Automatically apply variable labels from a dictionary or label
-attributes to `tbl_summary`, `tbl_svysummary`, or `tbl_regression`
-objects. Intelligently preserves manual label overrides set in the
-original table call while applying dictionary labels or reading label
-attributes from data. The dictionary can be passed explicitly or will be
-searched for in the calling environment. If no dictionary is found, the
-function will attempt to read label attributes from the underlying data.
+Applies variable labels from a dictionary or label attributes to
+`tbl_summary`, `tbl_svysummary`, or `tbl_regression` objects. Preserves
+manual label overrides set in the original table call. The dictionary
+can be passed explicitly or will be searched for in the calling
+environment. If no dictionary is found, the function reads label
+attributes from the underlying data.
 
 ## Usage
 
@@ -48,15 +47,11 @@ lowest):
     [`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)
     etc. are always preserved
 
-2.  **Dictionary vs Attributes** - Controlled by
-    `options(sumExtras.preferDictionary)`:
+2.  **Attribute labels** - Labels from `attr(data$var, "label")`
 
-    - If `TRUE`: Dictionary labels take precedence over attribute labels
+3.  **Dictionary labels** - Labels from the dictionary data frame
 
-    - If `FALSE` (default): Attribute labels take precedence over
-      dictionary labels
-
-3.  **Default** - If no label source is available, uses variable name
+4.  **Default** - If no label source is available, uses variable name
 
 ### Dictionary Format
 
@@ -69,51 +64,22 @@ The dictionary must be a data frame with columns:
 ### Label Attributes
 
 The function reads label attributes from data using
-`attr(data$var, "label")`, following the same label convention used by
-**haven**, **Hmisc**, and **ggplot2 4.0+**.
-
-Your data may already have labels from various sources - imported from
-statistical software packages, set by other R packages, added manually,
-or from collaborative projects. This function discovers and applies them
-seamlessly within gtsummary tables.
-
-Because sumExtras uses native R's attribute storage, labels work across
-any package that respects the `"label"` attribute convention, including:
-
-- **ggplot2 4.0+** - automatic axis and legend labels
-
-- **gt** - table label support
-
-- **Hmisc** - label utilities and display functions
-
-This approach requires zero package dependencies and is fully compatible
-with the labelled package if you choose to use it, but does not require
-it.
+`attr(data$var, "label")`, following the same convention used by
+**haven**, **Hmisc**, and **ggplot2 4.0+**. If your data already has
+labels (from imported files, other packages, or manual assignment), this
+function picks them up automatically.
 
 ### Implementation Note
 
 **This function relies on internal gtsummary structures**
 (`tbl$call_list`, `tbl$inputs`, `tbl$table_body`) to detect manually set
-labels. While robust error handling is implemented, major updates to
-gtsummary may require corresponding updates to sumExtras. Requires
-gtsummary \>= 1.7.0.
-
-## Options
-
-Set `options(sumExtras.preferDictionary = TRUE)` to prioritize
-dictionary labels over label attributes when both are available. Default
-is `FALSE`, which prioritizes attributes over dictionary labels.
+labels. Major updates to gtsummary may require corresponding updates to
+sumExtras. Requires gtsummary \>= 1.7.0.
 
 ## See also
 
-- [`apply_labels_from_dictionary()`](https://kyleGrealis.com/sumExtras/reference/apply_labels_from_dictionary.md)
-  for setting label attributes on data for ggplot2/other packages
-
 - [`gtsummary::modify_table_body()`](https://www.danieldsjoberg.com/gtsummary/reference/modify_table_body.html)
   for advanced table customization
-
-Other labeling functions:
-[`apply_labels_from_dictionary()`](https://kyleGrealis.com/sumExtras/reference/apply_labels_from_dictionary.md)
 
 ## Examples
 
@@ -188,9 +154,7 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt, include = [c](https://rdrr.io/r/base/c.html)(age, grade)) \|\>
-add_auto_labels() \# Finds dictionary automatically \#\> Auto-labeling
-from 'dictionary' object in your environment (this message will only
-show once per session)
+add_auto_labels() \# Finds dictionary automatically
 
 [TABLE]
 
@@ -219,28 +183,8 @@ gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_
 by = trt, include = [c](https://rdrr.io/r/base/c.html)(age, grade),
 label = [list](https://rdrr.io/r/base/list.html)(age ~ "Custom Age
 Label") \# Manual override ) \|\> add_auto_labels(dictionary = my_dict)
-\# grade gets dict label, age keeps manual
+\# grade: dict, age: manual
 
 [TABLE]
-
-\# Control priority with options
-[options](https://rdrr.io/r/base/options.html)(sumExtras.preferDictionary
-= TRUE) \# Dictionary over attributes \# Data has both dictionary and
-attributes labeled_trial \<-
-gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
-[attr](https://rdrr.io/r/base/attr.html)(labeled_trial\$age, "label")
-\<- "Age from Attribute" dictionary \<-
-tibble::[tribble](https://tibble.tidyverse.org/reference/tribble.html)(
-~Variable, ~Description, "age", "Age from Dictionary" ) labeled_trial
-\|\>
-gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(include
-= age) \|\> add_auto_labels() \# Uses "Age from Dictionary" (option =
-TRUE)
-
-| **Characteristic**  | **N = 200**¹ |
-|:--------------------|:------------:|
-| Age from Dictionary | 47 (38, 57)  |
-|     Unknown         |      11      |
-| ¹ Median (Q1, Q3)   |              |
 
 \# }

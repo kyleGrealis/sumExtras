@@ -1,10 +1,9 @@
 # Apply compact JAMA-style theme to gt tables
 
 Applies a compact table theme to gt tables that matches the 'jama' theme
-from gtsummary. This ensures visual consistency when mixing gtsummary
-tables (using `theme_gtsummary_compact("jama")`) with regular gt tables
-in the same document. The theme reduces padding, adjusts font sizes, and
-applies JAMA journal styling conventions.
+from gtsummary, so gtsummary and plain gt tables look the same in one
+document. Reduces padding, adjusts font sizes, and applies JAMA journal
+styling.
 
 ## Usage
 

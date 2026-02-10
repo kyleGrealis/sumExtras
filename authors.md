@@ -14,16 +14,16 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/kyleGrealis/sumExtras/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/kyleGrealis/sumExtras/blob/HEAD/inst/CITATION)
 
-Grealis K, Balise R (2025). sumExtras: Extra Functions for 'gtsummary'
-Table Styling. R package version 0.1.1.
-https://www.kyleGrealis.com/sumExtras/
+Grealis K, Balise R, Maya D (2026). *sumExtras: Extra Functions for
+'gtsummary' Table Styling*. R package version 1.0.0,
+<https://www.kyleGrealis.com/sumExtras/>.
 
     @Manual{,
       title = {sumExtras: Extra Functions for 'gtsummary' Table Styling},
-      author = {Kyle Grealis and Raymond Balise},
-      year = {2025},
-      note = {R package version 0.1.1},
+      author = {Kyle Grealis and Raymond Balise and Daniel Maya},
+      year = {2026},
+      note = {R package version 1.0.0},
       url = {https://www.kyleGrealis.com/sumExtras/},
     }

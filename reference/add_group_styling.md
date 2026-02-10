@@ -3,9 +3,8 @@
 Adds customizable formatting to variable group headers in gtsummary
 tables. Variable groups are created using
 [`gtsummary::add_variable_group_header()`](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)
-to organize variables into sections. This function enhances table
-readability by making group headers visually distinct from individual
-variable labels.
+to organize variables into sections. This function makes group headers
+stand out from individual variable labels.
 
 ## Usage
 
@@ -41,9 +40,7 @@ group headers
 ## Details
 
 The function targets rows where `row_type == 'variable_group'` and
-applies the specified text formatting to the label column. This is
-particularly useful for tables with multiple sections or stratified
-analyses where clear visual hierarchy improves interpretation.
+applies the specified text formatting to the label column.
 
 By default, variable labels are left-aligned (`indent_labels = 0L`) to
 distinguish them from categorical levels and statistics. Use

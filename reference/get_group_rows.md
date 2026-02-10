@@ -37,7 +37,7 @@ objects.
 
 ## See also
 
-- [`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
+- [`add_group_styling()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)
   for applying text formatting to group headers
 
 - [`gtsummary::add_variable_group_header()`](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)

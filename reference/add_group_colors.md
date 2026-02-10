@@ -3,15 +3,14 @@
 Convenience function that adds background colors to variable group
 headers and converts the table to gt. This is a terminal operation that
 combines
-[`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md),
+[`get_group_rows()`](https://www.kyleGrealis.com/sumExtras/reference/get_group_rows.md),
 [`gtsummary::as_gt()`](https://www.danieldsjoberg.com/gtsummary/reference/as_gt.html),
 and [`gt::tab_style()`](https://gt.rstudio.com/reference/tab_style.html)
 into a single pipeable function.
 
 For text formatting (bold/italic), use
-[`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
-before calling this function. This composable design keeps each function
-focused on doing one thing well.
+[`add_group_styling()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)
+before calling this function.
 
 ## Usage
 
@@ -28,8 +27,10 @@ add_group_colors(tbl, color = "#E8E8E8")
 
 - color:
 
-  Background color for group headers. Default `"#E8E8E8"` (light gray).
-  Can be any valid CSS color (hex code, color name, rgb(), etc.).
+  Background color(s) for group headers. Default `"#E8E8E8"` (light
+  gray). Accepts a single color (applied to all groups) or a vector of
+  colors (one per group). Can be any valid CSS color (hex code, color
+  name, rgb(), etc.).
 
 ## Value
 
@@ -42,7 +43,7 @@ gtsummary functions after calling this function.
 This function:
 
 1.  Identifies group header rows with
-    [`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md)
+    [`get_group_rows()`](https://www.kyleGrealis.com/sumExtras/reference/get_group_rows.md)
 
 2.  Converts the table to gt with
     [`gtsummary::as_gt()`](https://www.danieldsjoberg.com/gtsummary/reference/as_gt.html)
@@ -55,15 +56,15 @@ styling step in your pipeline. Apply all gtsummary functions (like
 [`modify_caption()`](https://www.danieldsjoberg.com/gtsummary/reference/modify_caption.html),
 [`modify_footnote()`](https://www.danieldsjoberg.com/gtsummary/reference/deprecated_modify_footnote.html),
 etc.) and text formatting with
-[`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
+[`add_group_styling()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)
 before calling `add_group_colors()`.
 
 ## See also
 
-- [`add_group_styling()`](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)
+- [`add_group_styling()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)
   for text formatting only (stays gtsummary)
 
-- [`get_group_rows()`](https://kyleGrealis.com/sumExtras/reference/get_group_rows.md)
+- [`get_group_rows()`](https://www.kyleGrealis.com/sumExtras/reference/get_group_rows.md)
   for identifying group header rows
 
 - [`gtsummary::add_variable_group_header()`](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)
@@ -291,10 +292,11 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\>
-[extras](https://kyleGrealis.com/sumExtras/reference/extras.md)() \|\>
+[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
+\|\>
 gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
 header = "Baseline Characteristics", variables = age:marker ) \|\>
-[add_group_styling](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
+[add_group_styling](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
 \|\> add_group_colors(color = "#E3F2FD")
 
 [TABLE]
@@ -304,26 +306,45 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\>
-[extras](https://kyleGrealis.com/sumExtras/reference/extras.md)() \|\>
+[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
+\|\>
 gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
 header = "Clinical Measures", variables = marker:stage ) \|\>
-[add_group_styling](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)(format
+[add_group_styling](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)(format
 = "bold") \|\> add_group_colors(color = "#FFF9E6")
 
 [TABLE]
 
-\# Multiple group headers
+\# Multiple group headers with same color
 gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\>
-[extras](https://kyleGrealis.com/sumExtras/reference/extras.md)() \|\>
+[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
+\|\>
 gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
 header = "Demographics", variables = age ) \|\>
 gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
 header = "Disease Measures", variables = marker:response ) \|\>
-[add_group_styling](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
+[add_group_styling](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
 \|\> add_group_colors(color = "#E8E8E8")
+
+[TABLE]
+
+\# Different colors per group
+gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
+\|\>
+gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
+= trt) \|\>
+[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
+\|\>
+gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
+header = "Demographics", variables = age ) \|\>
+gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
+header = "Disease Measures", variables = marker:response ) \|\>
+[add_group_styling](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
+\|\> add_group_colors(color =
+[c](https://rdrr.io/r/base/c.html)("#E3F2FD", "#FFF9E6"))
 
 [TABLE]
 

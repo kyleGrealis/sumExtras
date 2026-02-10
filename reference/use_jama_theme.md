@@ -1,11 +1,9 @@
 # Apply JAMA Compact Theme to gtsummary Tables
 
 Sets the global gtsummary theme to the JAMA (Journal of the American
-Medical Association) compact style. This is the recommended theme for
-use with sumExtras functions, providing professional medical journal
-formatting with reduced padding and consistent styling. The theme
-remains active for the entire R session or until changed with another
-theme.
+Medical Association) compact style. Reduces padding and applies JAMA
+journal styling. The theme stays active for the entire R session or
+until changed with another theme.
 
 ## Usage
 
@@ -17,8 +15,8 @@ use_jama_theme(quiet = TRUE)
 
 - quiet:
 
-  Logical. Output message "Applied JAMA compact theme to {gtsummary}".
-  Default is TRUE.
+  Logical. If `FALSE`, prints a message confirming theme application.
+  Default is `TRUE` (silent).
 
 ## Value
 
@@ -31,28 +29,9 @@ message is printed confirming the theme application.
 
 ## Details
 
-The JAMA compact theme implements formatting standards used by the
-Journal of the American Medical Association, making it ideal for:
-
-- Medical research manuscripts and reports
-
-- Clinical trial summaries
-
-- Academic publications requiring AMA style
-
-- Professional presentations with clean, compact tables
-
-Key formatting features include:
-
-- Reduced font size (13px) for compact appearance
-
-- Minimal cell padding (1px) to maximize information density
-
-- Bold column headers and variable labels
-
-- Clean borders following JAMA style guidelines
-
-- Consistent alignment and spacing
+The JAMA compact theme applies formatting standards from the Journal of
+the American Medical Association: 13px font, 1px cell padding, bold
+column headers, and clean borders.
 
 The function checks for the gtsummary package and will stop with an
 informative error if it is not installed. The theme is applied globally
@@ -65,16 +44,16 @@ function, including
 and related functions.
 
 For visual consistency with regular gt tables, use
-[`theme_gt_compact()`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
+[`theme_gt_compact()`](https://www.kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
 which replicates the same styling for non-gtsummary tables.
 
 ## See also
 
-- [`theme_gt_compact`](https://kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
-  for applying JAMA-style formatting to regular gt tables
+- [`theme_gt_compact`](https://www.kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
+  for JAMA-style gt tables
 
-- [`extras`](https://kyleGrealis.com/sumExtras/reference/extras.md) for
-  standard sumExtras table formatting
+- [`extras`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+  for standard sumExtras table formatting
 
 - [`gtsummary::theme_gtsummary_compact()`](https://www.danieldsjoberg.com/gtsummary/reference/theme_gtsummary.html)
   for other compact theme options
@@ -225,9 +204,10 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt, include = [c](https://rdrr.io/r/base/c.html)(age, marker, stage))
-\|\> [extras](https://kyleGrealis.com/sumExtras/reference/extras.md)()
 \|\>
-[add_group_styling](https://kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
+[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
+\|\>
+[add_group_styling](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
 
 [TABLE]
 

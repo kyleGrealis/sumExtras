@@ -5,11 +5,16 @@ library(sumExtras)
 library(gtsummary)
 library(dplyr)
 
-# Apply the recommended JAMA theme
 use_jama_theme()
 ```
 
-## Overview
+*All examples in this vignette use the JAMA compact theme via
+[`use_jama_theme()`](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md).
+See
+[`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
+to set this up.* {.small}
+
+## The `extras()` Function
 
 If you’ve worked with gtsummary before, you’re familiar with the typical
 workflow of building summary tables: creating a base table with
@@ -19,36 +24,10 @@ formatting tweaks. While gtsummary’s modular approach provides
 flexibility, the same sequence of functions appears repeatedly in
 analysis scripts.
 
-sumExtras streamlines this process by providing convenience functions
-that apply commonly-used formatting patterns in a single step. The
-package handles three main pain points:
-
-1.  **Repetitive styling workflows** - Combining multiple formatting
-    steps into one function call
-2.  **Inconsistent missing value displays** - Standardizing how NA
-    values appear across tables
-3.  **Manual variable labeling** - Automating label assignment from data
-    dictionaries
-
-This vignette will get you started with the core functions. For more
-specialized workflows, see:
-
-- [`vignette("labeling")`](https://kyleGrealis.com/sumExtras/articles/labeling.md) -
-  Comprehensive guide to automatic variable labeling across tables and
-  plots
-- [`vignette("styling")`](https://kyleGrealis.com/sumExtras/articles/styling.md) -
-  Advanced table styling and formatting techniques
-
-## The `extras()` Function
-
-The signature function of this package,
-[`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md),
-consolidates the most common table enhancements into a single step. At
-minimum, it adds bold labels, removes the “Characteristic” header, and
-standardizes missing value display. With default settings, it also adds
-an overall column and p-values.
-
-### Basic Usage
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+consolidates the most common gtsummary formatting steps into one call:
+bold labels, a clean header, an overall column, p-values, and missing
+value cleanup.
 
 #### Standard gtsummary workflow
 
@@ -61,7 +40,7 @@ trial |>
   modify_header(label ~ "")
 ```
 
-#### Equivalent using extras()
+#### With extras()
 
 ``` r
 trial |>
@@ -73,16 +52,12 @@ trial |>
 
 [TABLE]
 
-Both approaches produce the same result, but
-[`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md)
-requires less code and ensures consistency across your analysis.
-
 ### Customizing Output
 
-You can control which features are applied using the function arguments:
+You can control which features are applied:
 
 ``` r
-# Table without p-values
+# Without p-values
 trial |>
   tbl_summary(by = trt) |>
   extras(pval = FALSE)
@@ -91,18 +66,7 @@ trial |>
 [TABLE]
 
 ``` r
-
-# Table without overall column
-trial |>
-  tbl_summary(by = trt) |>
-  extras(overall = FALSE)
-```
-
-[TABLE]
-
-``` r
-
-# Overall column as last column (default is to set it as first)
+# Overall column last instead of first
 trial |>
   tbl_summary(by = trt) |>
   extras(last = TRUE)
@@ -110,40 +74,80 @@ trial |>
 
 [TABLE]
 
-For projects with consistent table formatting requirements, you can
-define styling parameters once and reuse them:
-
 ``` r
-# Define standard table settings for a project
-standard_table_args <- list(
-  pval = TRUE,
-  overall = TRUE,
-  last = TRUE
-)
-
-# Apply consistently across multiple tables
+# Custom header text
 trial |>
-  select(age, grade, stage, trt) |>
   tbl_summary(by = trt) |>
-  extras(.args = standard_table_args)
+  extras(header = "Variable")
 ```
 
 [TABLE]
 
+Or pass arguments as a list for reuse across tables:
+
+``` r
+my_args <- list(pval = TRUE, overall = TRUE, last = TRUE)
+
+trial |>
+  select(age, grade, stage, trt) |>
+  tbl_summary(by = trt) |>
+  extras(.args = my_args)
+```
+
+[TABLE]
+
+On non-stratified tables,
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+skips
+[`add_overall()`](https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html)
+and
+[`add_p()`](https://www.danieldsjoberg.com/gtsummary/reference/add_p.html)
+and applies only the formatting that makes sense. It works the same way
+with
+[`tbl_regression()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_regression.html)
+— bold labels, bold significant p-values (from the model), clean header,
+and missing value cleanup are applied automatically while irrelevant
+options are silently ignored. It never breaks your pipeline.
+
+``` r
+# Regression tables work too
+glm(response ~ age + grade, data = trial, family = binomial) |>
+  tbl_regression(exponentiate = TRUE) |>
+  extras()
+```
+
+[TABLE]
+
+For merged tables, call
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+on each sub-table **before** merging. All formatting (bold labels,
+p-values, missing symbols) carries through
+[`tbl_merge()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_merge.html),
+so there’s no need to call
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+again after:
+
+``` r
+t1 <- trial |>
+  tbl_summary(by = trt, include = c(age, grade)) |>
+  extras()
+
+t2 <- trial |>
+  tbl_summary(by = trt, include = c(marker, stage)) |>
+  extras()
+
+tbl_merge(list(t1, t2), tab_spanner = c("**Set A**", "**Set B**"))
+```
+
 ## Cleaning Missing Values
 
-One subtle but important aspect of table presentation is how missing or
-undefined values are displayed. gtsummary tables can show various
-representations of missing data: “0 (NA%)”, “NA (NA)”, “NA, NA”, etc.
-These inconsistencies create visual clutter and make tables harder to
-scan.
-
-The
-[`clean_table()`](https://kyleGrealis.com/sumExtras/reference/clean_table.md)
-function (which is called automatically by
-[`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md))
-standardizes all zero (`0 (0%)`) or missing value representations to
-“—”:
+[`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md)
+standardizes missing or zero-count representations (`"0 (NA%)"`,
+`"NA (NA)"`, `"NA, NA"`, etc.) to `"---"`. It runs automatically inside
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md),
+but you can also use it on its own. The `symbol` parameter controls the
+replacement text (default `"---"`). You can also pass `symbol` through
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md).
 
 #### Without cleaning
 
@@ -164,28 +168,15 @@ trial_missing |>
 
 [TABLE]
 
-You can also use
-[`clean_table()`](https://kyleGrealis.com/sumExtras/reference/clean_table.md)
-independently if you prefer to build tables step-by-step:
+## Automatic Labeling
+
+[`add_auto_labels()`](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md)
+applies human-readable variable labels from a dictionary. Manual labels
+set in
+[`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)
+always take priority.
 
 ``` r
-trial_missing |>
-  tbl_summary(by = trt) |>
-  add_overall() |>
-  add_p() |>
-  clean_table()
-```
-
-[TABLE]
-
-## Quick Start: Automatic Labeling
-
-One of the most time-consuming aspects of creating publication-ready
-tables is labeling variables with human-readable descriptions. sumExtras
-provides a streamlined labeling system using data dictionaries:
-
-``` r
-# Create a simple dictionary
 dictionary <- tibble::tribble(
   ~Variable,    ~Description,
   "trt",        "Chemotherapy Treatment",
@@ -195,7 +186,6 @@ dictionary <- tibble::tribble(
   "grade",      "Tumor Grade"
 )
 
-# Apply labels automatically
 trial |>
   tbl_summary(by = trt, include = c(age, grade, marker)) |>
   add_auto_labels(dictionary = dictionary) |>
@@ -204,120 +194,35 @@ trial |>
 
 [TABLE]
 
-The
-[`add_auto_labels()`](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md)
-function is intelligent and flexible:
+For more on label priority, pre-labeled data, and auto-discovery, see
+[`vignette("labeling")`](https://www.kyleGrealis.com/sumExtras/articles/labeling.md).
 
-- Pass a dictionary explicitly, or let it find one in your environment
-  automatically
-- Works with pre-labeled data (from haven, Hmisc, or manual labeling)
-- Manual labels in
-  [`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)
-  always override automatic ones
-- Compatible with regression tables via
-  [`tbl_regression()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_regression.html)
+## Pipeline Order
 
-### What About More Complex Labeling Workflows?
-
-The labeling system is much more powerful than this basic example
-suggests. You can:
-
-- Use one dictionary for both gtsummary tables and ggplot2
-  visualizations
-- Control label priority when you have multiple label sources
-- Set up cross-package workflows with
-  [`apply_labels_from_dictionary()`](https://kyleGrealis.com/sumExtras/reference/apply_labels_from_dictionary.md)
-- Understand how R’s label attribute system works under the hood
-
-For comprehensive coverage of these workflows and real-world examples,
-see
-**[`vignette("labeling")`](https://kyleGrealis.com/sumExtras/articles/labeling.md)**.
-
-## Basic Theme Setup
-
-sumExtras is designed to work best with the JAMA compact theme. Use
-[`use_jama_theme()`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md)
-to apply this theme to all gtsummary tables in your session:
+When combining with group headers and styling, order matters:
 
 ``` r
-# Apply JAMA compact theme (typically done once at the beginning)
-use_jama_theme()
+tbl_summary(by = ...) |>
+  extras() |> # always first
+  add_variable_group_header() |> # after extras()
+  add_group_styling() |> # format group headers
+  add_group_colors() # must be last (converts to gt)
 ```
 
-This is equivalent to calling
-`gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))`
-but provides a more convenient interface. You can reset to the default
-gtsummary theme at any time with
-[`gtsummary::reset_gtsummary_theme()`](https://www.danieldsjoberg.com/gtsummary/reference/set_gtsummary_theme.html).
+[`add_variable_group_header()`](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)
+must come after
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md),
+and
+[`add_group_colors()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_colors.md)
+must be last since it converts the table to gt.
 
-For information about matching gt table styles, creating styled group
-headers, and advanced formatting techniques, see
-**[`vignette("styling")`](https://kyleGrealis.com/sumExtras/articles/styling.md)**.
+## Other Vignettes
 
-## Putting It All Together
-
-Here’s a simple workflow demonstrating how these core functions work
-together:
-
-``` r
-# 1. Define your dictionary (typically done once per project)
-my_dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
-  "trt",        "Chemotherapy Treatment",
-  "age",        "Age at Enrollment (years)",
-  "marker",     "Marker Level (ng/mL)",
-  "stage",      "T Stage",
-  "grade",      "Tumor Grade",
-  "response",   "Tumor Response"
-)
-
-# 2. Set the recommended theme (once per session)
-use_jama_theme()
-
-# 3. Create a clean, labeled table with one function call
-trial |>
-  select(age, marker, stage, grade, response, trt) |>
-  tbl_summary(
-    by = trt,
-    missing = "no"
-  ) |>
-  add_auto_labels(dictionary = my_dictionary) |>
-  extras()
-```
-
-[TABLE]
-
-That’s it! With just a few lines of code, you have a publication-ready
-table with automatic labeling, clean missing values, bold labels, an
-overall column, and p-values.
-
-## Next Steps
-
-This vignette covered the essential functions to get you started
-quickly. For more advanced usage:
-
-- **[`vignette("labeling")`](https://kyleGrealis.com/sumExtras/articles/labeling.md)** -
-  Learn about the complete labeling system, including cross-package
-  workflows with ggplot2, controlling label priority, working with
-  pre-labeled data, and real-world analysis examples
-
-- **[`vignette("styling")`](https://kyleGrealis.com/sumExtras/articles/styling.md)** -
-  Explore advanced styling techniques including group headers,
-  background colors, text formatting, and creating visually polished
-  tables
-
-For detailed information about individual functions, see their help
-documentation:
-
-- [`?extras`](https://kyleGrealis.com/sumExtras/reference/extras.md) -
-  Main styling function
-- [`?clean_table`](https://kyleGrealis.com/sumExtras/reference/clean_table.md) -
-  Missing value standardization
-- [`?add_auto_labels`](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md) -
-  Automatic variable labeling
-- [`?use_jama_theme`](https://kyleGrealis.com/sumExtras/reference/use_jama_theme.md) -
-  Apply JAMA compact theme
-
-The package is designed to reduce repetitive code while maintaining the
-flexibility of gtsummary’s modular approach. Use as much or as little as
-fits your workflow.
+- [`vignette("labeling")`](https://www.kyleGrealis.com/sumExtras/articles/labeling.md)
+  – dictionary-based labeling
+- [`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
+  – JAMA compact themes for gtsummary and gt tables
+- [`vignette("styling")`](https://www.kyleGrealis.com/sumExtras/articles/styling.md)
+  – group headers, formatting, and background colors
+- [`vignette("options")`](https://www.kyleGrealis.com/sumExtras/articles/options.md)
+  – .Rprofile options for automatic labeling

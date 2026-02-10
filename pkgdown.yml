@@ -3,9 +3,11 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   labeling: labeling.html
+  options: options.html
   styling: styling.html
   sumExtras-intro: sumExtras-intro.html
-last_built: 2026-01-22T21:58Z
+  themes: themes.html
+last_built: 2026-02-10T01:55Z
 urls:
-  reference: https://kyleGrealis.com/sumExtras/reference
-  article: https://kyleGrealis.com/sumExtras/articles
+  reference: https://www.kyleGrealis.com/sumExtras/reference
+  article: https://www.kyleGrealis.com/sumExtras/articles

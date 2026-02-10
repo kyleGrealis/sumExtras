@@ -3,8 +3,11 @@
 ### Get Started
 
 - [Introduction to
-  sumExtras](https://kyleGrealis.com/sumExtras/articles/sumExtras-intro.md):
+  sumExtras](https://www.kyleGrealis.com/sumExtras/articles/sumExtras-intro.md):
 - [Automatic Variable
-  Labeling](https://kyleGrealis.com/sumExtras/articles/labeling.md):
+  Labeling](https://www.kyleGrealis.com/sumExtras/articles/labeling.md):
 - [Table Styling and
-  Formatting](https://kyleGrealis.com/sumExtras/articles/styling.md):
+  Formatting](https://www.kyleGrealis.com/sumExtras/articles/styling.md):
+- [Themes](https://www.kyleGrealis.com/sumExtras/articles/themes.md):
+- [Package
+  Options](https://www.kyleGrealis.com/sumExtras/articles/options.md):

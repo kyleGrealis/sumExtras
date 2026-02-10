@@ -1,19 +1,17 @@
 # Standardize missing value display across all gtsummary table types
 
-Improves table readability by replacing various missing value
-representations with a consistent "–" symbol. This makes it easier to
-distinguish between actual data and missing/undefined values in summary
-tables, creating a cleaner and more professional appearance.
+Replaces various missing value representations with a consistent symbol
+(default `"---"`) so it is easier to tell actual data from
+missing/undefined values.
 
-Works seamlessly with all gtsummary table types, including stacked
-tables (`tbl_strata`) and survey-weighted summaries (`tbl_svysummary`).
-Automatically handles tables with or without the standard `var_type`
-column.
+Works with all gtsummary table types, including stacked tables
+(`tbl_strata`) and survey-weighted summaries (`tbl_svysummary`). Handles
+tables with or without the standard `var_type` column.
 
 ## Usage
 
 ``` r
-clean_table(tbl)
+clean_table(tbl, symbol = "---")
 ```
 
 ## Arguments
@@ -27,6 +25,12 @@ clean_table(tbl)
   or
   [`tbl_strata()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_strata.html))
 
+- symbol:
+
+  Character string to replace missing values with. Default is `"---"`
+  (em-dash style). Common alternatives: `"\u2014"` (em-dash), `"\u2013"`
+  (en-dash), `"--"`, or `"N/A"`.
+
 ## Value
 
 A gtsummary table object with standardized missing value display
@@ -35,36 +39,36 @@ A gtsummary table object with standardized missing value display
 
 The function uses
 [`gtsummary::modify_table_body()`](https://www.danieldsjoberg.com/gtsummary/reference/modify_table_body.html)
-to transform character columns and replace common missing value patterns
-with "–":
+to transform character columns and replace missing, undefined, and
+zero-valued patterns with a consistent symbol. Matched patterns include:
 
-- `"0 (NA%)"` - No events occurred and percentages cannot be calculated
+- Literal `NA` and `Inf` / `-Inf` values
 
-- `"NA (NA)"` - Completely missing data for both count and percentage
+- Count/percent pairs: `"0 (0%)"`, `"0 (NA%)"`, `"0 (NA)"`, `"NA (0)"`,
+  `"NA (NA)"`
 
-- `"0 (0%)"` - Zero counts with zero percentage
+- Decimal variants: `"0.00 (0.00)"`, `"0.00% (0.00)"`, `"0% (0.000)"`
 
-- `"0% (0.000)"` - Zero percentage with decimal precision
+- Paired values: `"NA, NA"`
 
-- `"NA (NA, NA)"` - Missing data with confidence intervals
+- Confidence intervals: `"NA (NA, NA)"`, `"0% (0.000) (0%, 0%)"`,
+  `"0.00 (0.00) (0.00, 0.00)"`, and similar zero-CI patterns
 
-- `"NA, NA"` - Missing paired values (e.g., median and IQR)
-
-This standardization makes tables more scannable and reduces visual
-clutter from various "empty" data representations.
+Replacing these patterns with a single symbol keeps the table easier to
+read.
 
 Note: The function checks for the presence of `var_type` column before
 applying
 [`modify_missing_symbol()`](https://www.danieldsjoberg.com/gtsummary/reference/modify_missing_symbol.html).
-This allows it to work seamlessly with `tbl_strata` objects which use
-`var_type_1`, `var_type_2`, etc. instead of `var_type`.
+This allows it to work with `tbl_strata` objects which use `var_type_1`,
+`var_type_2`, etc. instead of `var_type`.
 
 ## See also
 
 - [`gtsummary::modify_table_body()`](https://www.danieldsjoberg.com/gtsummary/reference/modify_table_body.html)
   for general table body modifications
 
-- [`extras()`](https://kyleGrealis.com/sumExtras/reference/extras.md)
+- [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
   which includes `clean_table()` in its styling pipeline
 
 ## Examples
@@ -195,19 +199,24 @@ Months to Death/Censor
 \# Often used as part of a styling pipeline \# Create a test dictionary
 for add_auto_labels(): dictionary \<-
 tibble::[tribble](https://tibble.tidyverse.org/reference/tribble.html)(
-~Variable, ~Description, 'age', 'Age at enrollment', 'stage', 'T Stage',
-'grade', 'Grade', 'response', 'Tumor Response' )
+~Variable, ~Description, "age", "Age at enrollment", "stage", "T Stage",
+"grade", "Grade", "response", "Tumor Response" )
 gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\>
-[add_auto_labels](https://kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
-\|\> [extras](https://kyleGrealis.com/sumExtras/reference/extras.md)()
-\|\> clean_table() \#\> Warning: Failed to add overall column. \#\> ✖
-Error: An error occured in \`add_overall()\`, and the overall statistic
-cannot be \#\> added. \#\> Have variable labels changed since the
-original call to \`tbl_summary()\`? \#\> ℹ Continuing without overall
-column.
+[add_auto_labels](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
+\|\>
+[extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
+\|\> clean_table()
+
+[TABLE]
+
+\# Custom missing symbol
+gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
+\|\>
+gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
+= trt) \|\> clean_table(symbol = "\u2014") \# em-dash
 
 [TABLE]
 
