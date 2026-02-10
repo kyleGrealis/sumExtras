@@ -22,79 +22,46 @@ test_that("extras() returns valid gtsummary object even if components fail", {
   expect_s3_class(result, "gtsummary")
 })
 
-# Tests for tbl_regression warning behavior
-# Note: tbl_regression objects trigger BOTH regression-specific AND not-stratified warnings
-# since they are inherently non-stratified
-test_that("tbl_regression warns with regression-specific warning when requesting unsupported features", {
+# Tests for tbl_regression behavior
+# Regression tables silently skip overall/pval — they already
+# have model p-values. extras() applies bold_labels, bold_p,
+# modify_header, and clean_table.
+test_that("tbl_regression does NOT warn with default params", {
   skip_if_not_installed("gtsummary")
 
-  # Create a regression model first
   m1 <- glm(response ~ age + grade, data = gtsummary::trial, family = binomial)
   tbl <- gtsummary::tbl_regression(m1)
 
-  # Expect the regression-specific warning
-  expect_warning(
-    result <- extras(tbl, overall = TRUE, pval = TRUE),
-    class = "extras_regression_unsupported_features"
-  )
-
-  # Also expect the not-stratified warning (since regression tables aren't stratified)
-  suppressWarnings(
-    expect_warning(
-      extras(tbl, overall = TRUE, pval = TRUE),
-      class = "extras_not_stratified"
-    )
-  )
+  expect_no_warning(extras(tbl))
 })
 
-test_that("tbl_regression warns when requesting only overall", {
+test_that("tbl_regression does NOT warn with explicit overall and pval", {
   skip_if_not_installed("gtsummary")
 
   m1 <- glm(response ~ age + grade, data = gtsummary::trial, family = binomial)
   tbl <- gtsummary::tbl_regression(m1)
 
-  # Both warnings should fire
-  expect_warning(
-    extras(tbl, overall = TRUE, pval = FALSE),
-    class = "extras_regression_unsupported_features"
-  )
+  # Silently ignored — no warnings
+  expect_no_warning(extras(tbl, overall = TRUE, pval = TRUE))
 })
 
-test_that("tbl_regression warns when requesting only pval", {
+test_that("tbl_regression succeeds with bold_p() applied", {
   skip_if_not_installed("gtsummary")
 
   m1 <- glm(response ~ age + grade, data = gtsummary::trial, family = binomial)
   tbl <- gtsummary::tbl_regression(m1)
 
-  # Both warnings should fire
-  expect_warning(
-    extras(tbl, overall = FALSE, pval = TRUE),
-    class = "extras_regression_unsupported_features"
-  )
-})
-
-test_that("tbl_regression does NOT warn when overall and pval are both FALSE", {
-  skip_if_not_installed("gtsummary")
-
-  m1 <- glm(response ~ age + grade, data = gtsummary::trial, family = binomial)
-  tbl <- gtsummary::tbl_regression(m1)
-
-  expect_no_warning(
-    extras(tbl, overall = FALSE, pval = FALSE)
-  )
-})
-
-test_that("tbl_regression succeeds despite warning", {
-  skip_if_not_installed("gtsummary")
-
-  # Create a regression model first
-  m1 <- glm(response ~ age + grade, data = gtsummary::trial, family = binomial)
-  tbl <- gtsummary::tbl_regression(m1)
-
-  result <- suppressWarnings(extras(tbl, overall = TRUE, pval = TRUE))
+  result <- extras(tbl)
 
   expect_s3_class(result, "gtsummary")
   expect_s3_class(result, "tbl_regression")
+
+  # bold_p() should have been applied
+  bold_info <- result$table_styling$text_format
+  has_bold_p <- any(
+    bold_info$column == "p.value" & bold_info$format_type == "bold"
+  )
+  expect_true(has_bold_p)
 })
 
 # Tests for tbl_strata warning behavior
@@ -134,6 +101,123 @@ test_that("tbl_strata succeeds despite warning", {
   expect_s3_class(result, "tbl_strata")
 })
 
+test_that("tbl_strata does not warn with default params", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("purrr")
+
+  tbl <- gtsummary::trial |>
+    dplyr::select(grade, age, trt) |>
+    gtsummary::tbl_strata(
+      strata = grade,
+      .tbl_fun = ~ .x |>
+        gtsummary::tbl_summary(by = trt, include = age)
+    )
+
+  expect_no_warning(extras(tbl))
+})
+
+test_that("tbl_strata does not warn with explicit FALSE params", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("purrr")
+
+  tbl <- gtsummary::trial |>
+    dplyr::select(grade, age, trt) |>
+    gtsummary::tbl_strata(
+      strata = grade,
+      .tbl_fun = ~ .x |>
+        gtsummary::tbl_summary(by = trt, include = age)
+    )
+
+  expect_no_warning(extras(tbl, overall = FALSE, pval = FALSE))
+})
+
+test_that("tbl_strata does not trigger not-stratified warning", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("purrr")
+
+  tbl <- gtsummary::trial |>
+    dplyr::select(grade, age, trt) |>
+    gtsummary::tbl_strata(
+      strata = grade,
+      .tbl_fun = ~ .x |>
+        gtsummary::tbl_summary(by = trt, include = age)
+    )
+
+  # Should ONLY get strata warning, not the not-stratified warning
+  expect_warning(
+    extras(tbl, overall = TRUE, pval = TRUE),
+    class = "extras_strata_limited_support"
+  )
+
+  # Verify extras_not_stratified does NOT fire
+  warnings_caught <- character(0)
+  withCallingHandlers(
+    extras(tbl, overall = TRUE, pval = TRUE),
+    warning = function(w) {
+      warnings_caught <<- c(warnings_caught, class(w)[1])
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_false("extras_not_stratified" %in% warnings_caught)
+})
+
+# Tests for tbl_merge behavior
+# Merged tables get a helpful message (not warning) guiding
+# users to add features before merging.
+test_that("tbl_merge warns with default params", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age)
+  mrg <- suppressMessages(gtsummary::tbl_merge(list(tbl, tbl)))
+
+  expect_warning(
+    extras(mrg),
+    class = "extras_merged_unsupported"
+  )
+})
+
+test_that("tbl_merge is silent when overall and pval are FALSE", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age)
+  mrg <- suppressMessages(gtsummary::tbl_merge(list(tbl, tbl)))
+
+  expect_no_warning(
+    extras(mrg, overall = FALSE, pval = FALSE)
+  )
+})
+
+test_that("tbl_merge does not trigger not-stratified warning", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age)
+  mrg <- suppressMessages(gtsummary::tbl_merge(list(tbl, tbl)))
+
+  # Should get merged warning, NOT the extras_not_stratified warning
+  expect_warning(
+    extras(mrg, pval = TRUE, overall = TRUE),
+    class = "extras_merged_unsupported"
+  )
+})
+
+test_that("tbl_merge still applies formatting", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age)
+  mrg <- suppressMessages(gtsummary::tbl_merge(list(tbl, tbl)))
+
+  result <- suppressWarnings(extras(mrg))
+
+  expect_s3_class(result, "gtsummary")
+  label_header <- result$table_styling$header |>
+    dplyr::filter(column == "label")
+  expect_equal(label_header$label, "")
+})
+
 # Tests for non-stratified table warning behavior
 test_that("non-stratified tbl_summary warns when requesting overall", {
   skip_if_not_installed("gtsummary")
@@ -159,7 +243,7 @@ test_that("non-stratified tbl_summary warns when requesting pval", {
   )
 })
 
-test_that("non-stratified tbl_summary warns when requesting both overall and pval", {
+test_that("non-stratified warns when requesting overall and pval", {
   skip_if_not_installed("gtsummary")
 
   tbl <- gtsummary::trial |>
@@ -183,7 +267,7 @@ test_that("non-stratified tbl_summary succeeds despite warning", {
   expect_s3_class(result, "tbl_summary")
 })
 
-test_that("non-stratified tbl_summary does not warn when pval and overall are FALSE", {
+test_that("non-stratified does not warn when pval/overall FALSE", {
   skip_if_not_installed("gtsummary")
 
   expect_no_warning(
@@ -218,7 +302,7 @@ test_that("extras() with .args parameter warns for non-stratified table", {
   )
 })
 
-test_that("extras() with .args parameter warns for tbl_regression", {
+test_that(".args silently ignores overall/pval for tbl_regression", {
   skip_if_not_installed("gtsummary")
 
   m1 <- glm(response ~ age + grade, data = gtsummary::trial, family = binomial)
@@ -226,45 +310,37 @@ test_that("extras() with .args parameter warns for tbl_regression", {
 
   extra_args <- list(pval = TRUE, overall = TRUE)
 
-  # Expect both regression-specific and not-stratified warnings
+  expect_no_warning(extras(tbl, .args = extra_args))
+})
+
+test_that("extras() warns with correct class when add_overall fails", {
+  skip_if_not_installed("gtsummary")
+
+  # Force add_overall() to fail by calling extras() twice
+  # (stat_0 already exists from first call)
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age) |>
+    extras()
+
   expect_warning(
-    extras(tbl, .args = extra_args),
-    class = "extras_regression_unsupported_features"
-  )
-
-  suppressWarnings(
-    expect_warning(
-      extras(tbl, .args = extra_args),
-      class = "extras_not_stratified"
-    )
+    extras(tbl),
+    class = "extras_overall_failed"
   )
 })
 
-test_that("extras() warning has correct class when add_overall fails", {
+test_that("extras() warns with correct class when add_p fails", {
   skip_if_not_installed("gtsummary")
 
-  # This test documents the expected warning class
-  # Actual triggering depends on gtsummary internal failures
-  # The warning class should be "extras_overall_failed" when it does trigger
+  # Force add_p() to fail by calling extras() twice
+  # (p.value column already exists from first call)
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age) |>
+    extras()
 
-  # We can't easily force add_overall() to fail without breaking gtsummary
-  # But we verify the warning infrastructure is in place by checking the function
-  func_body <- deparse(body(extras))
-
-  expect_true(any(grepl("extras_overall_failed", func_body)))
-  expect_true(any(grepl("Failed to add overall column", func_body)))
-})
-
-test_that("extras() warning has correct class when add_p fails", {
-  skip_if_not_installed("gtsummary")
-
-  # This test documents the expected warning class
-  # The warning class should be "extras_pvalue_failed" when it triggers
-
-  func_body <- deparse(body(extras))
-
-  expect_true(any(grepl("extras_pvalue_failed", func_body)))
-  expect_true(any(grepl("Failed to add p-values", func_body)))
+  expect_warning(
+    extras(tbl, overall = FALSE),
+    class = "extras_pvalue_failed"
+  )
 })
 
 test_that("extras() completes with both pval and overall options", {
@@ -293,23 +369,22 @@ test_that("extras() completes with last = TRUE for overall column", {
 })
 
 # Tests that basic formatting is still applied even when warnings occur
-test_that("extras() applies basic formatting to tbl_regression despite warning", {
+test_that("extras() applies formatting to tbl_regression", {
   skip_if_not_installed("gtsummary")
 
   m1 <- glm(response ~ age + grade, data = gtsummary::trial, family = binomial)
   tbl <- gtsummary::tbl_regression(m1)
 
-  result <- suppressWarnings(extras(tbl, overall = TRUE, pval = TRUE))
+  # Even with explicit overall/pval — silently ignored, formatting applied
+  result <- extras(tbl, overall = TRUE, pval = TRUE)
 
-  # Should still have modified the header (label column should be empty string)
   expect_s3_class(result, "gtsummary")
-  # The table_styling$header should have label with label = ""
   label_header <- result$table_styling$header |>
     dplyr::filter(column == "label")
   expect_equal(label_header$label, "")
 })
 
-test_that("extras() applies basic formatting to non-stratified table despite warning", {
+test_that("extras() applies formatting to non-stratified despite warning", {
   skip_if_not_installed("gtsummary")
 
   tbl <- gtsummary::trial |>
@@ -324,27 +399,75 @@ test_that("extras() applies basic formatting to non-stratified table despite war
   expect_equal(label_header$label, "")
 })
 
-test_that("extras() with different regression models all warn appropriately", {
+test_that("extras() with different regression models applies bold_p", {
   skip_if_not_installed("gtsummary")
 
   # Test with lm
   m_lm <- lm(age ~ grade + marker, data = gtsummary::trial)
   tbl_lm <- gtsummary::tbl_regression(m_lm)
 
-  # Expect both regression and not-stratified warnings
-  expect_warning(
-    extras(tbl_lm, overall = TRUE),
-    class = "extras_regression_unsupported_features"
-  )
-
-  suppressWarnings(
-    expect_warning(
-      extras(tbl_lm, overall = TRUE),
-      class = "extras_not_stratified"
-    )
-  )
-
-  # Verify it succeeds
-  result_lm <- suppressWarnings(extras(tbl_lm, overall = TRUE))
+  # No warnings, even with explicit overall
+  expect_no_warning(result_lm <- extras(tbl_lm, overall = TRUE))
   expect_s3_class(result_lm, "gtsummary")
+
+  # bold_p() applied
+  bold_info <- result_lm$table_styling$text_format
+  has_bold_p <- any(
+    bold_info$column == "p.value" & bold_info$format_type == "bold"
+  )
+  expect_true(has_bold_p)
+})
+
+# =============================================================================
+# Input validation error tests
+# =============================================================================
+
+test_that("extras() errors with non-gtsummary input", {
+  skip_if_not_installed("gtsummary")
+
+  expect_error(
+    extras(data.frame(a = 1)),
+    class = "extras_invalid_input"
+  )
+
+  expect_error(
+    extras("not a table"),
+    class = "extras_invalid_input"
+  )
+})
+
+test_that("extras() errors with non-list .add_p_args", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age)
+
+  expect_error(
+    extras(tbl, .add_p_args = "not_a_list"),
+    class = "extras_invalid_add_p_args"
+  )
+})
+
+test_that("extras() errors with non-list .args", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age)
+
+  expect_error(
+    extras(tbl, .args = "not_a_list"),
+    class = "extras_invalid_args"
+  )
+})
+
+test_that("extras() errors with invalid .args names", {
+  skip_if_not_installed("gtsummary")
+
+  tbl <- gtsummary::trial |>
+    gtsummary::tbl_summary(by = trt, include = age)
+
+  expect_error(
+    extras(tbl, .args = list(fake_arg = TRUE)),
+    class = "extras_invalid_arg_names"
+  )
 })

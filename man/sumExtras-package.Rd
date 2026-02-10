@@ -13,35 +13,35 @@ Provides additional convenience functions for 'gtsummary' (Sjoberg et al. (2021)
 Provides additional convenience functions for 'gtsummary'
 (Sjoberg et al. (2021) \url{doi:10.32614/RJ-2021-053}) & 'gt' tables,
 including automatic variable labeling from dictionaries, standardized
-missing value display, and consistent formatting helpers for streamlined
+missing value display, and formatting helpers for common
 table styling workflows.
 }
 \section{Main Functions}{
 
 \itemize{
-\item \code{\link[=extras]{extras()}} - The signature function that adds overall columns, p-values, and clean styling
-\item \code{\link[=clean_table]{clean_table()}} - Standardizes missing value display
-\item \code{\link[=add_auto_labels]{add_auto_labels()}} - Smart automatic variable labeling from dictionaries or label attributes
-\item \code{\link[=apply_labels_from_dictionary]{apply_labels_from_dictionary()}} - Set label attributes on data for cross-package workflows
-\item \code{\link[=use_jama_theme]{use_jama_theme()}} - Apply JAMA compact theme to gtsummary tables
-\item \code{\link[=theme_gt_compact]{theme_gt_compact()}} - JAMA-style compact themes for gt tables
-\item \code{\link[=add_group_styling]{add_group_styling()}} - Enhanced text formatting for grouped tables
-\item \code{\link[=add_group_colors]{add_group_colors()}} - Convenience function for group colors with automatic gt conversion
+\item \code{\link[=extras]{extras()}} - Overall columns, p-values, clean styling
+\item \code{\link[=clean_table]{clean_table()}} - Standardize missing value display
+\item \code{\link[=add_auto_labels]{add_auto_labels()}} - Automatic variable labeling
+\item \code{\link[=use_jama_theme]{use_jama_theme()}} - JAMA compact theme for gtsummary
+\item \code{\link[=theme_gt_compact]{theme_gt_compact()}} - JAMA-style compact theme for gt
+\item \code{\link[=add_group_styling]{add_group_styling()}} - Format grouped table headers
+\item \code{\link[=add_group_colors]{add_group_colors()}} - Group colors with gt conversion
 }
 }
 
 \section{Important Notes on Package Dependencies}{
 
-\strong{gtsummary Internals:} This package depends on internal structures of the
-gtsummary package (specifically \code{tbl$call_list}, \code{tbl$inputs}, and \code{tbl$table_body}).
-While we make every effort to maintain compatibility, major updates to gtsummary
-may require corresponding updates to sumExtras.
+\strong{gtsummary Internals:} This package depends on internal
+structures of the gtsummary package (specifically
+\code{tbl$call_list}, \code{tbl$inputs}, and \code{tbl$table_body}).
+Compatibility is maintained where possible, but major
+gtsummary updates may require sumExtras updates.
 
-\strong{Minimum Versions:} Requires gtsummary >= 1.7.0 and gt >= 0.9.0. These minimum
-versions ensure the necessary internal structures are available.
+\strong{Minimum Versions:} Requires gtsummary >= 1.7.0 and
+gt >= 0.9.0 for the necessary internal structures.
 
-\strong{Testing:} We recommend testing your workflows after any gtsummary updates,
-especially major version changes.
+\strong{Testing:} Test your workflows after gtsummary
+updates, especially major version changes.
 }
 
 \examples{
@@ -68,6 +68,7 @@ gtsummary::trial |>
 Useful links:
 \itemize{
   \item \url{https://github.com/kyleGrealis/sumExtras}
+  \item \url{https://www.kyleGrealis.com/sumExtras/}
   \item Report bugs at \url{https://github.com/kyleGrealis/sumExtras/issues}
 }
 

@@ -10,8 +10,11 @@ add_group_colors(tbl, color = "#E8E8E8")
 \item{tbl}{A gtsummary table object with variable group headers created by
 \code{gtsummary::add_variable_group_header()}}
 
-\item{color}{Background color for group headers. Default \code{"#E8E8E8"} (light gray).
-Can be any valid CSS color (hex code, color name, rgb(), etc.).}
+\item{color}{Background color(s) for group headers.
+Default \code{"#E8E8E8"} (light gray). Accepts a single
+color (applied to all groups) or a vector of colors
+(one per group). Can be any valid CSS color (hex
+code, color name, rgb(), etc.).}
 }
 \value{
 A gt table object with colored group headers.
@@ -19,13 +22,15 @@ A gt table object with colored group headers.
 to additional gtsummary functions after calling this function.
 }
 \description{
-Convenience function that adds background colors to variable group
-headers and converts the table to gt. This is a terminal operation that combines
-\code{get_group_rows()}, \code{gtsummary::as_gt()}, and \code{gt::tab_style()} into a single
-pipeable function.
+Convenience function that adds background
+colors to variable group headers and converts the
+table to gt. This is a terminal operation that
+combines \code{get_group_rows()}, \code{gtsummary::as_gt()},
+and \code{gt::tab_style()} into a single pipeable
+function.
 
-For text formatting (bold/italic), use \code{add_group_styling()} before calling this
-function. This composable design keeps each function focused on doing one thing well.
+For text formatting (bold/italic), use
+\code{add_group_styling()} before calling this function.
 }
 \details{
 This function:
@@ -35,10 +40,12 @@ This function:
 \item Applies background color using \code{gt::tab_style()}
 }
 
-Since this function converts to gt, it should be used as the final styling
-step in your pipeline. Apply all gtsummary functions (like \code{modify_caption()},
-\code{modify_footnote()}, etc.) and text formatting with \code{add_group_styling()}
-before calling \code{add_group_colors()}.
+Since this function converts to gt, it should be
+used as the final styling step in your pipeline.
+Apply all gtsummary functions (like
+\code{modify_caption()}, \code{modify_footnote()}, etc.) and
+text formatting with \code{add_group_styling()} before
+calling \code{add_group_colors()}.
 }
 \examples{
 \donttest{
@@ -75,7 +82,7 @@ gtsummary::trial |>
   add_group_styling(format = "bold") |>
   add_group_colors(color = "#FFF9E6")
 
-# Multiple group headers
+# Multiple group headers with same color
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>
   extras() |>
@@ -89,6 +96,21 @@ gtsummary::trial |>
   ) |>
   add_group_styling() |>
   add_group_colors(color = "#E8E8E8")
+
+# Different colors per group
+gtsummary::trial |>
+  gtsummary::tbl_summary(by = trt) |>
+  extras() |>
+  gtsummary::add_variable_group_header(
+    header = "Demographics",
+    variables = age
+  ) |>
+  gtsummary::add_variable_group_header(
+    header = "Disease Measures",
+    variables = marker:response
+  ) |>
+  add_group_styling() |>
+  add_group_colors(color = c("#E3F2FD", "#FFF9E6"))
 }
 
 }

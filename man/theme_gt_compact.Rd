@@ -10,19 +10,20 @@ theme_gt_compact(tbl)
 \item{tbl}{A gt table object created with \code{gt::gt()}}
 }
 \value{
-A gt table object with compact JAMA-style formatting applied
+A gt table object with compact JAMA-style
+formatting applied
 }
 \description{
-Applies a compact table theme to gt tables that matches the
-'jama' theme from gtsummary. This ensures visual consistency when mixing
-gtsummary tables (using \code{theme_gtsummary_compact("jama")}) with regular
-gt tables in the same document. The theme reduces padding, adjusts font
-sizes, and applies JAMA journal styling conventions.
+Applies a compact table theme to gt tables
+that matches the 'jama' theme from gtsummary, so
+gtsummary and plain gt tables look the same in one
+document. Reduces padding, adjusts font sizes, and
+applies JAMA journal styling.
 }
 \details{
-This function replicates the visual appearance of
-\code{gtsummary::theme_gtsummary_compact("jama")} for use with regular gt tables.
-Key styling includes:
+This function replicates the visual appearance
+of \code{gtsummary::theme_gtsummary_compact("jama")} for
+use with regular gt tables. Key styling includes:
 \itemize{
 \item Reduced font size (13px) for compact appearance
 \item Minimal padding (1px) on all row types
