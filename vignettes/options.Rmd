@@ -1,0 +1,51 @@
+---
+title: "Package Options"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Package Options}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Auto-Labeling with `sumExtras.auto_labels`
+
+If you keep a `dictionary` object in your environment (or your data already has label attributes), you can skip calling `add_auto_labels()` on every table. Set this once:
+
+```{r, eval=FALSE}
+options(sumExtras.auto_labels = TRUE)
+```
+
+Now `extras()` handles labeling automatically:
+
+```{r, eval=FALSE}
+# Define your dictionary once
+dictionary <- tibble::tribble(
+  ~Variable,    ~Description,
+  "age",        "Age at Enrollment (years)",
+  "marker",     "Marker Level (ng/mL)",
+  "grade",      "Tumor Grade"
+)
+
+# Every extras() call picks it up
+trial |>
+  tbl_summary(by = trt) |>
+  extras()
+```
+
+Put `options(sumExtras.auto_labels = TRUE)` in your `.Rprofile` to enable this for every session. If no dictionary is found and the data has no label attributes, `extras()` continues normally. If something goes wrong, it warns and moves on.
+
+You can still call `add_auto_labels()` explicitly whenever you need per-table control.
+
+## More Vignettes
+
+- `vignette("sumExtras-intro")` -- getting started with extras()
+- `vignette("labeling")` -- dictionary-based labeling and cross-package workflows
+- `vignette("themes")` -- JAMA compact themes for gtsummary and gt tables
+- `vignette("styling")` -- group headers and advanced formatting

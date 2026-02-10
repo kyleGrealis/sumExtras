@@ -165,7 +165,9 @@ inst/docs/
 
 # Other
 .claude
+CLAUDE.md
 .gemini
+GEMINI.md
 CRAN-SUBMISSION
 cran-comments.md
 test_updates.R

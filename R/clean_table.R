@@ -1,38 +1,45 @@
 #' Standardize missing value display across all gtsummary table types
 #'
-#' @description Improves table readability by replacing various missing value
-#'   representations with a consistent "--" symbol. This makes it easier to
-#'   distinguish between actual data and missing/undefined values in summary
-#'   tables, creating a cleaner and more professional appearance.
+#' @description Replaces various missing value representations
+#'   with a consistent symbol (default `"---"`) so it is
+#'   easier to tell actual data from missing/undefined values.
 #'
-#'   Works seamlessly with all gtsummary table types, including stacked tables
-#'   (`tbl_strata`) and survey-weighted summaries (`tbl_svysummary`).
-#'   Automatically handles tables with or without the standard `var_type` column.
+#'   Works with all gtsummary table types, including stacked
+#'   tables (`tbl_strata`) and survey-weighted summaries
+#'   (`tbl_svysummary`). Handles tables with or without the
+#'   standard `var_type` column.
 #'
-#' @param tbl A gtsummary table object (e.g., from `tbl_summary()`, `tbl_svysummary()`,
-#'   `tbl_regression()`, or `tbl_strata()`)
+#' @param tbl A gtsummary table object (e.g., from
+#'   `tbl_summary()`, `tbl_svysummary()`, `tbl_regression()`,
+#'   or `tbl_strata()`)
+#' @param symbol Character string to replace missing values
+#'   with. Default is `"---"` (em-dash style). Common
+#'   alternatives: `"\u2014"` (em-dash), `"\u2013"`
+#'   (en-dash), `"--"`, or `"N/A"`.
 #'
 #' @returns A gtsummary table object with standardized missing value display
 #'
 #' @details The function uses `gtsummary::modify_table_body()` to transform
-#'   character columns and replace common missing value patterns with "--":
-#'   * `"0 (NA%)"` - No events occurred and percentages cannot be calculated
-#'   * `"NA (NA)"` - Completely missing data for both count and percentage
-#'   * `"0 (0%)"` - Zero counts with zero percentage
-#'   * `"0% (0.000)"` - Zero percentage with decimal precision
-#'   * `"NA (NA, NA)"` - Missing data with confidence intervals
-#'   * `"NA, NA"` - Missing paired values (e.g., median and IQR)
+#'   character columns and replace missing, undefined, and zero-valued
+#'   patterns with a consistent symbol. Matched patterns include:
+#'   * Literal `NA` and `Inf` / `-Inf` values
+#'   * Count/percent pairs: `"0 (0%)"`, `"0 (NA%)"`, `"0 (NA)"`, `"NA (0)"`,
+#'     `"NA (NA)"`
+#'   * Decimal variants: `"0.00 (0.00)"`, `"0.00% (0.00)"`, `"0% (0.000)"`
+#'   * Paired values: `"NA, NA"`
+#'   * Confidence intervals: `"NA (NA, NA)"`, `"0% (0.000) (0%, 0%)"`,
+#'     `"0.00 (0.00) (0.00, 0.00)"`, and similar zero-CI patterns
 #'
-#'   This standardization makes tables more scannable and reduces visual clutter
-#'   from various "empty" data representations.
+#'   Replacing these patterns with a single symbol keeps
+#'   the table easier to read.
 #'
-#'   Note: The function checks for the presence of `var_type` column before applying
-#'   `modify_missing_symbol()`. This allows it to work seamlessly with `tbl_strata`
-#'   objects which use `var_type_1`, `var_type_2`, etc. instead of `var_type`.
+#'   Note: The function checks for the presence of `var_type`
+#'   column before applying `modify_missing_symbol()`. This
+#'   allows it to work with `tbl_strata` objects which use
+#'   `var_type_1`, `var_type_2`, etc. instead of `var_type`.
 #'
 #' @importFrom dplyr across if_else mutate
 #' @importFrom gtsummary all_stat_cols modify_missing_symbol modify_table_body
-#'   tbl_regression tbl_summary
 #' @importFrom rlang abort
 #'
 #' @examples
@@ -46,16 +53,21 @@
 #' # Create a test dictionary for add_auto_labels():
 #' dictionary <- tibble::tribble(
 #'   ~Variable, ~Description,
-#'   'age', 'Age at enrollment',
-#'   'stage', 'T Stage',
-#'   'grade', 'Grade',
-#'   'response', 'Tumor Response'
+#'   "age", "Age at enrollment",
+#'   "stage", "T Stage",
+#'   "grade", "Grade",
+#'   "response", "Tumor Response"
 #' )
 #' gtsummary::trial |>
 #'   gtsummary::tbl_summary(by = trt) |>
 #'   add_auto_labels() |>
 #'   extras() |>
 #'   clean_table()
+#'
+#' # Custom missing symbol
+#' gtsummary::trial |>
+#'   gtsummary::tbl_summary(by = trt) |>
+#'   clean_table(symbol = "\u2014") # em-dash
 #'
 #' # Works with regression tables too
 #' lm(age ~ trt + grade, data = gtsummary::trial) |>
@@ -68,14 +80,29 @@
 #' * `extras()` which includes `clean_table()` in its styling pipeline
 #'
 #' @export
-clean_table <- function(tbl) {
+clean_table <- function(tbl, symbol = "---") {
+  # Validate symbol is a single character string
+  if (!is.character(symbol) || length(symbol) != 1) {
+    rlang::abort(
+      c(
+        "`symbol` must be a single character string.",
+        "x" = sprintf(
+          "You supplied %s of length %d.",
+          class(symbol)[1], length(symbol)
+        ),
+        "i" = 'Use a string like `"---"` or `"\\u2014"`.'
+      ),
+      class = "clean_table_invalid_symbol"
+    )
+  }
+
   # Validate input is a gtsummary object
   if (!inherits(tbl, "gtsummary")) {
     rlang::abort(
       c(
         "`tbl` must be a gtsummary object.",
         "x" = sprintf("You supplied an object of class: %s", class(tbl)[1]),
-        "i" = "Create a gtsummary table using `tbl_summary()` or `tbl_regression()`."
+        "i" = "Create a table with `tbl_summary()` or `tbl_regression()`."
       ),
       class = "clean_table_invalid_input"
     )
@@ -86,47 +113,60 @@ clean_table <- function(tbl) {
     modify_table_body(
       ~ .x |>
         mutate(across(all_stat_cols(), ~ {
-          # Detect specific missing value patterns to replace with standardized symbol
+          # Detect missing value patterns to replace with "--"
           # Uses explicit pattern matching to avoid false positives
           na_pattern <- paste(c(
-            "\\bNA\\b",                  # Literal NA
-            "\\bInf\\b",                 # Literal Inf
-            "-Inf",                      # Negative Inf
-            "^0 \\(0\\)$",               # Exact: 0 (0)
-            "^0 \\(0%\\)$",              # Exact: 0 (0%)
-            "^0% \\(0\\.0+\\)$",         # Exact: 0% (0.000)
-            "^0 \\(NA%\\)$",             # Exact: 0 (NA%)
-            "^0 \\(NA\\)$",              # Exact: 0 (NA)
-            "^NA \\(0\\)$",              # Exact: NA (0)
-            "^NA \\(NA\\)$",             # Exact: NA (NA)
-            "^NA \\(NA, NA\\)$",         # Exact: NA (NA, NA)
-            "^0\\.0+ \\(0\\.0+%?\\)$",   # 0.00 (0.00) or 0.00 (0.00%)
-            "^0\\.0+% \\(0\\.0+\\)$",    # 0.00% (0.00)
-            "^NA, NA$",                   # Exact: NA, NA
+            "\\bNA\\b", # Literal NA
+            "\\bInf\\b", # Literal Inf
+            "-Inf", # Negative Inf
+            "^0 \\(0\\)$", # Exact: 0 (0)
+            "^0 \\(0%\\)$", # Exact: 0 (0%)
+            "^0% \\(0\\.0+\\)$", # Exact: 0% (0.000)
+            "^0 \\(NA%\\)$", # Exact: 0 (NA%)
+            "^0 \\(NA\\)$", # Exact: 0 (NA)
+            "^NA \\(0\\)$", # Exact: NA (0)
+            "^NA \\(NA\\)$", # Exact: NA (NA)
+            "^NA \\(NA, NA\\)$", # Exact: NA (NA, NA)
+            "^0\\.0+ \\(0\\.0+%?\\)$", # 0.00 (0.00) or 0.00 (0.00%)
+            "^0\\.0+% \\(0\\.0+\\)$", # 0.00% (0.00)
+            "^NA, NA$", # Exact: NA, NA
             # Patterns with confidence intervals
-            "^0% \\(0\\.0+\\) \\(0%?, 0%?\\)$",           # 0% (0.000) (0%, 0%)
-            "^0\\.0+% \\(0\\.0+\\) \\(0\\.0+%?, 0\\.0+%?\\)$",  # 0.00% (0.00) (0.00%, 0.00%)
-            "^0 \\(0\\.0+\\) \\(0, 0\\)$",                # 0 (0.00) (0, 0)
-            "^0\\.0+ \\(0\\.0+\\) \\(0\\.0+, 0\\.0+\\)$", # 0.00 (0.00) (0.00, 0.00)
+            # 0% (0.000) (0%, 0%)
+            "^0% \\(0\\.0+\\) \\(0%?, 0%?\\)$",
+            # 0.00% (0.00) (0.00%, 0.00%)
+            "^0\\.0+% \\(0\\.0+\\) \\(0\\.0+%?, 0\\.0+%?\\)$",
+            # 0 (0.00) (0, 0)
+            "^0 \\(0\\.0+\\) \\(0, 0\\)$",
+            # 0.00 (0.00) (0.00, 0.00)
+            "^0\\.0+ \\(0\\.0+\\) \\(0\\.0+, 0\\.0+\\)$",
             # Catch any trailing CI with all zeros
-            "\\(0%?, 0%?\\)$",                             # Ending with (0%, 0%) or (0, 0)
-            "\\(0\\.0+%?, 0\\.0+%?\\)$"                    # Ending with (0.00%, 0.00%)
+            "\\(0%?, 0%?\\)$",
+            "\\(0\\.0+%?, 0\\.0+%?\\)$"
           ), collapse = "|")
           if_else(grepl(na_pattern, ., perl = TRUE), NA_character_, .)
         }))
     )
 
-  # Only apply modify_missing_symbol if var_type column exists
-  # tbl_strata objects have var_type_1, var_type_2, etc. instead of var_type
-  # so we skip this step for those table types
+  # Apply modify_missing_symbol to replace NA values with the symbol.
+  # When var_type exists, target specific row types for precision.
+  # When it doesn't (tbl_merge, tbl_strata), apply to all stat columns.
   if ("var_type" %in% names(tbl$table_body)) {
     tbl <- tbl |>
       modify_missing_symbol(
-        symbol = "---",
+        symbol = symbol,
         columns = all_stat_cols(),
         rows =
-          (var_type %in% c("continuous", "dichotomous") & row_type == "label") |
-          (var_type %in% c("continuous2", "categorical") & row_type == "level")
+          (var_type %in% c("continuous", "dichotomous") &
+           row_type == "label") |
+          (var_type %in% c("continuous2", "categorical") &
+           row_type == "level")
+      )
+  } else {
+    tbl <- tbl |>
+      modify_missing_symbol(
+        symbol = symbol,
+        columns = all_stat_cols(),
+        rows = TRUE
       )
   }
 

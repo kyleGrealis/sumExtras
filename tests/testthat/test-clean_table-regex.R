@@ -1,90 +1,75 @@
-# Tests for Issue 8: Regex pattern in clean_table()
-# Tests both current and proposed regex patterns
+# Tests for clean_table() regex pattern matching
+# Tests the actual regex pattern used in clean_table()
 
-# context("clean_table() - Regex pattern behavior")
+# Build the same pattern used in clean_table() for unit testing
+get_na_pattern <- function() {
+  paste(c(
+    "\\bNA\\b",
+    "\\bInf\\b",
+    "-Inf",
+    "^0 \\(0\\)$",
+    "^0 \\(0%\\)$",
+    "^0% \\(0\\.0+\\)$",
+    "^0 \\(NA%\\)$",
+    "^0 \\(NA\\)$",
+    "^NA \\(0\\)$",
+    "^NA \\(NA\\)$",
+    "^NA \\(NA, NA\\)$",
+    "^0\\.0+ \\(0\\.0+%?\\)$",
+    "^0\\.0+% \\(0\\.0+\\)$",
+    "^NA, NA$",
+    "^0% \\(0\\.0+\\) \\(0%?, 0%?\\)$",
+    "^0\\.0+% \\(0\\.0+\\) \\(0\\.0+%?, 0\\.0+%?\\)$",
+    "^0 \\(0\\.0+\\) \\(0, 0\\)$",
+    "^0\\.0+ \\(0\\.0+\\) \\(0\\.0+, 0\\.0+\\)$",
+    "\\(0%?, 0%?\\)$",
+    "\\(0\\.0+%?, 0\\.0+%?\\)$"
+  ), collapse = "|")
+}
 
-test_that("clean_table() current regex matches intended patterns", {
-  # Current pattern from R/clean_table.R:69
-  current_pattern <- "\\bNA\\b|\\bInf\\b|^[0\\s%().,]+$"
+test_that("clean_table() regex matches intended patterns", {
+  na_pattern <- get_na_pattern()
 
   # Should match these (true positives)
-  expect_true(grepl(current_pattern, "NA", perl = TRUE))
-  expect_true(grepl(current_pattern, "Inf", perl = TRUE))
-  expect_true(grepl(current_pattern, "NA (NA)", perl = TRUE))
-  expect_true(grepl(current_pattern, "0 (0%)", perl = TRUE))
-
-  # Should NOT match real data (but might fail with current pattern)
-  expect_false(grepl(current_pattern, "15 (30%)", perl = TRUE))
-  expect_false(grepl(current_pattern, "0.5 (25%)", perl = TRUE))
-  expect_false(grepl(current_pattern, "45 (40, 50)", perl = TRUE))
+  expect_true(grepl(na_pattern, "NA", perl = TRUE))
+  expect_true(grepl(na_pattern, "Inf", perl = TRUE))
+  expect_true(grepl(na_pattern, "-Inf", perl = TRUE))
+  expect_true(grepl(na_pattern, "0 (0)", perl = TRUE))
+  expect_true(grepl(na_pattern, "0 (0%)", perl = TRUE))
+  expect_true(grepl(na_pattern, "0 (NA%)", perl = TRUE))
+  expect_true(grepl(na_pattern, "0 (NA)", perl = TRUE))
+  expect_true(grepl(na_pattern, "NA (0)", perl = TRUE))
+  expect_true(grepl(na_pattern, "NA (NA)", perl = TRUE))
+  expect_true(grepl(na_pattern, "NA (NA, NA)", perl = TRUE))
+  expect_true(grepl(na_pattern, "0.00 (0.00)", perl = TRUE))
+  expect_true(grepl(na_pattern, "0.00 (0.00%)", perl = TRUE))
+  expect_true(grepl(na_pattern, "0.00% (0.00)", perl = TRUE))
+  expect_true(grepl(na_pattern, "0% (0.000)", perl = TRUE))
+  expect_true(grepl(na_pattern, "NA, NA", perl = TRUE))
 })
 
-test_that("clean_table() current regex has known false positives", {
-  current_pattern <- "\\bNA\\b|\\bInf\\b|^[0\\s%().,]+$"
+test_that("clean_table() regex does not match real data values", {
+  na_pattern <- get_na_pattern()
 
-  # These are FALSE POSITIVES - pattern matches but shouldn't
-  # Documents the problem with current regex
-  expect_true(grepl(current_pattern, "...", perl = TRUE))  # Just dots
-  expect_true(grepl(current_pattern, "   ", perl = TRUE))  # Just spaces
-  expect_true(grepl(current_pattern, "()", perl = TRUE))   # Just parens
-})
-
-test_that("clean_table() proposed regex fixes false positives", {
-  # Proposed pattern (Option B)
-  proposed_pattern <- paste(c(
-    "\\bNA\\b",
-    "\\bInf\\b",
-    "-Inf",
-    "^0 \\(0%\\)$",
-    "^0 \\(NA%\\)$",
-    "^NA \\(NA\\)$",
-    "^NA \\(NA, NA\\)$",
-    "^0\\.0+ \\(0\\.0+%?\\)$",
-    "^NA, NA$"
-  ), collapse = "|")
-
-  # Should match intended patterns
-  expect_true(grepl(proposed_pattern, "NA", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "Inf", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "-Inf", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "0 (0%)", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "0 (NA%)", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "NA (NA)", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "NA (NA, NA)", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "0.00 (0.00)", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "0.00 (0.00%)", perl = TRUE))
-  expect_true(grepl(proposed_pattern, "NA, NA", perl = TRUE))
+  # Should NOT match actual data
+  expect_false(grepl(na_pattern, "15 (30%)", perl = TRUE))
+  expect_false(grepl(na_pattern, "0.5 (25%)", perl = TRUE))
+  expect_false(grepl(na_pattern, "45 (40, 50)", perl = TRUE))
+  expect_false(grepl(na_pattern, "2.5, 3.8", perl = TRUE))
+  expect_false(grepl(na_pattern, "1.23 (0.45, 2.01)", perl = TRUE))
+  expect_false(grepl(na_pattern, "0.001", perl = TRUE))
 
   # Should NOT match false positives
-  expect_false(grepl(proposed_pattern, "...", perl = TRUE))
-  expect_false(grepl(proposed_pattern, "   ", perl = TRUE))
-  expect_false(grepl(proposed_pattern, "()", perl = TRUE))
-
-  # Should NOT match real data
-  expect_false(grepl(proposed_pattern, "15 (30%)", perl = TRUE))
-  expect_false(grepl(proposed_pattern, "0.5 (25%)", perl = TRUE))
-  expect_false(grepl(proposed_pattern, "45 (40, 50)", perl = TRUE))
-  expect_false(grepl(proposed_pattern, "2.5, 3.8", perl = TRUE))
-  expect_false(grepl(proposed_pattern, "1.23 (0.45, 2.01)", perl = TRUE))
-  expect_false(grepl(proposed_pattern, "0.001", perl = TRUE))
+  expect_false(grepl(na_pattern, "...", perl = TRUE))
+  expect_false(grepl(na_pattern, "()", perl = TRUE))
 })
 
-test_that("clean_table() proposed regex avoids partial matches", {
-  proposed_pattern <- paste(c(
-    "\\bNA\\b",
-    "\\bInf\\b",
-    "-Inf",
-    "^0 \\(0%\\)$",
-    "^0 \\(NA%\\)$",
-    "^NA \\(NA\\)$",
-    "^NA \\(NA, NA\\)$",
-    "^0\\.0+ \\(0\\.0+%?\\)$",
-    "^NA, NA$"
-  ), collapse = "|")
+test_that("clean_table() regex avoids partial word matches", {
+  na_pattern <- get_na_pattern()
 
   # Should not match NA/Inf within larger words
-  expect_false(grepl(proposed_pattern, "BANANA", perl = TRUE))
-  expect_false(grepl(proposed_pattern, "Information", perl = TRUE))
+  expect_false(grepl(na_pattern, "BANANA", perl = TRUE))
+  expect_false(grepl(na_pattern, "Information", perl = TRUE))
 })
 
 test_that("clean_table() works with actual gtsummary table", {
@@ -130,7 +115,9 @@ test_that("clean_table() handles Inf values", {
 
   # Create data with Inf
   inf_data <- gtsummary::trial |>
-    dplyr::mutate(marker = dplyr::if_else(dplyr::row_number() == 1, Inf, marker))
+    dplyr::mutate(
+      marker = dplyr::if_else(dplyr::row_number() == 1, Inf, marker)
+    )
 
   tbl <- inf_data |>
     gtsummary::tbl_summary(by = trt, include = marker)
