@@ -24,8 +24,7 @@ Invisibly returns the theme list object from
 `gtsummary::theme_gtsummary_compact("jama")`. The theme is applied
 globally via
 [`gtsummary::set_gtsummary_theme()`](https://www.danieldsjoberg.com/gtsummary/reference/set_gtsummary_theme.html),
-affecting all subsequent gtsummary tables created in the session. A
-message is printed confirming the theme application.
+affecting all subsequent gtsummary tables created in the session.
 
 ## Details
 

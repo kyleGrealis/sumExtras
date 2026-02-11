@@ -5,11 +5,16 @@
 ### Breaking Changes
 
 - Removed `apply_labels_from_dictionary()`. Use
-  `attr(data$var, "label") <- "Label"` directly, or the labelled package
-  for bulk attribute labeling.
+  `attr(data$var, "label") <- "Label"` directly, or the
+  [labelled](https://larmarange.github.io/labelled/) package for bulk
+  attribute labeling.
 
 ### New Features
 
+- [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+  auto-labeling via `options(sumExtras.auto_labels = TRUE)` and
+  (recommended) `options(sumExtras.prefer_dictionary = TRUE)`. See
+  [`vignette("options")`](https://www.kyleGrealis.com/sumExtras/articles/options.md).
 - [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
   now bolds significant p-values
   ([`bold_p()`](https://www.danieldsjoberg.com/gtsummary/reference/bold_p.html))
@@ -28,6 +33,9 @@
 
 ### Improvements
 
+- Data dictionaries now use lowercase column names (`variable`,
+  `description`) by convention. Title-case names (`Variable`,
+  `Description`) still work — column matching is case-insensitive.
 - [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
   now handles `tbl_regression` gracefully: `overall` and `pval` are
   silently ignored (regression tables already have model p-values), and
@@ -35,11 +43,9 @@
   is applied automatically. No more warnings when using
   [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
   with default arguments on regression tables.
-- [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
-  auto-labeling via `options(sumExtras.auto_labels = TRUE)` is now fully
-  tested.
 - Removed startup message. The package now loads silently.
-- Dropped `purrr` from Imports (4 dependencies instead of 5).
+- Dropped [purrr](https://purrr.tidyverse.org/) from Imports (4
+  dependencies instead of 5).
 - New vignettes:
   [`vignette("options")`](https://www.kyleGrealis.com/sumExtras/articles/options.md)
   and

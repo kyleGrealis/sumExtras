@@ -1,24 +1,19 @@
 # sumExtras
 
-> *One function replaces five. Stop chaining
-> [`add_overall()`](https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html),
-> [`add_p()`](https://www.danieldsjoberg.com/gtsummary/reference/add_p.html),
-> [`bold_labels()`](https://www.danieldsjoberg.com/gtsummary/reference/bold_italicize_labels_levels.html),
-> [`bold_p()`](https://www.danieldsjoberg.com/gtsummary/reference/bold_p.html),
-> and
-> [`modify_header()`](https://www.danieldsjoberg.com/gtsummary/reference/modify.html)
-> on every table.*
+> **sumExtras**: “**SUM**mary table **EXTRAS**”
 
 ## Overview
 
-**sumExtras** reduces the repetitive boilerplate in gtsummary workflows.
-Instead of chaining
+[sumExtras](https://github.com/kyleGrealis/sumExtras) reduces the
+repetitive boilerplate in
+[gtsummary](https://github.com/ddsjoberg/gtsummary) workflows. One
+function replaces five. Stop copy-pasting
 [`add_overall()`](https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html),
 [`add_p()`](https://www.danieldsjoberg.com/gtsummary/reference/add_p.html),
 [`bold_labels()`](https://www.danieldsjoberg.com/gtsummary/reference/bold_italicize_labels_levels.html),
 and
 [`modify_header()`](https://www.danieldsjoberg.com/gtsummary/reference/modify.html)
-on every table, call
+on every table. Call
 [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
 once. The package also handles missing value cleanup, automatic variable
 labeling from data dictionaries, group header styling, and JAMA compact
@@ -39,32 +34,28 @@ install.packages("sumExtras")
 pak::pak("kyleGrealis/sumExtras")
 ```
 
-## See the Difference
-
-[TABLE]
-
-[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
-also standardizes missing values via
-[`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md)
-– something you’d have to build yourself otherwise.
-
 ## Quick Start
 
 ``` r
 library(sumExtras)
 library(gtsummary)
-
-use_jama_theme()
-
-trial |>
-  tbl_summary(by = trt) |>
-  extras()
 ```
+
+[TABLE]
+
+![Table produced by extras()](reference/figures/readme-example.png)
 
 That single
 [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
-call adds the overall column, p-values, bold labels, bold significant
-p-values, a clean header, and standardized missing value display.
+call replaces
+[`add_overall()`](https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html),
+[`add_p()`](https://www.danieldsjoberg.com/gtsummary/reference/add_p.html),
+[`bold_labels()`](https://www.danieldsjoberg.com/gtsummary/reference/bold_italicize_labels_levels.html),
+[`bold_p()`](https://www.danieldsjoberg.com/gtsummary/reference/bold_p.html),
+and
+[`modify_header()`](https://www.danieldsjoberg.com/gtsummary/reference/modify.html).
+It also standardizes missing values via
+[`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md).
 
 ## Functions
 
@@ -81,14 +72,19 @@ p-values, a clean header, and standardized missing value display.
 - [`add_group_styling()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)
   – bold/italic formatting for group headers
 - [`add_group_colors()`](https://www.kyleGrealis.com/sumExtras/reference/add_group_colors.md)
-  – background colors for group headers (converts to gt)
+  – background colors for group headers (converts to
+  [gt](https://gt.rstudio.com))
 - [`get_group_rows()`](https://www.kyleGrealis.com/sumExtras/reference/get_group_rows.md)
   – extract group header row indices
 
-## The Name
+## Options
 
-**sumExtras** = “**SUM**mary table **EXTRAS**” + “**SOME EXTRAS** for
-gt**SUMMARY**”
+- `options(sumExtras.auto_labels = TRUE)` – add labels through the
+  project without needing
+  [`add_auto_labels()`](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md)
+  for each table
+- `options(sumExtras.prefer_dictionary = TRUE)` – change the labeling
+  priority
 
 ## More Info
 
@@ -99,13 +95,38 @@ gt**SUMMARY**”
 - [`vignette("labeling")`](https://www.kyleGrealis.com/sumExtras/articles/labeling.md)
   – dictionary-based labeling
 - [`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
-  – JAMA themes for gtsummary and gt
+  – JAMA themes for [gtsummary](https://github.com/ddsjoberg/gtsummary)
+  and [gt](https://gt.rstudio.com)
 - [`vignette("styling")`](https://www.kyleGrealis.com/sumExtras/articles/styling.md)
   – group headers and advanced formatting
 - [`vignette("options")`](https://www.kyleGrealis.com/sumExtras/articles/options.md)
   – .Rprofile options for auto-labeling
 - [Bug reports & feature
   requests](https://github.com/kyleGrealis/sumExtras/issues)
+
+## FAQ
+
+**Why not just use [gtsummary](https://github.com/ddsjoberg/gtsummary)
+directly?** You can.
+[sumExtras](https://github.com/kyleGrealis/sumExtras) wraps the
+formatting steps you repeat on every table. If you only make one or two
+tables, you don’t need this package.
+
+**What happens if something fails inside
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)?**
+It warns and continues. Your table always renders. See the
+warn-and-continue design in
+[`vignette("sumExtras-intro")`](https://www.kyleGrealis.com/sumExtras/articles/sumExtras-intro.md).
+
+**Why didn’t my dictionary labels show up?** Your data likely has label
+attributes that take priority. Set
+`options(sumExtras.prefer_dictionary = TRUE)` or see
+[`vignette("labeling")`](https://www.kyleGrealis.com/sumExtras/articles/labeling.md).
+
+**Does
+[`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
+work with survey data?** Yes. `tbl_svysummary` tables get the same
+treatment as `tbl_summary`.
 
 ## Contributing
 
@@ -115,10 +136,6 @@ Bug reports, feature requests, and feedback are welcome at
 ## License
 
 [MIT](https://github.com/kyleGrealis/sumExtras/blob/main/LICENSE)
-
-------------------------------------------------------------------------
-
-sumExtras adds some extras to your summary tables!
 
 # Package index
 

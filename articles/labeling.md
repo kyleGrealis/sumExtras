@@ -12,19 +12,19 @@ Raw variable names like `trt`, `marker`, and `grade` don’t belong in a
 publication table. If you’re building 20+ tables across an analysis,
 manually relabeling the same variables in every
 [`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)
-call is a waste of time.
+call is time consuming.
 [`add_auto_labels()`](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md)
 lets you define labels once and apply them everywhere.
 
 ## Creating a Data Dictionary
 
-A dictionary is a data frame with two columns: `Variable` (exact
-variable names, case-sensitive) and `Description` (the labels you want
-displayed).
+A dictionary is a data frame with two columns: `variable` (exact
+variable names) and `description` (the labels you want displayed).
+Column names are case-insensitive.
 
 ``` r
 dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
+  ~variable,    ~description,
   "trt",        "Chemotherapy Treatment",
   "age",        "Age at Enrollment (years)",
   "marker",     "Marker Level (ng/mL)",
@@ -36,7 +36,7 @@ dictionary <- tibble::tribble(
 
 dictionary
 #> # A tibble: 7 × 2
-#>   Variable Description              
+#>   variable description              
 #>   <chr>    <chr>                    
 #> 1 trt      Chemotherapy Treatment   
 #> 2 age      Age at Enrollment (years)
@@ -47,7 +47,7 @@ dictionary
 #> 7 death    Patient Died
 ```
 
-In practice, you would load this from a CSV or define it once at the top
+In practice, you could load this from a CSV or define it once at the top
 of your analysis script.
 
 ## Labeling gtsummary Tables
@@ -57,8 +57,8 @@ of your analysis script.
 ``` r
 trial |>
   tbl_summary(by = trt, include = c(age, grade, marker)) |>
-  add_auto_labels(dictionary = dictionary) |>
-  extras()
+  extras() |> 
+  add_auto_labels(dictionary = dictionary)
 ```
 
 [TABLE]
@@ -73,8 +73,8 @@ finds it without you passing it:
 # dictionary already exists from above
 trial |>
   tbl_summary(by = trt, include = c(age, stage, response)) |>
-  add_auto_labels() |>
-  extras()
+  extras() |> 
+  add_auto_labels()
 ```
 
 [TABLE]
@@ -94,6 +94,7 @@ attr(labeled_trial$marker, "label") <- "Biomarker Concentration (ng/mL)"
 
 labeled_trial |>
   tbl_summary(by = trt, include = c(age, marker)) |>
+  extras() |> 
   add_auto_labels()
 ```
 
@@ -110,10 +111,10 @@ trial |>
   tbl_summary(
     by = trt,
     include = c(age, grade, marker),
-    label = list(age ~ "Age (Custom Label)")
+    label = list(age ~ "Age (from tbl_summary function)")
   ) |>
-  add_auto_labels(dictionary = dictionary) |>
-  extras()
+  extras() |> 
+  add_auto_labels(dictionary = dictionary)
 ```
 
 [TABLE]
@@ -127,7 +128,7 @@ the same way:
 ``` r
 lm(marker ~ age + grade + stage, data = trial) |>
   tbl_regression() |>
-  add_auto_labels(dictionary = dictionary)
+  add_auto_labels()
 ```
 
 [TABLE]
@@ -135,18 +136,29 @@ lm(marker ~ age + grade + stage, data = trial) |>
 ## Label Priority
 
 When both dictionary labels and attribute labels exist for the same
-variable, attribute labels always take priority: 1. **Manual labels**
-(from `label = list(...)` in
-[`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html))
-always win 2. **Attribute labels** (from `attr(data$var, "label")`) take
-priority over dictionary 3. **Dictionary labels** are used as a fallback
+variable, attribute labels take priority by default:
+
+1.  **Manual labels** (from `label = list(...)` in
+    [`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html))
+    always win
+2.  **Attribute labels** (from `attr(data$var, "label")`) take priority
+    over dictionary
+3.  **Dictionary labels** are used as a fallback
+
+We recommend setting `options(sumExtras.prefer_dictionary = TRUE)` so
+dictionary labels take priority over attribute labels. This is
+especially useful when your imported data has generic attribute labels
+but your dictionary has the labels you actually want in publication
+tables. See
+[`vignette("options")`](https://www.kyleGrealis.com/sumExtras/articles/options.md)
+for details.
 
 ``` r
 trial_both <- trial
 attr(trial_both$age, "label") <- "Age from Attribute"
 
 dictionary_conflict <- tibble::tribble(
-  ~Variable, ~Description,
+  ~variable, ~description,
   "age", "Age from Dictionary"
 )
 
@@ -176,7 +188,7 @@ call picks up the dictionary automatically:
 
 ``` r
 dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
+  ~variable,    ~description,
   "age",        "Age at Enrollment (years)",
   "marker",     "Marker Level (ng/mL)",
   "grade",      "Tumor Grade"
@@ -206,4 +218,6 @@ for more on `.Rprofile` setup.
 - [`vignette("styling")`](https://www.kyleGrealis.com/sumExtras/articles/styling.md)
   – group headers and advanced formatting
 - [`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
-  – JAMA compact themes
+  – JAMA compact themes for
+  [gtsummary](https://github.com/ddsjoberg/gtsummary) and
+  [gt](https://gt.rstudio.com)

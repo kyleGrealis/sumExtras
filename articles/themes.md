@@ -9,9 +9,10 @@ library(gt)
 ## `use_jama_theme()`
 
 [`use_jama_theme()`](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md)
-sets the gtsummary theme to JAMA compact styling for the rest of your
-session. It reduces padding, tightens font sizes, and produces tables
-suited for publication or reports.
+sets the [gtsummary](https://github.com/ddsjoberg/gtsummary) theme to
+JAMA compact styling for the rest of your session. It reduces padding,
+tightens font sizes, and produces tables suited for publication or
+reports.
 
 ``` r
 use_jama_theme()
@@ -27,7 +28,8 @@ This is equivalent to calling
 `gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))`
 but shorter to type.
 
-To reset back to the default gtsummary theme:
+To reset back to the default
+[gtsummary](https://github.com/ddsjoberg/gtsummary) theme:
 
 ``` r
 gtsummary::reset_gtsummary_theme()
@@ -35,10 +37,12 @@ gtsummary::reset_gtsummary_theme()
 
 ## `theme_gt_compact()`
 
-When you mix gtsummary tables with plain gt tables in the same document,
-the styling mismatch is noticeable.
+When you mix [gtsummary](https://github.com/ddsjoberg/gtsummary) tables
+with plain [gt](https://gt.rstudio.com) tables in the same document, the
+styling mismatch is noticeable.
 [`theme_gt_compact()`](https://www.kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
-applies the same JAMA compact look to gt tables.
+applies the same JAMA compact look to [gt](https://gt.rstudio.com)
+tables.
 
 #### Default gt
 
@@ -85,7 +89,7 @@ trial |>
 | Drug A                 | 31  | II    |
 | Drug B                 | 34  | I     |
 
-You can layer additional gt styling on top:
+You can layer additional [gt](https://gt.rstudio.com) styling on top:
 
 ``` r
 trial |>

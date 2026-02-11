@@ -34,12 +34,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../articles/sumExtras-intro.html">Get Started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/sumExtras-intro.html">Introduction to sumExtras</a></li>
-    <li><a class="dropdown-item" href="../articles/labeling.html">Automatic Variable Labeling</a></li>
+<li><a class="dropdown-item" href="../articles/labeling.html">Automatic Variable Labeling</a></li>
     <li><a class="dropdown-item" href="../articles/styling.html">Table Styling and Formatting</a></li>
     <li><a class="dropdown-item" href="../articles/themes.html">Themes</a></li>
     <li><a class="dropdown-item" href="../articles/options.html">Package Options</a></li>
@@ -52,14 +52,6 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/kyleGrealis/sumExtras/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
-  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
-<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
-    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
-    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
-  </ul>
-</li>
       </ul>
 </div>
 
@@ -82,18 +74,28 @@
     
     
 <div class="section level2">
+<h2 id="quick-read">Quick read<a class="anchor" aria-label="anchor" href="#quick-read"></a>
+</h2>
+<p>Add these options to your <code>.Rprofile</code> for persistent use
+or add to the beginning of your table building script for ease of
+sharing.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>sumExtras.auto_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>sumExtras.prefer_dictionary <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="auto-labeling-with-sumextras-auto_labels">Auto-Labeling with <code>sumExtras.auto_labels</code><a class="anchor" aria-label="anchor" href="#auto-labeling-with-sumextras-auto_labels"></a>
 </h2>
 <p>If you keep a <code>dictionary</code> object in your environment (or
 your data already has label attributes), you can skip calling
 <code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> on every table. Set this once:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>sumExtras.auto_labels <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Now <code><a href="../reference/extras.html">extras()</a></code> handles labeling automatically:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Define your dictionary once</span></span>
 <span><span class="va">dictionary</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
-<span>  <span class="op">~</span><span class="va">Variable</span>,    <span class="op">~</span><span class="va">Description</span>,</span>
+<span>  <span class="op">~</span><span class="va">variable</span>,    <span class="op">~</span><span class="va">description</span>,</span>
 <span>  <span class="st">"age"</span>,        <span class="st">"Age at Enrollment (years)"</span>,</span>
 <span>  <span class="st">"marker"</span>,     <span class="st">"Marker Level (ng/mL)"</span>,</span>
 <span>  <span class="st">"grade"</span>,      <span class="st">"Tumor Grade"</span></span>
@@ -104,12 +106,43 @@ your data already has label attributes), you can skip calling
 <span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/extras.html">extras</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Put <code>options(sumExtras.auto_labels = TRUE)</code> in your
-<code>.Rprofile</code> to enable this for every session. If no
-dictionary is found and the data has no label attributes,
+<code>.Rprofile</code> to enable this for every session. Another option
+is to add it at the beginning of the script that creates your tables. If
+no dictionary is found and the data has no label attributes,
 <code><a href="../reference/extras.html">extras()</a></code> continues normally. If something goes wrong, it
 warns and moves on.</p>
 <p>You can still call <code><a href="../reference/add_auto_labels.html">add_auto_labels()</a></code> explicitly whenever
 you need per-table control.</p>
+</div>
+<div class="section level2">
+<h2 id="dictionary-priority-with-sumextras-prefer_dictionary">Dictionary Priority with
+<code>sumExtras.prefer_dictionary</code><a class="anchor" aria-label="anchor" href="#dictionary-priority-with-sumextras-prefer_dictionary"></a>
+</h2>
+<p>By default, attribute labels (from
+<code>attr(data$var, "label")</code>) take priority over dictionary
+labels. If you maintain a centralized data dictionary and want it to win
+over attribute labels, set:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">options</a></span><span class="op">(</span>sumExtras.prefer_dictionary <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>This changes the label priority to:</p>
+<ol style="list-style-type: decimal">
+<li>
+<strong>Manual labels</strong> (from <code>label = list(...)</code>
+in <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary()</a></code>) – always win</li>
+<li>
+<strong>Dictionary labels</strong> – from the dictionary data
+frame</li>
+<li>
+<strong>Attribute labels</strong> – from
+<code>attr(data$var, "label")</code>
+</li>
+</ol>
+<p>This is useful when your imported data has generic attribute labels
+(e.g., from <a href="https://haven.tidyverse.org" class="external-link">haven</a> or <a href="https://larmarange.github.io/labelled/" class="external-link">labelled</a>) but your
+dictionary has the labels you actually want in publication tables.</p>
+<p>Without the option (or with
+<code>sumExtras.prefer_dictionary = FALSE</code>), the default priority
+is manual &gt; attributes &gt; dictionary.</p>
 </div>
 <div class="section level2">
 <h2 id="more-vignettes">More Vignettes<a class="anchor" aria-label="anchor" href="#more-vignettes"></a>
@@ -122,8 +155,8 @@ extras()</li>
 <code><a href="../articles/labeling.html">vignette("labeling")</a></code> – dictionary-based labeling and
 cross-package workflows</li>
 <li>
-<code><a href="../articles/themes.html">vignette("themes")</a></code> – JAMA compact themes for gtsummary
-and gt tables</li>
+<code><a href="../articles/themes.html">vignette("themes")</a></code> – JAMA compact themes for
+<a href="https://github.com/ddsjoberg/gtsummary" class="external-link">gtsummary</a> and <a href="https://gt.rstudio.com" class="external-link">gt</a> tables</li>
 <li>
 <code><a href="../articles/styling.html">vignette("styling")</a></code> – group headers and advanced
 formatting</li>

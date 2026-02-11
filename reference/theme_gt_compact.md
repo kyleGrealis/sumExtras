@@ -40,11 +40,8 @@ tables. Key styling includes:
 
 ## See also
 
-- [`gtsummary::theme_gtsummary_compact()`](https://www.danieldsjoberg.com/gtsummary/reference/theme_gtsummary.html)
-  for gtsummary table themes
-
-- [`gtsummary::set_gtsummary_theme()`](https://www.danieldsjoberg.com/gtsummary/reference/set_gtsummary_theme.html)
-  for setting global gtsummary themes
+- [`sumExtras::use_jama_theme()`](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md)
+  for complimentary table styling
 
 - [`gt::tab_options()`](https://gt.rstudio.com/reference/tab_options.html)
   for additional gt table styling options
@@ -232,11 +229,10 @@ gt::[tab_header](https://gt.rstudio.com/reference/tab_header.html)(title
 |         18.7 |   8 |  360 | 175 | 3.15 | 3.440 | 17.02 |   0 |   0 |    3 |    2 |
 |         18.1 |   6 |  225 | 105 | 2.76 | 3.460 | 20.22 |   1 |   0 |    3 |    1 |
 
-\# Use alongside gtsummary tables for consistency \# Set gtsummary theme
-first
-gtsummary::[set_gtsummary_theme](https://www.danieldsjoberg.com/gtsummary/reference/set_gtsummary_theme.html)(gtsummary::[theme_gtsummary_compact](https://www.danieldsjoberg.com/gtsummary/reference/theme_gtsummary.html)("jama"))
-\#\> Setting theme "Compact" \# Then both tables will have matching
-appearance summary_table \<-
+\# Use alongside gtsummary tables with sumExtras for consistency \# Set
+JAMA theme first
+[use_jama_theme](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md)()
+\# Then both tables will have matching appearance summary_table \<-
 gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
 \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)()

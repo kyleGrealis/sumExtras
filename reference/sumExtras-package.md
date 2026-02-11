@@ -7,12 +7,6 @@ al. (2021)
 standardized missing value display, and consistent formatting helpers
 for streamlined table styling workflows.
 
-Provides additional convenience functions for 'gtsummary' (Sjoberg et
-al. (2021) <doi:10.32614/RJ-2021-053>) & 'gt' tables, including
-automatic variable labeling from dictionaries, standardized missing
-value display, and formatting helpers for common table styling
-workflows.
-
 ## Main Functions
 
 - [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md) -
@@ -50,16 +44,6 @@ the necessary internal structures.
 major version changes.
 
 ## See also
-
-Useful links:
-
-- <https://github.com/kyleGrealis/sumExtras>
-
-- <https://www.kyleGrealis.com/sumExtras/>
-
-- Report bugs at <https://github.com/kyleGrealis/sumExtras/issues>
-
-&nbsp;
 
 - gtsummary package: <https://www.danieldsjoberg.com/gtsummary/>
 

@@ -60,7 +60,8 @@ extras(
 - .args:
 
   Optional list of arguments to use instead of individual parameters.
-  When provided, overrides `pval`, `overall`, and `last` arguments.
+  When provided, overrides `pval`, `overall`, `last`, `header`, and
+  `symbol` arguments.
 
 - .add_p_args:
 
@@ -105,7 +106,7 @@ function warns and applies only basic formatting (bold_labels and
 modify_header).
 
 For merged tables (`tbl_merge`), call `extras()` on each sub-table
-before merging — all formatting carries through.
+before merging. All formatting carries through.
 
 If any individual step fails (e.g., due to unexpected table structure),
 the function warns and continues without that feature.
@@ -127,10 +128,15 @@ last. See
 
 ## Table Type Support
 
-Full features (overall, p-values) require stratified `tbl_summary` or
-`tbl_svysummary`. Regression and stacked tables get basic formatting
-only (bold labels, clean header). Unsupported features trigger a
-warning.
+Full features (overall, p-values, bold p-values) require a stratified
+`tbl_summary` or `tbl_svysummary`. Regression tables get bold labels,
+bold model p-values, header cleaning, and
+[`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md).
+Stacked (`tbl_strata`) and merged (`tbl_merge`) tables get bold labels,
+header cleaning, and
+[`clean_table()`](https://www.kyleGrealis.com/sumExtras/reference/clean_table.md).
+Warnings only fire when the user explicitly requests unsupported
+features (e.g., `overall = TRUE` on a non-stratified table).
 
 ## See also
 
@@ -373,30 +379,10 @@ gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\> extras(.add_p_args =
 [list](https://rdrr.io/r/base/list.html)( test =
-[list](https://rdrr.io/r/base/list.html)([all_continuous](https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html)()
-~ "t.test"), pvalue_fun = ~
+[list](https://rdrr.io/r/base/list.html)(age ~ "t.test", marker ~
+"t.test"), pvalue_fun = ~
 gtsummary::[style_pvalue](https://www.danieldsjoberg.com/gtsummary/reference/style_pvalue.html)(.x,
-digits = 2) )) \#\> Warning: Failed to add p-values. \#\> ✖ Error: Error
-processing \`test\` argument. \#\> ! Caused by error in
-\`all_continuous()\`: ! could not find function \#\> "all_continuous"
-\#\> ℹ Select among columns "age", "marker", "stage", "grade",
-"response", "death", \#\> and "ttdeath" \#\> ℹ Continuing without
-p-values.
-
-[TABLE]
-
-\# Chain with other functions \# Create required dictionary first
-dictionary \<-
-tibble::[tribble](https://tibble.tidyverse.org/reference/tribble.html)(
-~Variable, ~Description, "record_id", "Participant ID", "age", "Age at
-enrollment", "sex", "Biological sex" )
-gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
-\|\>
-gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
-= trt) \|\>
-[add_auto_labels](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
-\|\> extras(pval = TRUE) \|\>
-[add_group_styling](https://www.kyleGrealis.com/sumExtras/reference/add_group_styling.md)()
+digits = 2) ))
 
 [TABLE]
 

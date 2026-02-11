@@ -34,12 +34,12 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
+<li class="nav-item"><a class="nav-link" href="../articles/sumExtras-intro.html">Get Started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/sumExtras-intro.html">Introduction to sumExtras</a></li>
-    <li><a class="dropdown-item" href="../articles/labeling.html">Automatic Variable Labeling</a></li>
+<li><a class="dropdown-item" href="../articles/labeling.html">Automatic Variable Labeling</a></li>
     <li><a class="dropdown-item" href="../articles/styling.html">Table Styling and Formatting</a></li>
     <li><a class="dropdown-item" href="../articles/themes.html">Themes</a></li>
     <li><a class="dropdown-item" href="../articles/options.html">Package Options</a></li>
@@ -52,14 +52,6 @@
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/kyleGrealis/sumExtras/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
-  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
-<li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
-    <li><button class="dropdown-item" data-bs-theme-value="dark"><span class="fa fa-moon"></span> Dark</button></li>
-    <li><button class="dropdown-item" data-bs-theme-value="auto"><span class="fa fa-adjust"></span> Auto</button></li>
-  </ul>
-</li>
       </ul>
 </div>
 
@@ -89,10 +81,10 @@
 <h2 id="use_jama_theme">
 <code>use_jama_theme()</code><a class="anchor" aria-label="anchor" href="#use_jama_theme"></a>
 </h2>
-<p><code><a href="../reference/use_jama_theme.html">use_jama_theme()</a></code> sets the gtsummary theme to JAMA
-compact styling for the rest of your session. It reduces padding,
-tightens font sizes, and produces tables suited for publication or
-reports.</p>
+<p><code><a href="../reference/use_jama_theme.html">use_jama_theme()</a></code> sets the <a href="https://github.com/ddsjoberg/gtsummary" class="external-link">gtsummary</a> theme
+to JAMA compact styling for the rest of your session. It reduces
+padding, tightens font sizes, and produces tables suited for publication
+or reports.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/use_jama_theme.html">use_jama_theme</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -705,7 +697,7 @@ N = 102</span><span class="gt_footnote_marks" style="white-space:nowrap;font-sty
 <p>This is equivalent to calling
 <code>gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))</code>
 but shorter to type.</p>
-<p>To reset back to the default gtsummary theme:</p>
+<p>To reset back to the default <a href="https://github.com/ddsjoberg/gtsummary" class="external-link">gtsummary</a> theme:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">gtsummary</span><span class="fu">::</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/set_gtsummary_theme.html" class="external-link">reset_gtsummary_theme</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -713,10 +705,10 @@ but shorter to type.</p>
 <h2 id="theme_gt_compact">
 <code>theme_gt_compact()</code><a class="anchor" aria-label="anchor" href="#theme_gt_compact"></a>
 </h2>
-<p>When you mix gtsummary tables with plain gt tables in the same
-document, the styling mismatch is noticeable.
-<code><a href="../reference/theme_gt_compact.html">theme_gt_compact()</a></code> applies the same JAMA compact look to gt
-tables.</p>
+<p>When you mix <a href="https://github.com/ddsjoberg/gtsummary" class="external-link">gtsummary</a> tables with plain
+<a href="https://gt.rstudio.com" class="external-link">gt</a> tables in the same document, the styling mismatch is
+noticeable. <code><a href="../reference/theme_gt_compact.html">theme_gt_compact()</a></code> applies the same JAMA
+compact look to <a href="https://gt.rstudio.com" class="external-link">gt</a> tables.</p>
 <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;">
 <div class="section level4" style="flex: 1; max-width: 48%;">
 <h4 id="default-gt">Default gt<a class="anchor" aria-label="anchor" href="#default-gt"></a>
@@ -1762,7 +1754,7 @@ tables.</p>
 </div>
 </div>
 </div>
-<p>You can layer additional gt styling on top:</p>
+<p>You can layer additional <a href="https://gt.rstudio.com" class="external-link">gt</a> styling on top:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">trial</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">trt</span>, <span class="va">age</span>, <span class="va">grade</span>, <span class="va">marker</span><span class="op">)</span> <span class="op">|&gt;</span></span>

@@ -167,7 +167,7 @@ gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_
 = trt, include = [c](https://rdrr.io/r/base/c.html)(age, marker)) \|\>
 gtsummary::[add_variable_group_header](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)(
 header = "Patient Measures", variables = age:marker ) \|\>
-add_group_styling(indent_labels = 4L) \# Variables indented under header
+add_group_styling(indent_labels = 4L) \# gtsummary indentation restored
 
 [TABLE]
 

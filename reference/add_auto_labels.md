@@ -25,11 +25,12 @@ add_auto_labels(tbl, dictionary)
 
 - dictionary:
 
-  A data frame or tibble with `Variable` and `Description` columns. If
-  not provided (missing), the function will search for a `dictionary`
-  object in the calling environment. If no dictionary is found, the
-  function will attempt to read label attributes from the data. Set to
-  `NULL` explicitly to skip dictionary search and only use attributes.
+  A data frame or tibble with columns named `variable` and `description`
+  (column name matching is case-insensitive). If not provided (missing),
+  the function will search for a `dictionary` object in the environment.
+  If no dictionary is found, the function will attempt to read label
+  attributes from the data. Set to `NULL` explicitly to skip dictionary
+  search and only use attributes.
 
 ## Value
 
@@ -43,31 +44,38 @@ A gtsummary table object with labels applied. Manual labels set via
 The function applies labels according to this priority (highest to
 lowest):
 
-1.  **Manual labels** - Labels set via `label = list(...)` in
+1.  **Manual labels** – Labels set via `label = list(...)` in
     [`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)
     etc. are always preserved
 
-2.  **Attribute labels** - Labels from `attr(data$var, "label")`
+2.  **Attribute labels** – Labels from `attr(data$var, "label")`
 
-3.  **Dictionary labels** - Labels from the dictionary data frame
+3.  **Dictionary labels** – Labels from the dictionary data frame
 
-4.  **Default** - If no label source is available, uses variable name
+4.  **Default** – If no label source is available, uses variable name
+
+Set `options(sumExtras.prefer_dictionary = TRUE)` to swap priorities 2
+and 3 so that dictionary labels take precedence over attribute labels.
+See
+[`vignette("options")`](https://www.kyleGrealis.com/sumExtras/articles/options.md)
+for details.
 
 ### Dictionary Format
 
-The dictionary must be a data frame with columns:
+The dictionary must be a data frame with columns (column names are
+case-insensitive):
 
-- `Variable`: Character column with exact variable names from datasets
+- `variable`: Character column with exact variable names from datasets
 
-- `Description`: Character column with human-readable labels
+- `description`: Character column with human-readable labels
 
 ### Label Attributes
 
 The function reads label attributes from data using
-`attr(data$var, "label")`, following the same convention used by
-**haven**, **Hmisc**, and **ggplot2 4.0+**. If your data already has
-labels (from imported files, other packages, or manual assignment), this
-function picks them up automatically.
+`attr(data$var, "label")`, following the same convention used by haven,
+Hmisc, and ggplot2 4.0+. If your data already has labels (from imported
+files, other packages, or manual assignment), this function picks them
+up automatically.
 
 ### Implementation Note
 
@@ -87,14 +95,18 @@ sumExtras. Requires gtsummary \>= 1.7.0.
 # \donttest{
 # Create a dictionary
 my_dict <- tibble::tribble(
-  ~Variable, ~Description,
+  ~variable, ~description,
   "age", "Age at Enrollment",
   "trt", "Treatment Group",
   "grade", "Tumor Grade"
 )
 
-# Basic usage: pass dictionary explicitly
-gtsummary::trial |>
+# Strip built-in labels so dictionary labels are visible
+trial_data <- gtsummary::trial
+for (col in names(trial_data)) attr(trial_data[[col]], "label") <- NULL
+
+# Pass dictionary explicitly
+trial_data |>
   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
   add_auto_labels(dictionary = my_dict)
 
@@ -110,7 +122,7 @@ N = 98¹
 **Drug B**  
 N = 102¹
 
-Age
+Age at Enrollment
 
 46 (37, 60)
 
@@ -122,7 +134,7 @@ Age
 
 4
 
-Grade
+Tumor Grade
 
   
 
@@ -149,9 +161,7 @@ Grade
 ¹ Median (Q1, Q3); n (%)
 
 \# Automatic dictionary search (dictionary in environment) dictionary
-\<- my_dict
-gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
-\|\>
+\<- my_dict trial_data \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt, include = [c](https://rdrr.io/r/base/c.html)(age, grade)) \|\>
 add_auto_labels() \# Finds dictionary automatically
@@ -176,9 +186,7 @@ add_auto_labels() \# Reads from label attributes
 |     Unknown          |        10         |
 | ¹ Median (Q1, Q3)    |                   |
 
-\# Manual overrides always win
-gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
-\|\>
+\# Manual overrides always win trial_data \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(
 by = trt, include = [c](https://rdrr.io/r/base/c.html)(age, grade),
 label = [list](https://rdrr.io/r/base/list.html)(age ~ "Custom Age

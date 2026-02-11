@@ -8,49 +8,34 @@ library(dplyr)
 use_jama_theme()
 ```
 
-*All examples in this vignette use the JAMA compact theme via
-[`use_jama_theme()`](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md).
-See
-[`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
-to set this up.* {.small}
+> *All examples in this vignette use the JAMA compact theme via
+> [`use_jama_theme()`](https://www.kyleGrealis.com/sumExtras/reference/use_jama_theme.md).
+> See
+> [`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
+> to set this up.*
 
 ## The `extras()` Function
 
-If you’ve worked with gtsummary before, you’re familiar with the typical
-workflow of building summary tables: creating a base table with
+If you’ve worked with
+[gtsummary](https://github.com/ddsjoberg/gtsummary) before, you’re
+familiar with the typical workflow of building summary tables: creating
+a base table with
 [`tbl_summary()`](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html),
 then progressively adding features like overall columns, p-values, and
-formatting tweaks. While gtsummary’s modular approach provides
-flexibility, the same sequence of functions appears repeatedly in
-analysis scripts.
+formatting tweaks. While
+[gtsummary](https://github.com/ddsjoberg/gtsummary)’s modular approach
+provides flexibility, the same sequence of functions appears repeatedly
+in analysis scripts.
 
 [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
-consolidates the most common gtsummary formatting steps into one call:
-bold labels, a clean header, an overall column, p-values, and missing
-value cleanup.
-
-#### Standard gtsummary workflow
-
-``` r
-trial |>
-  tbl_summary(by = trt) |>
-  add_overall() |>
-  add_p() |>
-  bold_labels() |>
-  modify_header(label ~ "")
-```
-
-#### With extras()
-
-``` r
-trial |>
-  tbl_summary(by = trt) |>
-  extras()
-```
+consolidates the most common
+[gtsummary](https://github.com/ddsjoberg/gtsummary) formatting steps
+into one call: bold labels, a clean header, an overall column, p-values,
+and missing value cleanup.
 
 [TABLE]
 
-[TABLE]
+![Table produced by extras()](../reference/figures/readme-example.png)
 
 ### Customizing Output
 
@@ -149,17 +134,26 @@ but you can also use it on its own. The `symbol` parameter controls the
 replacement text (default `"---"`). You can also pass `symbol` through
 [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md).
 
+``` r
+demo_trial <- trial |>
+  mutate(
+    age = if_else(trt == "Drug B", 0, age),
+    marker = if_else(trt == "Drug A", NA, marker)
+  ) |>
+  select(trt, age, marker)
+```
+
 #### Without cleaning
 
 ``` r
-trial_missing |>
+demo_trial |>
   tbl_summary(by = trt)
 ```
 
 #### With clean_table()
 
 ``` r
-trial_missing |>
+demo_trial |>
   tbl_summary(by = trt) |>
   clean_table()
 ```
@@ -178,7 +172,7 @@ always take priority.
 
 ``` r
 dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
+  ~variable,    ~description,
   "trt",        "Chemotherapy Treatment",
   "age",        "Age at Enrollment (years)",
   "marker",     "Marker Level (ng/mL)",
@@ -221,7 +215,9 @@ must be last since it converts the table to gt.
 - [`vignette("labeling")`](https://www.kyleGrealis.com/sumExtras/articles/labeling.md)
   – dictionary-based labeling
 - [`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
-  – JAMA compact themes for gtsummary and gt tables
+  – JAMA compact themes for
+  [gtsummary](https://github.com/ddsjoberg/gtsummary) and
+  [gt](https://gt.rstudio.com) for gtsummary and gt tables
 - [`vignette("styling")`](https://www.kyleGrealis.com/sumExtras/articles/styling.md)
   – group headers, formatting, and background colors
 - [`vignette("options")`](https://www.kyleGrealis.com/sumExtras/articles/options.md)

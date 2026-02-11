@@ -12,8 +12,9 @@ use_jama_theme()
 ## Group Headers
 
 [`gtsummary::add_variable_group_header()`](https://www.danieldsjoberg.com/gtsummary/reference/add_variable_group_header.html)
-creates section headers in your table. sumExtras provides functions to
-style them.
+creates section headers in your table.
+[sumExtras](https://github.com/kyleGrealis/sumExtras) provides functions
+to style them.
 
 ``` r
 trial |>
@@ -97,8 +98,8 @@ default).
 ## `add_group_colors()`
 
 Adds a background color to group header rows. This is a terminal
-operation – it converts the table to gt, so it must be the last step in
-your pipeline.
+operation in that it converts the table to [gt](https://gt.rstudio.com).
+It must be the **last step** in your pipeline.
 
 ``` r
 trial |>
@@ -183,19 +184,58 @@ my_table |>
 
 ## Matching gt Tables with `theme_gt_compact()`
 
-If you mix gtsummary tables with plain gt tables in the same document,
+If you mix [gtsummary](https://github.com/ddsjoberg/gtsummary) tables
+with plain [gt](https://gt.rstudio.com) tables in the same document,
 they won’t match visually.
 [`theme_gt_compact()`](https://www.kyleGrealis.com/sumExtras/reference/theme_gt_compact.md)
-applies the same JAMA compact look to gt tables so everything is
-consistent. See
+applies the same JAMA compact look to [gt](https://gt.rstudio.com)
+tables so everything is consistent:
+
+#### gtsummary with extras()
+
+``` r
+trial |>
+  tbl_summary(
+    by = trt,
+    include = c(age, grade, marker)
+  ) |>
+  extras()
+```
+
+#### gt with theme_gt_compact()
+
+``` r
+trial |>
+  select(trt, age, grade, marker) |>
+  head(10) |>
+  gt() |>
+  theme_gt_compact()
+```
+
+[TABLE]
+
+| Chemotherapy Treatment | Age | Grade | Marker Level (ng/mL) |
+|------------------------|-----|-------|----------------------|
+| Drug A                 | 23  | II    | 0.160                |
+| Drug B                 | 9   | I     | 1.107                |
+| Drug A                 | 31  | II    | 0.277                |
+| Drug A                 | NA  | III   | 2.067                |
+| Drug A                 | 51  | III   | 2.767                |
+| Drug B                 | 39  | I     | 0.613                |
+| Drug A                 | 37  | II    | 0.354                |
+| Drug A                 | 32  | I     | 1.739                |
+| Drug A                 | 31  | II    | 0.144                |
+| Drug B                 | 34  | I     | 0.205                |
+
+See
 [`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
-for side-by-side comparisons and details.
+for more on theming.
 
 ## Complete Example
 
 ``` r
 dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
+  ~variable,    ~description,
   "trt",        "Treatment Assignment",
   "age",        "Age at Baseline (years)",
   "marker",     "Biomarker Level (ng/mL)",
@@ -235,6 +275,8 @@ trial |>
 - [`vignette("labeling")`](https://www.kyleGrealis.com/sumExtras/articles/labeling.md)
   – dictionary-based labeling
 - [`vignette("themes")`](https://www.kyleGrealis.com/sumExtras/articles/themes.md)
-  – JAMA compact themes for gtsummary and gt tables
+  – JAMA compact themes for
+  [gtsummary](https://github.com/ddsjoberg/gtsummary) and
+  [gt](https://gt.rstudio.com) tables
 - [`vignette("options")`](https://www.kyleGrealis.com/sumExtras/articles/options.md)
   – .Rprofile options for automatic labeling

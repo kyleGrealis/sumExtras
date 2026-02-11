@@ -1,8 +1,8 @@
 # Standardize missing value display across all gtsummary table types
 
 Replaces various missing value representations with a consistent symbol
-(default `"---"`) so it is easier to tell actual data from
-missing/undefined values.
+(default `"---"`) so it is easier to tell actual data from missing or
+undefined values.
 
 Works with all gtsummary table types, including stacked tables
 (`tbl_strata`) and survey-weighted summaries (`tbl_svysummary`). Handles
@@ -76,7 +76,14 @@ This allows it to work with `tbl_strata` objects which use `var_type_1`,
 ``` r
 # \donttest{
 # Basic usage - clean missing values in summary table
-gtsummary::trial |>
+demo_trial <- gtsummary::trial |>
+  dplyr::mutate(
+    age = dplyr::if_else(trt == "Drug B", 0, age),
+    marker = dplyr::if_else(trt == "Drug A", NA, marker)
+  ) |>
+  dplyr::select(trt, age, marker)
+
+demo_trial |>
   gtsummary::tbl_summary(by = trt) |>
   clean_table()
 
@@ -92,140 +99,42 @@ N = 98¹
 **Drug B**  
 N = 102¹
 
-Age
+age
 
 46 (37, 60)
 
-48 (39, 56)
+—
 
     Unknown
 
 7
 
-4
+0
 
-Marker Level (ng/mL)
+marker
 
-0.84 (0.23, 1.60)
+—
 
 0.52 (0.18, 1.21)
 
     Unknown
 
-6
+98
 
 4
 
-T Stage
+¹ Median (Q1, Q3)
 
-  
-
-  
-
-    T1
-
-28 (29%)
-
-25 (25%)
-
-    T2
-
-25 (26%)
-
-29 (28%)
-
-    T3
-
-22 (22%)
-
-21 (21%)
-
-    T4
-
-23 (23%)
-
-27 (26%)
-
-Grade
-
-  
-
-  
-
-    I
-
-35 (36%)
-
-33 (32%)
-
-    II
-
-32 (33%)
-
-36 (35%)
-
-    III
-
-31 (32%)
-
-33 (32%)
-
-Tumor Response
-
-28 (29%)
-
-33 (34%)
-
-    Unknown
-
-3
-
-4
-
-Patient Died
-
-52 (53%)
-
-60 (59%)
-
-Months to Death/Censor
-
-23.5 (17.4, 24.0)
-
-21.2 (14.5, 24.0)
-
-¹ Median (Q1, Q3); n (%)
-
-\# Often used as part of a styling pipeline \# Create a test dictionary
-for add_auto_labels(): dictionary \<-
-tibble::[tribble](https://tibble.tidyverse.org/reference/tribble.html)(
-~Variable, ~Description, "age", "Age at enrollment", "stage", "T Stage",
-"grade", "Grade", "response", "Tumor Response" )
-gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
-\|\>
+\# Used inside extras() automatically demo_trial \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
 = trt) \|\>
-[add_auto_labels](https://www.kyleGrealis.com/sumExtras/reference/add_auto_labels.md)()
-\|\>
 [extras](https://www.kyleGrealis.com/sumExtras/reference/extras.md)()
-\|\> clean_table()
 
 [TABLE]
 
-\# Custom missing symbol
-gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html)
-\|\>
+\# Custom missing symbol demo_trial \|\>
 gtsummary::[tbl_summary](https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html)(by
-= trt) \|\> clean_table(symbol = "\u2014") \# em-dash
-
-[TABLE]
-
-\# Works with regression tables too
-[lm](https://rdrr.io/r/stats/lm.html)(age ~ trt + grade, data =
-gtsummary::[trial](https://www.danieldsjoberg.com/gtsummary/reference/trial.html))
-\|\>
-gtsummary::[tbl_regression](https://www.danieldsjoberg.com/gtsummary/reference/tbl_regression.html)()
-\|\> clean_table()
+= trt) \|\> clean_table(symbol = "???")
 
 [TABLE]
 
