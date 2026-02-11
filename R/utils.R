@@ -5,7 +5,6 @@ utils::globalVariables(
     "var_type",
     "row_type",
     "label",
-    "Variable",
-    "Description"
+    "description"
   )
 )

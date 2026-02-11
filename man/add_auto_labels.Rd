@@ -11,13 +11,14 @@ add_auto_labels(tbl, dictionary)
 \code{tbl_summary()}, \code{tbl_svysummary()}, or
 \code{tbl_regression()}.}
 
-\item{dictionary}{A data frame or tibble with \code{Variable}
-and \code{Description} columns. If not provided (missing),
-the function will search for a \code{dictionary} object in
-the calling environment. If no dictionary is found, the
-function will attempt to read label attributes from the
-data. Set to \code{NULL} explicitly to skip dictionary search
-and only use attributes.}
+\item{dictionary}{A data frame or tibble with columns
+named \code{variable} and \code{description} (column name
+matching is case-insensitive). If not provided
+(missing), the function will search for a \code{dictionary}
+object in the environment. If no dictionary is
+found, the function will attempt to read label
+attributes from the data. Set to \code{NULL} explicitly to
+skip dictionary search and only use attributes.}
 }
 \value{
 A gtsummary table object with labels applied. Manual labels set via
@@ -37,20 +38,25 @@ underlying data.
 
 The function applies labels according to this priority (highest to lowest):
 \enumerate{
-\item \strong{Manual labels} - Labels set via \code{label = list(...)}
+\item \strong{Manual labels} -- Labels set via \code{label = list(...)}
 in \code{tbl_summary()} etc. are always preserved
-\item \strong{Attribute labels} - Labels from \code{attr(data$var, "label")}
-\item \strong{Dictionary labels} - Labels from the dictionary data frame
-\item \strong{Default} - If no label source is available, uses variable name
+\item \strong{Attribute labels} -- Labels from \code{attr(data$var, "label")}
+\item \strong{Dictionary labels} -- Labels from the dictionary data frame
+\item \strong{Default} -- If no label source is available, uses variable name
 }
+
+Set \code{options(sumExtras.prefer_dictionary = TRUE)} to swap priorities 2
+and 3 so that dictionary labels take precedence over attribute labels.
+See \code{vignette("options")} for details.
 }
 
 \subsection{Dictionary Format}{
 
-The dictionary must be a data frame with columns:
+The dictionary must be a data frame with columns
+(column names are case-insensitive):
 \itemize{
-\item \code{Variable}: Character column with exact variable names from datasets
-\item \code{Description}: Character column with human-readable labels
+\item \code{variable}: Character column with exact variable names from datasets
+\item \code{description}: Character column with human-readable labels
 }
 }
 
@@ -58,7 +64,7 @@ The dictionary must be a data frame with columns:
 
 The function reads label attributes from data using
 \code{attr(data$var, "label")}, following the same convention
-used by \strong{haven}, \strong{Hmisc}, and \strong{ggplot2 4.0+}.
+used by haven, Hmisc, and ggplot2 4.0+.
 If your data already has labels (from imported files,
 other packages, or manual assignment), this function
 picks them up automatically.
@@ -76,20 +82,24 @@ Requires gtsummary >= 1.7.0.
 \donttest{
 # Create a dictionary
 my_dict <- tibble::tribble(
-  ~Variable, ~Description,
+  ~variable, ~description,
   "age", "Age at Enrollment",
   "trt", "Treatment Group",
   "grade", "Tumor Grade"
 )
 
-# Basic usage: pass dictionary explicitly
-gtsummary::trial |>
+# Strip built-in labels so dictionary labels are visible
+trial_data <- gtsummary::trial
+for (col in names(trial_data)) attr(trial_data[[col]], "label") <- NULL
+
+# Pass dictionary explicitly
+trial_data |>
   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
   add_auto_labels(dictionary = my_dict)
 
 # Automatic dictionary search (dictionary in environment)
 dictionary <- my_dict
-gtsummary::trial |>
+trial_data |>
   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
   add_auto_labels() # Finds dictionary automatically
 
@@ -103,7 +113,7 @@ labeled_data |>
   add_auto_labels() # Reads from label attributes
 
 # Manual overrides always win
-gtsummary::trial |>
+trial_data |>
   gtsummary::tbl_summary(
     by = trt,
     include = c(age, grade),
