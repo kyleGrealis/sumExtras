@@ -22,7 +22,7 @@ A gtsummary table object with standardized missing value display
 \description{
 Replaces various missing value representations
 with a consistent symbol (default \code{"---"}) so it is
-easier to tell actual data from missing/undefined values.
+easier to tell actual data from missing or undefined values.
 
 Works with all gtsummary table types, including stacked
 tables (\code{tbl_strata}) and survey-weighted summaries
@@ -54,34 +54,26 @@ allows it to work with \code{tbl_strata} objects which use
 \examples{
 \donttest{
 # Basic usage - clean missing values in summary table
-gtsummary::trial |>
+demo_trial <- gtsummary::trial |>
+  dplyr::mutate(
+    age = dplyr::if_else(trt == "Drug B", 0, age),
+    marker = dplyr::if_else(trt == "Drug A", NA, marker)
+  ) |>
+  dplyr::select(trt, age, marker)
+
+demo_trial |>
   gtsummary::tbl_summary(by = trt) |>
   clean_table()
 
-# Often used as part of a styling pipeline
-# Create a test dictionary for add_auto_labels():
-dictionary <- tibble::tribble(
-  ~Variable, ~Description,
-  "age", "Age at enrollment",
-  "stage", "T Stage",
-  "grade", "Grade",
-  "response", "Tumor Response"
-)
-gtsummary::trial |>
+# Used inside extras() automatically
+demo_trial |>
   gtsummary::tbl_summary(by = trt) |>
-  add_auto_labels() |>
-  extras() |>
-  clean_table()
+  extras()
 
 # Custom missing symbol
-gtsummary::trial |>
+demo_trial |>
   gtsummary::tbl_summary(by = trt) |>
-  clean_table(symbol = "\u2014") # em-dash
-
-# Works with regression tables too
-lm(age ~ trt + grade, data = gtsummary::trial) |>
-  gtsummary::tbl_regression() |>
-  clean_table()
+  clean_table(symbol = "???")
 }
 
 }

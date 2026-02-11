@@ -85,7 +85,7 @@ gtsummary::trial |>
     header = "Patient Measures",
     variables = age:marker
   ) |>
-  add_group_styling(indent_labels = 4L) # Variables indented under header
+  add_group_styling(indent_labels = 4L) # gtsummary indentation restored
 }
 
 }

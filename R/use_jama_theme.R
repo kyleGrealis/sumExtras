@@ -11,8 +11,7 @@
 #' @returns Invisibly returns the theme list object from
 #'   \code{gtsummary::theme_gtsummary_compact("jama")}. The theme is applied
 #'   globally via \code{gtsummary::set_gtsummary_theme()}, affecting all
-#'   subsequent gtsummary tables created in the session. A message is printed
-#'   confirming the theme application.
+#'   subsequent gtsummary tables created in the session.
 #'
 #' @details The JAMA compact theme applies formatting
 #'   standards from the Journal of the American Medical

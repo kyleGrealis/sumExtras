@@ -34,7 +34,7 @@ library(gt)
 
 ## `use_jama_theme()`
 
-`use_jama_theme()` sets the gtsummary theme to JAMA compact styling for the rest of your session. It reduces padding, tightens font sizes, and produces tables suited for publication or reports.
+`use_jama_theme()` sets the `{gtsummary}` theme to JAMA compact styling for the rest of your session. It reduces padding, tightens font sizes, and produces tables suited for publication or reports.
 
 ```{r}
 use_jama_theme()
@@ -46,7 +46,7 @@ trial |>
 
 This is equivalent to calling `gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))` but shorter to type.
 
-To reset back to the default gtsummary theme:
+To reset back to the default `{gtsummary}` theme:
 
 ```{r, eval=FALSE}
 gtsummary::reset_gtsummary_theme()
@@ -54,7 +54,7 @@ gtsummary::reset_gtsummary_theme()
 
 ## `theme_gt_compact()`
 
-When you mix gtsummary tables with plain gt tables in the same document, the styling mismatch is noticeable. `theme_gt_compact()` applies the same JAMA compact look to gt tables.
+When you mix `{gtsummary}` tables with plain `{gt}` tables in the same document, the styling mismatch is noticeable. `theme_gt_compact()` applies the same JAMA compact look to `{gt}` tables.
 
 :::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
 
@@ -120,7 +120,7 @@ table_gt_compact
 
 ::::::
 
-You can layer additional gt styling on top:
+You can layer additional `{gt}` styling on top:
 
 ```{r}
 trial |>
@@ -136,7 +136,7 @@ trial |>
 
 ## More Vignettes
 
-- `vignette("sumExtras-intro")` -- getting started with extras()
-- `vignette("labeling")` -- dictionary-based labeling
-- `vignette("styling")` -- group headers and advanced formatting
-- `vignette("options")` -- .Rprofile options for automatic labeling
+* `vignette("sumExtras-intro")` -- getting started with extras()
+* `vignette("labeling")` -- dictionary-based labeling
+* `vignette("styling")` -- group headers and advanced formatting
+* `vignette("options")` -- .Rprofile options for automatic labeling

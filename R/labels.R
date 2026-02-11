@@ -11,13 +11,14 @@
 #' @param tbl A gtsummary table object created by
 #'   `tbl_summary()`, `tbl_svysummary()`, or
 #'   `tbl_regression()`.
-#' @param dictionary A data frame or tibble with `Variable`
-#'   and `Description` columns. If not provided (missing),
-#'   the function will search for a `dictionary` object in
-#'   the calling environment. If no dictionary is found, the
-#'   function will attempt to read label attributes from the
-#'   data. Set to `NULL` explicitly to skip dictionary search
-#'   and only use attributes.
+#' @param dictionary A data frame or tibble with columns
+#'   named `variable` and `description` (column name
+#'   matching is case-insensitive). If not provided
+#'   (missing), the function will search for a `dictionary`
+#'   object in the environment. If no dictionary is
+#'   found, the function will attempt to read label
+#'   attributes from the data. Set to `NULL` explicitly to
+#'   skip dictionary search and only use attributes.
 #'
 #' @returns A gtsummary table object with labels applied. Manual labels set via
 #'   `label = list(...)` in the original table call are always preserved.
@@ -27,23 +28,28 @@
 #'
 #' The function applies labels according to this priority (highest to lowest):
 #'
-#' 1. **Manual labels** - Labels set via `label = list(...)`
+#' 1. **Manual labels** -- Labels set via `label = list(...)`
 #'    in `tbl_summary()` etc. are always preserved
-#' 2. **Attribute labels** - Labels from `attr(data$var, "label")`
-#' 3. **Dictionary labels** - Labels from the dictionary data frame
-#' 4. **Default** - If no label source is available, uses variable name
+#' 2. **Attribute labels** -- Labels from `attr(data$var, "label")`
+#' 3. **Dictionary labels** -- Labels from the dictionary data frame
+#' 4. **Default** -- If no label source is available, uses variable name
+#'
+#' Set `options(sumExtras.prefer_dictionary = TRUE)` to swap priorities 2
+#' and 3 so that dictionary labels take precedence over attribute labels.
+#' See `vignette("options")` for details.
 #'
 #' ## Dictionary Format
 #'
-#' The dictionary must be a data frame with columns:
-#' - `Variable`: Character column with exact variable names from datasets
-#' - `Description`: Character column with human-readable labels
+#' The dictionary must be a data frame with columns
+#' (column names are case-insensitive):
+#' - `variable`: Character column with exact variable names from datasets
+#' - `description`: Character column with human-readable labels
 #'
 #' ## Label Attributes
 #'
 #' The function reads label attributes from data using
 #' `attr(data$var, "label")`, following the same convention
-#' used by **haven**, **Hmisc**, and **ggplot2 4.0+**.
+#' used by haven, Hmisc, and ggplot2 4.0+.
 #' If your data already has labels (from imported files,
 #' other packages, or manual assignment), this function
 #' picks them up automatically.
@@ -65,20 +71,24 @@
 #' \donttest{
 #' # Create a dictionary
 #' my_dict <- tibble::tribble(
-#'   ~Variable, ~Description,
+#'   ~variable, ~description,
 #'   "age", "Age at Enrollment",
 #'   "trt", "Treatment Group",
 #'   "grade", "Tumor Grade"
 #' )
 #'
-#' # Basic usage: pass dictionary explicitly
-#' gtsummary::trial |>
+#' # Strip built-in labels so dictionary labels are visible
+#' trial_data <- gtsummary::trial
+#' for (col in names(trial_data)) attr(trial_data[[col]], "label") <- NULL
+#'
+#' # Pass dictionary explicitly
+#' trial_data |>
 #'   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
 #'   add_auto_labels(dictionary = my_dict)
 #'
 #' # Automatic dictionary search (dictionary in environment)
 #' dictionary <- my_dict
-#' gtsummary::trial |>
+#' trial_data |>
 #'   gtsummary::tbl_summary(by = trt, include = c(age, grade)) |>
 #'   add_auto_labels() # Finds dictionary automatically
 #'
@@ -92,7 +102,7 @@
 #'   add_auto_labels() # Reads from label attributes
 #'
 #' # Manual overrides always win
-#' gtsummary::trial |>
+#' trial_data |>
 #'   gtsummary::tbl_summary(
 #'     by = trt,
 #'     include = c(age, grade),
@@ -130,7 +140,7 @@ add_auto_labels <- function(tbl, dictionary) {
 
   if (!dict_is_null) { # User didn't explicitly set dictionary = NULL
     if (dict_missing) {
-      # Try to find dictionary in calling environment
+      # Try to find dictionary in environment
       if (exists("dictionary", envir = parent.frame())) {
         dictionary <- get("dictionary", envir = parent.frame())
         has_dictionary <- TRUE
@@ -151,14 +161,17 @@ add_auto_labels <- function(tbl, dictionary) {
               "The dictionary object has class: %s",
               class(dictionary)[1]
             ),
-            "i" = "Create a tibble with `Variable` and `Description` columns."
+            "i" = "Create a tibble with `variable` and `description` columns."
           ),
           class = "add_auto_labels_invalid_dictionary"
         )
       }
 
+      # Normalize column names for case-insensitive matching
+      names(dictionary) <- tolower(names(dictionary))
+
       # Validate dictionary has required columns
-      required_cols <- c("Variable", "Description")
+      required_cols <- c("variable", "description")
       missing_cols <- setdiff(required_cols, names(dictionary))
 
       if (length(missing_cols) > 0) {
@@ -169,7 +182,7 @@ add_auto_labels <- function(tbl, dictionary) {
               "Missing column(s): %s",
               paste(missing_cols, collapse = ", ")
             ),
-            "i" = "Dictionary must have `Variable` and `Description` columns."
+            "i" = "Dictionary needs `variable` and `description` columns."
           ),
           class = "add_auto_labels_invalid_dictionary"
         )
@@ -180,8 +193,8 @@ add_auto_labels <- function(tbl, dictionary) {
 
       # Filter dictionary to matching variables and de-duplicate
       dict_filtered <- dictionary |>
-        dplyr::filter(Variable %in% table_vars) |>
-        dplyr::select(variable = Variable, dict_label = Description) |>
+        dplyr::filter(variable %in% table_vars) |>
+        dplyr::select(variable, dict_label = description) |>
         dplyr::distinct(variable, .keep_all = TRUE)
     }
   }
@@ -254,6 +267,11 @@ add_auto_labels <- function(tbl, dictionary) {
   # Step 4: Apply labels with priority logic
   result <- tbl
 
+  # Check if user prefers dictionary labels over attribute labels
+  prefer_dict <- isTRUE(
+    getOption("sumExtras.prefer_dictionary", default = FALSE)
+  )
+
   # Only proceed if we have at least one label source
   if (has_dictionary || has_attributes) {
     result <- result |>
@@ -280,6 +298,8 @@ add_auto_labels <- function(tbl, dictionary) {
           }
 
           # Apply priority logic
+          # Default: manual > attributes > dictionary
+          # With prefer_dictionary option: manual > dictionary > attributes
           tbl_body <- tbl_body |>
             dplyr::mutate(
               label = dplyr::case_when(
@@ -287,9 +307,9 @@ add_auto_labels <- function(tbl, dictionary) {
                 variable %in% user_labeled_vars ~ label,
                 # Only modify label rows
                 row_type != "label" ~ label,
-                # Priority 2: Attribute labels
+                # Priority 2/3: dictionary first when option is set
+                prefer_dict & !is.na(dict_label) ~ dict_label,
                 !is.na(attr_label) ~ attr_label,
-                # Priority 3: Dictionary labels
                 !is.na(dict_label) ~ dict_label,
                 # Default: keep existing label
                 TRUE ~ label

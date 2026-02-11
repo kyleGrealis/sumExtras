@@ -18,6 +18,26 @@ template:
     border-radius: 0.5rem
     btn-border-radius: 0.25rem
 
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+  components:
+    intro:
+      text: Get Started
+      href: articles/sumExtras-intro.html
+    articles:
+      text: Articles
+      menu:
+        - text: Automatic Variable Labeling
+          href: articles/labeling.html
+        - text: Table Styling and Formatting
+          href: articles/styling.html
+        - text: Themes
+          href: articles/themes.html
+        - text: Package Options
+          href: articles/options.html
+
 articles:
   - title: Get Started
     navbar: ~

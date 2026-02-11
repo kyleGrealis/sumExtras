@@ -9,11 +9,11 @@
 
 <!-- badges: end -->
 
-> *One function replaces five. Stop chaining `add_overall()`, `add_p()`, `bold_labels()`, `bold_p()`, and `modify_header()` on every table.*
+> **sumExtras**: "**SUM**mary table **EXTRAS**"
 
 ## Overview
 
-**sumExtras** reduces the repetitive boilerplate in gtsummary workflows. Instead of chaining `add_overall()`, `add_p()`, `bold_labels()`, and `modify_header()` on every table, call `extras()` once. The package also handles missing value cleanup, automatic variable labeling from data dictionaries, group header styling, and JAMA compact theming.
+`{sumExtras}` reduces the repetitive boilerplate in `{gtsummary}` workflows. One function replaces five. Stop copy-pasting `add_overall()`, `add_p()`, `bold_labels()`, and `modify_header()` on every table. Call `extras()` once. The package also handles missing value cleanup, automatic variable labeling from data dictionaries, group header styling, and JAMA compact theming.
 
 ## Installation
 
@@ -30,15 +30,22 @@ install.packages("sumExtras")
 pak::pak("kyleGrealis/sumExtras")
 ```
 
-## See the Difference
+## Quick Start
+
+```r
+library(sumExtras)
+library(gtsummary)
+```
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-**Standard gtsummary**
+**Standard `{gtsummary}`**
 
 ```r
+theme_gtsummary_compact("jama")
+
 trial |>
   tbl_summary(by = trt) |>
   add_overall() |>
@@ -51,9 +58,11 @@ trial |>
 </td>
 <td width="50%" valign="top">
 
-**With sumExtras**
+**With `{sumExtras}`**
 
 ```r
+use_jama_theme()
+
 trial |>
   tbl_summary(by = trt) |>
   extras()
@@ -63,22 +72,11 @@ trial |>
 </tr>
 </table>
 
-`extras()` also standardizes missing values via `clean_table()` -- something you'd have to build yourself otherwise.
+<p align="center">
+  <img src="man/figures/readme-example.png" alt="Table produced by extras()" width="500">
+</p>
 
-## Quick Start
-
-```r
-library(sumExtras)
-library(gtsummary)
-
-use_jama_theme()
-
-trial |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-
-That single `extras()` call adds the overall column, p-values, bold labels, bold significant p-values, a clean header, and standardized missing value display.
+That single `extras()` call replaces `add_overall()`, `add_p()`, `bold_labels()`, `bold_p()`, and `modify_header()`. It also standardizes missing values via `clean_table()`.
 
 ## Functions
 
@@ -87,12 +85,13 @@ That single `extras()` call adds the overall column, p-values, bold labels, bold
 * `add_auto_labels()` -- automatic labeling from dictionaries or data attributes
 * `use_jama_theme()` / `theme_gt_compact()` -- JAMA compact themes
 * `add_group_styling()` -- bold/italic formatting for group headers
-* `add_group_colors()` -- background colors for group headers (converts to gt)
+* `add_group_colors()` -- background colors for group headers (converts to `{gt}`)
 * `get_group_rows()` -- extract group header row indices
 
-## The Name
+## Options
 
-**sumExtras** = "**SUM**mary table **EXTRAS**" + "**SOME EXTRAS** for gt**SUMMARY**"
+* `options(sumExtras.auto_labels = TRUE)` -- add labels through the project without needing `add_auto_labels()` for each table
+* `options(sumExtras.prefer_dictionary = TRUE)` -- change the labeling priority
 
 ## More Info
 
@@ -100,10 +99,24 @@ That single `extras()` call adds the overall column, p-values, bold labels, bold
 
 * `vignette("sumExtras-intro")` -- getting started
 * `vignette("labeling")` -- dictionary-based labeling
-* `vignette("themes")` -- JAMA themes for gtsummary and gt
+* `vignette("themes")` -- JAMA themes for `{gtsummary}` and `{gt}`
 * `vignette("styling")` -- group headers and advanced formatting
 * `vignette("options")` -- .Rprofile options for auto-labeling
 * [Bug reports & feature requests](https://github.com/kyleGrealis/sumExtras/issues)
+
+## FAQ
+
+**Why not just use `{gtsummary}` directly?**
+You can. `{sumExtras}` wraps the formatting steps you repeat on every table. If you only make one or two tables, you don't need this package.
+
+**What happens if something fails inside `extras()`?**
+It warns and continues. Your table always renders. See the warn-and-continue design in `vignette("sumExtras-intro")`.
+
+**Why didn't my dictionary labels show up?**
+Your data likely has label attributes that take priority. Set `options(sumExtras.prefer_dictionary = TRUE)` or see `vignette("labeling")`.
+
+**Does `extras()` work with survey data?**
+Yes. `tbl_svysummary` tables get the same treatment as `tbl_summary`.
 
 ## Contributing
 
@@ -112,7 +125,3 @@ Bug reports, feature requests, and feedback are welcome at <https://github.com/k
 ## License
 
 [MIT](https://github.com/kyleGrealis/sumExtras/blob/main/LICENSE)
-
-----
-
-sumExtras adds some extras to your summary tables!

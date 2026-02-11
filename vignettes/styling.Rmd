@@ -40,7 +40,7 @@ use_jama_theme()
 
 ## Group Headers
 
-`gtsummary::add_variable_group_header()` creates section headers in your table. sumExtras provides functions to style them.
+`gtsummary::add_variable_group_header()` creates section headers in your table. `{sumExtras}` provides functions to style them.
 
 ```{r}
 trial |>
@@ -162,7 +162,7 @@ Options are `"bold"`, `"italic"`, or `c("bold", "italic")` (the default).
 
 ## `add_group_colors()`
 
-Adds a background color to group header rows. This is a terminal operation -- it converts the table to gt, so it must be the last step in your pipeline.
+Adds a background color to group header rows. This is a terminal operation in that it converts the table to `{gt}`. It must be the **last step** in your pipeline.
 
 ```{r}
 trial |>
@@ -234,13 +234,83 @@ my_table |>
 
 ## Matching gt Tables with `theme_gt_compact()`
 
-If you mix gtsummary tables with plain gt tables in the same document, they won't match visually. `theme_gt_compact()` applies the same JAMA compact look to gt tables so everything is consistent. See `vignette("themes")` for side-by-side comparisons and details.
+If you mix `{gtsummary}` tables with plain `{gt}` tables in the same document, they won't match visually. `theme_gt_compact()` applies the same JAMA compact look to `{gt}` tables so everything is consistent:
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### gtsummary with extras()
+
+```{r match-gtsummary, eval=FALSE}
+trial |>
+  tbl_summary(
+    by = trt,
+    include = c(age, grade, marker)
+  ) |>
+  extras()
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+#### gt with theme_gt_compact()
+
+```{r match-gt, eval=FALSE}
+trial |>
+  select(trt, age, grade, marker) |>
+  head(10) |>
+  gt() |>
+  theme_gt_compact()
+```
+
+:::
+
+::::::
+
+```{r build-match, echo=FALSE}
+table_gtsummary <- trial |>
+  tbl_summary(
+    by = trt,
+    include = c(age, grade, marker)
+  ) |>
+  extras()
+
+table_gt <- trial |>
+  select(trt, age, grade, marker) |>
+  head(10) |>
+  gt() |>
+  theme_gt_compact()
+```
+
+:::::: {style="display: flex; gap: 15px; margin-bottom: 30px; align-items: flex-start;"}
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-match-gtsummary, echo=FALSE}
+table_gtsummary
+```
+
+:::
+
+::: {style="flex: 1; max-width: 48%;"}
+
+```{r render-match-gt, echo=FALSE}
+table_gt
+```
+
+:::
+
+::::::
+
+See `vignette("themes")` for more on theming.
 
 ## Complete Example
 
 ```{r}
 dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
+  ~variable,    ~description,
   "trt",        "Treatment Assignment",
   "age",        "Age at Baseline (years)",
   "marker",     "Biomarker Level (ng/mL)",
@@ -273,7 +343,7 @@ trial |>
 
 ## More Vignettes
 
-- `vignette("sumExtras-intro")` -- getting started with extras()
-- `vignette("labeling")` -- dictionary-based labeling
-- `vignette("themes")` -- JAMA compact themes for gtsummary and gt tables
-- `vignette("options")` -- .Rprofile options for automatic labeling
+* `vignette("sumExtras-intro")` -- getting started with extras()
+* `vignette("labeling")` -- dictionary-based labeling
+* `vignette("themes")` -- JAMA compact themes for `{gtsummary}` and `{gt}` tables
+* `vignette("options")` -- .Rprofile options for automatic labeling
