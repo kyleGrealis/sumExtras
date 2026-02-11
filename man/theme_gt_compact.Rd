@@ -46,9 +46,9 @@ mtcars |>
   gt::tab_header(title = "Vehicle Data") |>
   theme_gt_compact()
 
-# Use alongside gtsummary tables for consistency
-# Set gtsummary theme first
-gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))
+# Use alongside gtsummary tables with sumExtras for consistency
+# Set JAMA theme first
+use_jama_theme()
 
 # Then both tables will have matching appearance
 summary_table <- gtsummary::trial |>
@@ -62,8 +62,7 @@ data_table <- gtsummary::trial |>
 }
 \seealso{
 \itemize{
-\item \code{gtsummary::theme_gtsummary_compact()} for gtsummary table themes
-\item \code{gtsummary::set_gtsummary_theme()} for setting global gtsummary themes
+\item \code{sumExtras::use_jama_theme()} for complimentary table styling
 \item \code{gt::tab_options()} for additional gt table styling options
 }
 }

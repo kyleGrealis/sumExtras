@@ -39,7 +39,8 @@ Passed directly to \code{clean_table(symbol = ...)}.}
 
 \item{.args}{Optional list of arguments to use
 instead of individual parameters.
-When provided, overrides \code{pval}, \code{overall}, and \code{last} arguments.}
+When provided, overrides \code{pval}, \code{overall}, \code{last},
+\code{header}, and \code{symbol} arguments.}
 
 \item{.add_p_args}{Optional named list of arguments
 to pass to \code{gtsummary::add_p()}. Allows customization
@@ -82,7 +83,7 @@ or stacked tables), the function warns and applies
 only basic formatting (bold_labels and modify_header).
 
 For merged tables (\code{tbl_merge}), call \code{extras()} on each
-sub-table before merging — all formatting carries through.
+sub-table before merging. All formatting carries through.
 
 If any individual step fails (e.g., due to unexpected
 table structure), the function warns and continues
@@ -102,9 +103,13 @@ Call \code{extras()} before \code{add_variable_group_header()} and
 
 \section{Table Type Support}{
 
-Full features (overall, p-values) require stratified \code{tbl_summary} or
-\code{tbl_svysummary}. Regression and stacked tables get basic formatting
-only (bold labels, clean header). Unsupported features trigger a warning.
+Full features (overall, p-values, bold p-values) require a stratified
+\code{tbl_summary} or \code{tbl_svysummary}. Regression tables get bold labels,
+bold model p-values, header cleaning, and \code{clean_table()}. Stacked
+(\code{tbl_strata}) and merged (\code{tbl_merge}) tables get bold labels, header
+cleaning, and \code{clean_table()}. Warnings only fire when the user
+explicitly requests unsupported features (e.g., \code{overall = TRUE} on a
+non-stratified table).
 }
 
 \examples{
@@ -134,23 +139,9 @@ gtsummary::trial |>
 gtsummary::trial |>
   gtsummary::tbl_summary(by = trt) |>
   extras(.add_p_args = list(
-    test = list(all_continuous() ~ "t.test"),
+    test = list(age ~ "t.test", marker ~ "t.test"),
     pvalue_fun = ~ gtsummary::style_pvalue(.x, digits = 2)
   ))
-
-# Chain with other functions
-# Create required dictionary first
-dictionary <- tibble::tribble(
-  ~Variable, ~Description,
-  "record_id", "Participant ID",
-  "age", "Age at enrollment",
-  "sex", "Biological sex"
-)
-gtsummary::trial |>
-  gtsummary::tbl_summary(by = trt) |>
-  add_auto_labels() |>
-  extras(pval = TRUE) |>
-  add_group_styling()
 }
 
 }

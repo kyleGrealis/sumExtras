@@ -222,7 +222,7 @@ test_that("extras() auto-labels with auto_labels and dict in env", {
 
   trial_data <- get_unlabeled_trial()
 
-  # Dictionary must be in the calling environment for auto-discovery
+  # Dictionary must be in the environment for auto-discovery
   dictionary <- tibble::tribble(
     ~Variable, ~Description,
     "age", "Age at Enrollment",

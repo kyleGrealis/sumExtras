@@ -36,78 +36,53 @@ library(dplyr)
 use_jama_theme()
 ```
 
-*All examples in this vignette use the JAMA compact theme via `use_jama_theme()`. See `vignette("themes")` to set this up.*
-{.small}
+> *All examples in this vignette use the JAMA compact theme via `use_jama_theme()`. See `vignette("themes")` to set this up.*
 
 ## The `extras()` Function
 
-If you've worked with gtsummary before, you're familiar with the typical workflow of building summary tables: creating a base table with `tbl_summary()`, then progressively adding features like overall columns, p-values, and formatting tweaks. While gtsummary's modular approach provides flexibility, the same sequence of functions appears repeatedly in analysis scripts.
+If you've worked with `{gtsummary}` before, you're familiar with the typical workflow of building summary tables: creating a base table with `tbl_summary()`, then progressively adding features like overall columns, p-values, and formatting tweaks. While `{gtsummary}`'s modular approach provides flexibility, the same sequence of functions appears repeatedly in analysis scripts.
 
-`extras()` consolidates the most common gtsummary formatting steps into one call: bold labels, a clean header, an overall column, p-values, and missing value cleanup.
+`extras()` consolidates the most common `{gtsummary}` formatting steps into one call: bold labels, a clean header, an overall column, p-values, and missing value cleanup.
 
-:::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
 
-::: {style="flex: 1; max-width: 48%;"}
+<table>
+<tr>
+<td width="50%" valign="top">
 
-#### Standard gtsummary workflow
+**Standard `{gtsummary}`**
 
-```{r extras-comparison-standard, eval=FALSE}
+```r
+theme_gtsummary_compact("jama")
+
 trial |>
   tbl_summary(by = trt) |>
   add_overall() |>
   add_p() |>
   bold_labels() |>
-  modify_header(label ~ "")
+  bold_p() |>
+  modify_header(label = "")
 ```
 
-:::
+</td>
+<td width="50%" valign="top">
 
-::: {style="flex: 1; max-width: 48%;"}
+**With `{sumExtras}`**
 
-#### With extras()
+```r
+use_jama_theme()
 
-```{r extras-comparison-extras, eval=FALSE}
 trial |>
   tbl_summary(by = trt) |>
   extras()
 ```
 
-:::
+</td>
+</tr>
+</table>
 
-::::::
-
-```{r build-extras-comparison, echo=FALSE}
-table_standard <- trial |>
-  tbl_summary(by = trt) |>
-  add_overall() |>
-  add_p() |>
-  bold_labels() |>
-  modify_header(label ~ "")
-
-table_extras <- trial |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-
-:::::: {style="display: flex; gap: 15px; margin-bottom: 30px; align-items: flex-start;"}
-
-::: {style="flex: 1; max-width: 48%;"}
-
-```{r render-standard, echo=FALSE}
-table_standard
-```
-
-:::
-
-::: {style="flex: 1; max-width: 48%;"}
-
-```{r render-extras, echo=FALSE}
-table_extras
-```
-
-:::
-
-::::::
+<p align="center">
+  <img src="../man/figures/readme-example.png" alt="Table produced by extras()" width="500">
+</p>
 
 ### Customizing Output
 
@@ -172,12 +147,13 @@ tbl_merge(list(t1, t2), tab_spanner = c("**Set A**", "**Set B**"))
 
 `clean_table()` standardizes missing or zero-count representations (`"0 (NA%)"`, `"NA (NA)"`, `"NA, NA"`, etc.) to `"---"`. It runs automatically inside `extras()`, but you can also use it on its own. The `symbol` parameter controls the replacement text (default `"---"`). You can also pass `symbol` through `extras()`.
 
-```{r create-missing-data, echo=FALSE}
-trial_missing <- trial |>
+```{r}
+demo_trial <- trial |>
   mutate(
-    age = if_else(trt == "Drug B", NA_real_, age),
-    marker = if_else(trt == "Drug A", NA_real_, marker)
-  )
+    age = if_else(trt == "Drug B", 0, age),
+    marker = if_else(trt == "Drug A", NA, marker)
+  ) |>
+  select(trt, age, marker)
 ```
 
 :::::: {style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;"}
@@ -187,7 +163,7 @@ trial_missing <- trial |>
 #### Without cleaning
 
 ```{r clean-comparison-without, eval=FALSE}
-trial_missing |>
+demo_trial |>
   tbl_summary(by = trt)
 ```
 
@@ -198,7 +174,7 @@ trial_missing |>
 #### With clean_table()
 
 ```{r clean-comparison-with, eval=FALSE}
-trial_missing |>
+demo_trial |>
   tbl_summary(by = trt) |>
   clean_table()
 ```
@@ -208,10 +184,10 @@ trial_missing |>
 ::::::
 
 ```{r build-clean-comparison, echo=FALSE}
-table_without_clean <- trial_missing |>
+table_without_clean <- demo_trial |>
   tbl_summary(by = trt)
 
-table_with_clean <- trial_missing |>
+table_with_clean <- demo_trial |>
   tbl_summary(by = trt) |>
   clean_table()
 ```
@@ -242,7 +218,7 @@ table_with_clean
 
 ```{r}
 dictionary <- tibble::tribble(
-  ~Variable,    ~Description,
+  ~variable,    ~description,
   "trt",        "Chemotherapy Treatment",
   "age",        "Age at Enrollment (years)",
   "marker",     "Marker Level (ng/mL)",
@@ -274,7 +250,7 @@ tbl_summary(by = ...) |>
 
 ## Other Vignettes
 
-- `vignette("labeling")` -- dictionary-based labeling
-- `vignette("themes")` -- JAMA compact themes for gtsummary and gt tables
-- `vignette("styling")` -- group headers, formatting, and background colors
-- `vignette("options")` -- .Rprofile options for automatic labeling
+* `vignette("labeling")` -- dictionary-based labeling
+* `vignette("themes")` -- JAMA compact themes for `{gtsummary}` and `{gt}` for gtsummary and gt tables
+* `vignette("styling")` -- group headers, formatting, and background colors
+* `vignette("options")` -- .Rprofile options for automatic labeling

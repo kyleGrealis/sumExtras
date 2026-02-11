@@ -9,12 +9,6 @@
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
 Provides additional convenience functions for 'gtsummary' (Sjoberg et al. (2021) \doi{10.32614/RJ-2021-053}) & 'gt' tables, including automatic variable labeling from dictionaries, standardized missing value display, and consistent formatting helpers for streamlined table styling workflows.
-
-Provides additional convenience functions for 'gtsummary'
-(Sjoberg et al. (2021) \url{doi:10.32614/RJ-2021-053}) & 'gt' tables,
-including automatic variable labeling from dictionaries, standardized
-missing value display, and formatting helpers for common
-table styling workflows.
 }
 \section{Main Functions}{
 
@@ -65,14 +59,6 @@ gtsummary::trial |>
 
 }
 \seealso{
-Useful links:
-\itemize{
-  \item \url{https://github.com/kyleGrealis/sumExtras}
-  \item \url{https://www.kyleGrealis.com/sumExtras/}
-  \item Report bugs at \url{https://github.com/kyleGrealis/sumExtras/issues}
-}
-
-
 \itemize{
 \item gtsummary package: \url{https://www.danieldsjoberg.com/gtsummary/}
 \item Package website: \url{https://www.kyleGrealis.com/sumExtras/}
