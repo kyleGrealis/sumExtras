@@ -51,7 +51,7 @@
 #'     marker = dplyr::if_else(trt == "Drug A", NA, marker)
 #'   ) |>
 #'   dplyr::select(trt, age, marker)
-#' 
+#'
 #' demo_trial |>
 #'   gtsummary::tbl_summary(by = trt) |>
 #'   clean_table()

@@ -182,7 +182,7 @@ add_auto_labels <- function(tbl, dictionary) {
               "Missing column(s): %s",
               paste(missing_cols, collapse = ", ")
             ),
-            "i" = "Dictionary must have `variable` and `description` columns (case-insensitive)."
+            "i" = "Dictionary needs `variable` and `description` columns."
           ),
           class = "add_auto_labels_invalid_dictionary"
         )
