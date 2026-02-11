@@ -37,9 +37,9 @@
 #'   gt::tab_header(title = "Vehicle Data") |>
 #'   theme_gt_compact()
 #'
-#' # Use alongside gtsummary tables for consistency
-#' # Set gtsummary theme first
-#' gtsummary::set_gtsummary_theme(gtsummary::theme_gtsummary_compact("jama"))
+#' # Use alongside gtsummary tables with sumExtras for consistency
+#' # Set JAMA theme first
+#' use_jama_theme()
 #'
 #' # Then both tables will have matching appearance
 #' summary_table <- gtsummary::trial |>
@@ -51,8 +51,7 @@
 #'   theme_gt_compact()
 #'
 #' @seealso
-#' * `gtsummary::theme_gtsummary_compact()` for gtsummary table themes
-#' * `gtsummary::set_gtsummary_theme()` for setting global gtsummary themes
+#' * `sumExtras::use_jama_theme()` for complimentary table styling
 #' * `gt::tab_options()` for additional gt table styling options
 #'
 #' @export
@@ -166,7 +165,7 @@ theme_gt_compact <- function(tbl) {
 #'     header = "Patient Measures",
 #'     variables = age:marker
 #'   ) |>
-#'   add_group_styling(indent_labels = 4L) # Variables indented under header
+#'   add_group_styling(indent_labels = 4L) # gtsummary indentation restored
 #' }
 #'
 #' @seealso

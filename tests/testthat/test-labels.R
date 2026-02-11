@@ -127,6 +127,10 @@ test_that("add_auto_labels() attributes win over dictionary", {
   skip_if_not_installed("gtsummary")
   skip_if_not_installed("tibble")
 
+  old_opt <- getOption("sumExtras.prefer_dictionary")
+  on.exit(options(sumExtras.prefer_dictionary = old_opt), add = TRUE)
+  options(sumExtras.prefer_dictionary = FALSE)
+
   # Create data with attribute
   labeled_data <- gtsummary::trial
   attr(labeled_data$age, "label") <- "Age from Attribute"
@@ -277,6 +281,10 @@ test_that("add_auto_labels() handles duplicate dictionary entries", {
 test_that("add_auto_labels() dict + attributes correct priority", {
   skip_if_not_installed("gtsummary")
   skip_if_not_installed("tibble")
+
+  old_opt <- getOption("sumExtras.prefer_dictionary")
+  on.exit(options(sumExtras.prefer_dictionary = old_opt), add = TRUE)
+  options(sumExtras.prefer_dictionary = FALSE)
 
   # Default behavior (prefer attributes)
   labeled_data <- get_unlabeled_trial()
@@ -574,10 +582,10 @@ test_that("add_auto_labels() errors with missing dict columns", {
 
   expect_error(
     add_auto_labels(tbl, dictionary = bad_dict1),
-    "Missing column.*Variable"
+    "Missing column.*variable"
   )
 
-  # Missing Description column
+  # Missing description column (Variable is present, Label is not description)
   bad_dict2 <- tibble::tribble(
     ~Variable, ~Label,
     "age", "Age"
@@ -585,7 +593,7 @@ test_that("add_auto_labels() errors with missing dict columns", {
 
   expect_error(
     add_auto_labels(tbl, dictionary = bad_dict2),
-    "Missing column.*Description"
+    "Missing column.*description"
   )
 
   # Missing both columns
@@ -596,7 +604,7 @@ test_that("add_auto_labels() errors with missing dict columns", {
 
   expect_error(
     add_auto_labels(tbl, dictionary = bad_dict3),
-    "Missing column.*Variable.*Description"
+    "Missing column.*variable.*description"
   )
 })
 
@@ -788,6 +796,10 @@ test_that("Vignette scenario: attributes always win over dictionary", {
   skip_if_not_installed("gtsummary")
   skip_if_not_installed("tibble")
 
+  old_opt <- getOption("sumExtras.prefer_dictionary")
+  on.exit(options(sumExtras.prefer_dictionary = old_opt), add = TRUE)
+  options(sumExtras.prefer_dictionary = FALSE)
+
   trial_both <- get_unlabeled_trial()
   attr(trial_both$age, "label") <- "Age from Attribute"
 
@@ -836,6 +848,152 @@ test_that("add_auto_labels() handles large dictionaries efficiently", {
   )
 
   expect_s3_class(tbl, "gtsummary")
+})
+
+# ==============================================================================
+# PREFER DICTIONARY OPTION TESTS
+# ==============================================================================
+
+test_that("prefer_dictionary: dictionary wins over attributes when TRUE", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("tibble")
+
+  old_opt <- getOption("sumExtras.prefer_dictionary")
+  on.exit(options(sumExtras.prefer_dictionary = old_opt), add = TRUE)
+  options(sumExtras.prefer_dictionary = TRUE)
+
+  labeled_data <- get_unlabeled_trial()
+  attr(labeled_data$age, "label") <- "Age from Attribute"
+
+  my_dict <- tibble::tribble(
+    ~Variable, ~Description,
+    "age", "Age from Dictionary"
+  )
+
+  tbl <- labeled_data |>
+    gtsummary::tbl_summary(include = age) |>
+    add_auto_labels(dictionary = my_dict)
+
+  age_label <- tbl$table_body$label[tbl$table_body$variable == "age"][1]
+  expect_equal(age_label, "Age from Dictionary")
+})
+
+test_that("prefer_dictionary: attributes win when option is FALSE", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("tibble")
+
+  old_opt <- getOption("sumExtras.prefer_dictionary")
+  on.exit(options(sumExtras.prefer_dictionary = old_opt), add = TRUE)
+  options(sumExtras.prefer_dictionary = FALSE)
+
+  labeled_data <- get_unlabeled_trial()
+  attr(labeled_data$age, "label") <- "Age from Attribute"
+
+  my_dict <- tibble::tribble(
+    ~Variable, ~Description,
+    "age", "Age from Dictionary"
+  )
+
+  tbl <- labeled_data |>
+    gtsummary::tbl_summary(include = age) |>
+    add_auto_labels(dictionary = my_dict)
+
+  age_label <- tbl$table_body$label[tbl$table_body$variable == "age"][1]
+  expect_equal(age_label, "Age from Attribute")
+})
+
+test_that("prefer_dictionary: attributes win when option is unset", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("tibble")
+
+  old_opt <- getOption("sumExtras.prefer_dictionary")
+  on.exit(options(sumExtras.prefer_dictionary = old_opt), add = TRUE)
+  options(sumExtras.prefer_dictionary = NULL)
+
+  labeled_data <- get_unlabeled_trial()
+  attr(labeled_data$age, "label") <- "Age from Attribute"
+
+  my_dict <- tibble::tribble(
+    ~Variable, ~Description,
+    "age", "Age from Dictionary"
+  )
+
+  tbl <- labeled_data |>
+    gtsummary::tbl_summary(include = age) |>
+    add_auto_labels(dictionary = my_dict)
+
+  age_label <- tbl$table_body$label[tbl$table_body$variable == "age"][1]
+  expect_equal(age_label, "Age from Attribute")
+})
+
+test_that("prefer_dictionary: manual still wins over dictionary", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("tibble")
+
+  old_opt <- getOption("sumExtras.prefer_dictionary")
+  on.exit(options(sumExtras.prefer_dictionary = old_opt), add = TRUE)
+  options(sumExtras.prefer_dictionary = TRUE)
+
+  labeled_data <- get_unlabeled_trial()
+  attr(labeled_data$age, "label") <- "Age from Attribute"
+
+  my_dict <- tibble::tribble(
+    ~Variable, ~Description,
+    "age", "Age from Dictionary",
+    "grade", "Grade from Dictionary"
+  )
+
+  tbl <- labeled_data |>
+    gtsummary::tbl_summary(
+      include = c(age, grade),
+      label = list(age ~ "Age Manual Override")
+    ) |>
+    add_auto_labels(dictionary = my_dict)
+
+  age_label <- tbl$table_body$label[tbl$table_body$variable == "age"][1]
+  grade_label <- tbl$table_body$label[tbl$table_body$variable == "grade"][1]
+
+  # manual > dictionary, even with prefer_dictionary
+  expect_equal(age_label, "Age Manual Override")
+  # dictionary wins (no manual, no attribute for grade)
+  expect_equal(grade_label, "Grade from Dictionary")
+})
+
+test_that("prefer_dictionary: three-way priority manual > dict > attr", {
+  skip_if_not_installed("gtsummary")
+  skip_if_not_installed("tibble")
+
+  old_opt <- getOption("sumExtras.prefer_dictionary")
+  on.exit(options(sumExtras.prefer_dictionary = old_opt), add = TRUE)
+  options(sumExtras.prefer_dictionary = TRUE)
+
+  labeled_data <- get_unlabeled_trial()
+  attr(labeled_data$age, "label") <- "Age from Attribute"
+  attr(labeled_data$marker, "label") <- "Marker from Attribute"
+
+  my_dict <- tibble::tribble(
+    ~Variable, ~Description,
+    "age", "Age from Dictionary",
+    "grade", "Grade from Dictionary"
+  )
+
+  tbl <- labeled_data |>
+    gtsummary::tbl_summary(
+      include = c(age, marker, grade),
+      label = list(age ~ "Age Manual")
+    ) |>
+    add_auto_labels(dictionary = my_dict)
+
+  age_label <- tbl$table_body$label[tbl$table_body$variable == "age"][1]
+  marker_label <- tbl$table_body$label[tbl$table_body$variable == "marker"][1]
+  grade_label <- tbl$table_body$label[tbl$table_body$variable == "grade"][1]
+
+  # age: manual wins
+  expect_equal(age_label, "Age Manual")
+  # marker: only attribute (no dict entry)
+  expect_equal(marker_label, "Marker from Attribute")
+  # grade: dictionary wins (no manual, no attribute)
+  expect_equal(grade_label, "Grade from Dictionary")
 })
 
 test_that("add_auto_labels() handles underscores in variable names", {

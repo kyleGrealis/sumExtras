@@ -2,10 +2,11 @@
 
 ## Breaking Changes
 
-* Removed `apply_labels_from_dictionary()`. Use `attr(data$var, "label") <- "Label"` directly, or the labelled package for bulk attribute labeling.
+* Removed `apply_labels_from_dictionary()`. Use `attr(data$var, "label") <- "Label"` directly, or the `{labelled}` package for bulk attribute labeling.
 
 ## New Features
 
+* `extras()` auto-labeling via `options(sumExtras.auto_labels = TRUE)` and (recommended) `options(sumExtras.prefer_dictionary = TRUE)`. See `vignette("options")`.
 * `extras()` now bolds significant p-values (`bold_p()`) automatically when p-values are added.
 * New `header` parameter in `extras()` controls the label column header text (default `""`).
 * New `symbol` parameter in `clean_table()` and `extras()` controls the missing value replacement string (default `"---"`).
@@ -13,10 +14,10 @@
 
 ## Improvements
 
+* Data dictionaries now use lowercase column names (`variable`, `description`) by convention. Title-case names (`Variable`, `Description`) still work — column matching is case-insensitive.
 * `extras()` now handles `tbl_regression` gracefully: `overall` and `pval` are silently ignored (regression tables already have model p-values), and `bold_p()` is applied automatically. No more warnings when using `extras()` with default arguments on regression tables.
-* `extras()` auto-labeling via `options(sumExtras.auto_labels = TRUE)` is now fully tested.
 * Removed startup message. The package now loads silently.
-* Dropped `purrr` from Imports (4 dependencies instead of 5).
+* Dropped `{purrr}` from Imports (4 dependencies instead of 5).
 * New vignettes: `vignette("options")` and `vignette("themes")`.
 
 # sumExtras 0.3.1 (2026-01-22)
@@ -26,19 +27,19 @@
 * Added `quiet = TRUE` default to `use_jama_theme()` to suppress messages from {gtsummary} and {sumExtras}. Resolves issue #12 (thank you @RaymondBalise).
 
 * `extras()` no longer warns when called with default arguments on non-stratified tables. Previously, calling `extras(tbl)` on a table without a `by` argument would warn even though the user didn't explicitly request `overall` or `pval` features. Now warnings only fire when users **explicitly** request features that can't be applied:
-  - `extras(non_stratified_tbl)` - Silent (applies basic formatting)
-  - `extras(non_stratified_tbl, overall = TRUE)` - Warns (user explicitly requested)
-  - `extras(non_stratified_tbl, pval = TRUE)` - Warns (user explicitly requested)
+  * `extras(non_stratified_tbl)` - Silent (applies basic formatting)
+  * `extras(non_stratified_tbl, overall = TRUE)` - Warns (user explicitly requested)
+  * `extras(non_stratified_tbl, pval = TRUE)` - Warns (user explicitly requested)
 
 # sumExtras 0.3.0 (2026-01-15)
 
 ## New Features
 
 * New `.add_p_args` argument to `extras()` allows for passing `gtsummary::add_p()` arguments, such as:
-  - `test` for specifying statistical tests for each variable (i.e., `"t.test"`, `"fisher.test"`). Thank you, Daniel Maya.
-  - `pvalue_fun` for formatting p-values
-  - `group`, `include`, etc.
-  - See `?gtsummary::add_p.tbl_summary` for more information of proper usage.
+  * `test` for specifying statistical tests for each variable (i.e., `"t.test"`, `"fisher.test"`). Thank you, Daniel Maya.
+  * `pvalue_fun` for formatting p-values
+  * `group`, `include`, etc.
+  * See `?gtsummary::add_p.tbl_summary` for more information of proper usage.
 
 ## Improvements
 
@@ -53,9 +54,9 @@
 ## New Features
 
 * New `add_group_colors()` function provides a clean, pipeable way to add background colors to group headers
-  - Combines text formatting, gt conversion, and color application in one step
-  - Eliminates need for manual `get_group_rows()` and `as_gt()` calls
-  - Reduces typical styling code from 20+ lines to ~11 lines
+  * Combines text formatting, gt conversion, and color application in one step
+  * Eliminates need for manual `get_group_rows()` and `as_gt()` calls
+  * Reduces typical styling code from 20+ lines to ~11 lines
 
 ## Documentation
 

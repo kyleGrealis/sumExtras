@@ -14,8 +14,7 @@ theme application. Default is \code{TRUE} (silent).}
 Invisibly returns the theme list object from
 \code{gtsummary::theme_gtsummary_compact("jama")}. The theme is applied
 globally via \code{gtsummary::set_gtsummary_theme()}, affecting all
-subsequent gtsummary tables created in the session. A message is printed
-confirming the theme application.
+subsequent gtsummary tables created in the session.
 }
 \description{
 Sets the global gtsummary theme to the JAMA (Journal of the

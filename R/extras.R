@@ -24,7 +24,8 @@
 #'   Passed directly to `clean_table(symbol = ...)`.
 #' @param .args Optional list of arguments to use
 #'   instead of individual parameters.
-#'   When provided, overrides `pval`, `overall`, and `last` arguments.
+#'   When provided, overrides `pval`, `overall`, `last`,
+#'   `header`, and `symbol` arguments.
 #' @param .add_p_args Optional named list of arguments
 #'   to pass to `gtsummary::add_p()`. Allows customization
 #'   of statistical tests and p-value formatting.
@@ -56,7 +57,7 @@
 #' only basic formatting (bold_labels and modify_header).
 #'
 #' For merged tables (`tbl_merge`), call `extras()` on each
-#' sub-table before merging — all formatting carries through.
+#' sub-table before merging. All formatting carries through.
 #'
 #' If any individual step fails (e.g., due to unexpected
 #' table structure), the function warns and continues
@@ -75,9 +76,13 @@
 #' @importFrom rlang %||% warn abort
 #'
 #' @section Table Type Support:
-#' Full features (overall, p-values) require stratified `tbl_summary` or
-#' `tbl_svysummary`. Regression and stacked tables get basic formatting
-#' only (bold labels, clean header). Unsupported features trigger a warning.
+#' Full features (overall, p-values, bold p-values) require a stratified
+#' `tbl_summary` or `tbl_svysummary`. Regression tables get bold labels,
+#' bold model p-values, header cleaning, and `clean_table()`. Stacked
+#' (`tbl_strata`) and merged (`tbl_merge`) tables get bold labels, header
+#' cleaning, and `clean_table()`. Warnings only fire when the user
+#' explicitly requests unsupported features (e.g., `overall = TRUE` on a
+#' non-stratified table).
 #'
 #' @examples
 #' \donttest{
@@ -106,23 +111,9 @@
 #' gtsummary::trial |>
 #'   gtsummary::tbl_summary(by = trt) |>
 #'   extras(.add_p_args = list(
-#'     test = list(all_continuous() ~ "t.test"),
+#'     test = list(age ~ "t.test", marker ~ "t.test"),
 #'     pvalue_fun = ~ gtsummary::style_pvalue(.x, digits = 2)
 #'   ))
-#'
-#' # Chain with other functions
-#' # Create required dictionary first
-#' dictionary <- tibble::tribble(
-#'   ~Variable, ~Description,
-#'   "record_id", "Participant ID",
-#'   "age", "Age at enrollment",
-#'   "sex", "Biological sex"
-#' )
-#' gtsummary::trial |>
-#'   gtsummary::tbl_summary(by = trt) |>
-#'   add_auto_labels() |>
-#'   extras(pval = TRUE) |>
-#'   add_group_styling()
 #' }
 #'
 #' @seealso
@@ -249,7 +240,7 @@ extras <- function(
   }
 
   # Only warn if user explicitly requested features that can't apply
-  # Skip for regression and strata tables — they have their own handling
+  # Skip for regression and strata tables since they have their own handling
   not_applicable <- !is_stratified && !is_regression && !is_merged &&
     !is_strata
   if (not_applicable && (explicit_overall || explicit_pval)) {

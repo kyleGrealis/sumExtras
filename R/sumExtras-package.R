@@ -1,19 +1,5 @@
 #' @keywords internal
 #' @aliases sumExtras-package
-"_PACKAGE"
-
-## usethis namespace: start
-## usethis namespace: end
-NULL
-
-#' sumExtras: Extra Functions for 'gtsummary' Table Styling
-#'
-#' @description
-#' Provides additional convenience functions for 'gtsummary'
-#' (Sjoberg et al. (2021) <doi:10.32614/RJ-2021-053>) & 'gt' tables,
-#' including automatic variable labeling from dictionaries, standardized
-#' missing value display, and formatting helpers for common
-#' table styling workflows.
 #'
 #' @section Main Functions:
 #' * [extras()] - Overall columns, p-values, clean styling
@@ -60,5 +46,8 @@ NULL
 #'   add_group_colors()
 #' }
 #'
-#' @name sumExtras-package
+"_PACKAGE"
+
+## usethis namespace: start
+## usethis namespace: end
 NULL
