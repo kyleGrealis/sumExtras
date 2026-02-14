@@ -2,7 +2,7 @@
 
 ## Authors
 
-- **Kyle Grealis**. Author, maintainer.
+- **[Kyle Grealis](https://www.kylegrealis.com)**. Author, maintainer.
   [](https://orcid.org/0000-0002-9223-8854)
 
 - **Raymond Balise**. Contributor.
