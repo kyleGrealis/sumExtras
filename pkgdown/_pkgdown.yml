@@ -18,6 +18,10 @@ template:
     border-radius: 0.5rem
     btn-border-radius: 0.25rem
 
+home:
+  sidebar:
+    structure: [links, license, community, citation, authors, dev]
+
 navbar:
   structure:
     left: [intro, reference, articles, news]
@@ -37,6 +41,13 @@ navbar:
           href: articles/themes.html
         - text: Package Options
           href: articles/options.html
+    news:
+      text: Changelog
+      href: news/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/kyleGrealis/sumExtras
+      aria-label: GitHub
 
 articles:
   - title: Get Started
@@ -54,21 +65,29 @@ reference:
     contents:
       - extras
       - clean_table
-
   - title: "Automatic Variable Labeling"
     desc: "Functions for managing variable labels from data dictionaries"
     contents:
       - add_auto_labels
-
   - title: "Theme Functions"
     desc: "Apply JAMA-style compact themes for consistent professional formatting"
     contents:
       - use_jama_theme
       - theme_gt_compact
-
   - title: "Group Header Styling"
     desc: "Enhanced formatting for variable group headers in summary tables"
     contents:
       - add_group_styling
       - add_group_colors
       - get_group_rows
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with
+
+authors:
+  Kyle Grealis:
+    href: https://www.kylegrealis.com
+  sidebar:
+    roles: [aut, cre]
