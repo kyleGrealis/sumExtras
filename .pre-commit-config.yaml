@@ -20,7 +20,7 @@ repos:
     rev: v6.0.0
     hooks:
     -   id: check-added-large-files
-        args: ['--maxkb=200']
+        args: ['--maxkb=300']
     -   id: end-of-file-fixer
 -   repo: local
     hooks:
