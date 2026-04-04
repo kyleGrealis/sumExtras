@@ -2,6 +2,8 @@
 
 ## sumExtras 1.0.0 (2026-02-09)
 
+CRAN release: 2026-02-11
+
 ### Breaking Changes
 
 - Removed `apply_labels_from_dictionary()`. Use
