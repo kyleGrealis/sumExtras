@@ -172,4 +172,4 @@ CRAN-SUBMISSION
 cran-comments.md
 test_updates.R
 
-!inst/slides/index.html
+# !inst/slides/index.html
