@@ -17,7 +17,7 @@ suppressPackageStartupMessages({
 })
 ```
 
-# Introduction {background-image="./img/sumExtras.png" background-opacity="0.15" background-size="contain"}
+# Introduction
  
 > **sumExtras**: "gt**sum**mary table **Extras**"
 
