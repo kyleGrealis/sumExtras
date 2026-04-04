@@ -21,6 +21,7 @@ repos:
     hooks:
     -   id: check-added-large-files
         args: ['--maxkb=300']
+        exclude: '^inst/slides/img|^inst/slides/index.html'
     -   id: end-of-file-fixer
 -   repo: local
     hooks:
