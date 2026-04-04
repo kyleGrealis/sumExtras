@@ -1,0 +1,68 @@
+---
+title: "sumExtras: Streamlining Table Workflows in Clinical Research with R"
+author:
+  - name: "Kyle Grealis"
+    affiliation: "University of Miami"
+date: "May 8, 2026"
+date-format: "MMM D, YYYY"
+---
+
+```{r}
+#| echo: false
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(sumExtras)
+  library(gtsummary)
+  library(gt)
+})
+```
+
+# Introduction {background-image="./img/sumExtras.png" background-opacity="0.15" background-size="contain"}
+ 
+> **sumExtras**: "gt**sum**mary table **Extras**"
+
+
+## The plan
+::: {.incremental}
++ item 1
++ item 2
+:::
+
+
+## Creating a Variable Dictionary
+
+A dictionary object is a data frame with two columns: `variable` and `description`.
+
+<!-- Show the creation of the data dictionary object
+Highlight lines, then show the created object incrementally to the side -->
+
+:::: {.columns}
+::: {.column width="55%"}
+```{r}
+#| echo: true
+#| code-line-numbers: "|1|2"
+dictionary <- tibble::tribble(
+  ~variable,    ~description,
+  "trt",        "Chemotherapy Treatment",
+  "age",        "Age at Enrollment (years)",
+  "marker",     "Marker Level (ng/mL)",
+  "stage",      "T Stage",
+  "grade",      "Tumor Grade",
+  "response",   "Tumor Response",
+  "death",      "Patient Died"
+)
+```
+:::
+::: {.column width="45%" .fragment}
+```{r}
+dictionary
+```
+:::
+::::
+
+::: {.incremental}
+::: {.callout-note .fragment}
+The column names are case-*in*sensitive. `variable`, `Variable`, and `VARIABLE`
+will work all the same.
+:::
+:::
