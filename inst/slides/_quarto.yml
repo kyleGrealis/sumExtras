@@ -6,20 +6,15 @@ format:
     link-external-newwindow: true
     link-external-icon: false
     theme: 
-      - default
+      # - default
       - slides.scss
-    title-slide-attributes:
-      data-background-image: "../../man/figures/sumExtras.png"
-      data-background-size: "contain"
-      data-background-opacity: "0.1"
     fontsize: 2em
     html-math-method: mathjax
     slide-number: c/t
     show-slide-number: all
     highlight-style: rstudio_default-light.theme
     logo: "img/rmed.png"
-    # footer: "[Slides are here](https://){target='_blank'}"  # complete the URL
-    include-after-body: "img/clean_title_page.html"
+    include-after-body: "img/index.html"
 include-in-header:
   text: |
     <link rel="shortcut icon" href="img/rmed.ico"/>
