@@ -171,3 +171,5 @@ GEMINI.md
 CRAN-SUBMISSION
 cran-comments.md
 test_updates.R
+
+!inst/slides/img/*.html
