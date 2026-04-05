@@ -56,7 +56,7 @@
             "underline": false
         },
         "ControlFlow": {
-            "text-color": "#0000FF",
+            "text-color": "#808080",
             "background-color": null,
             "bold": false,
             "italic": false,
@@ -70,21 +70,21 @@
             "underline": false
         },
         "Error": {
-            "text-color": "#AD0000",
+            "text-color": "#5e5f5f",
             "background-color": null,
             "bold": false,
             "italic": false,
             "underline": false
         },
         "BaseN": {
-            "text-color": "#AD0000",
+            "text-color": "#5e5f5f",
             "background-color": null,
             "bold": false,
             "italic": false,
             "underline": false
         },
         "Alert": {
-            "text-color": "#AD0000",
+            "text-color": "#5e5f5f",
             "background-color": null,
             "bold": false,
             "italic": false,
@@ -112,7 +112,7 @@
             "underline": false
         },
         "Preprocessor": {
-            "text-color": "#AD0000",
+            "text-color": "#5e5f5f",
             "background-color": null,
             "bold": false,
             "italic": false,
@@ -161,14 +161,14 @@
             "underline": false
         },
         "DataType": {
-            "text-color": "#AD0000",
+            "text-color": "#5e5f5f",
             "background-color": null,
             "bold": false,
             "italic": false,
             "underline": false
         },
         "Float": {
-            "text-color": "#0000FF",
+            "text-color": "#808080",
             "background-color": null,
             "bold": false,
             "italic": false,
@@ -189,7 +189,7 @@
             "underline": false
         },
         "Constant": {
-            "text-color": "#0000FF",
+            "text-color": "#808080",
             "background-color": null,
             "bold": false,
             "italic": false,
@@ -203,7 +203,7 @@
             "underline": false
         },
         "DecVal": {
-            "text-color": "#0000FF",
+            "text-color": "#808080",
             "background-color": null,
             "bold": false,
             "italic": false,

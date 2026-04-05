@@ -17,7 +17,7 @@
 
 ## Overview
 
-`{sumExtras}` reduces the repetitive boilerplate in `{gtsummary}` workflows. One function replaces five. Stop copy-pasting `add_overall()`, `add_p()`, `bold_labels()`, and `modify_header()` on every table. Call `extras()` once. The package also handles missing value cleanup, automatic variable labeling from data dictionaries, group header styling, and JAMA compact theming.
+`{sumExtras}` reduces the repetitive boilerplate in `{gtsummary}` workflows. One function replaces five. Stop copy-pasting `add_overall()`, `add_p()`, `bold_labels()`, and `modify_header()` on every table and instead call `extras()` once. The package also handles missing value cleanup, automatic variable labeling from data dictionaries, group header styling, and JAMA compact theming.
 
 ## Installation
 

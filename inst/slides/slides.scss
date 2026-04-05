@@ -5,7 +5,7 @@ $body-color: #003F30;
 $body-bg: #fefefe;
 $link-color: $primary;
 // Fonts
-// $font-family-sans-serif: "Open Sans", sans-serif;
+$font-family-sans-serif: "Google Sans", sans-serif;
 // $font-family-monospace: "Source Code Pro", monospace;
 
 
@@ -14,6 +14,18 @@ $link-color: $primary;
 
 /*-- scss:rules --*/
 
+code {
+  padding: 10px !important;
+  color: black !important;
+  background-color: #fcf3da !important;
+  border: 1px solid gray;
+  border-radius: 6px !important;
+  box-shadow: 1px 1px 6px rgb(176, 176, 176);
+}
+
+.hide {
+  display: none !important;
+}
 
 .slide-number,
 .reveal.has-logo .slide-number {
@@ -23,24 +35,19 @@ $link-color: $primary;
   color: $body-color !important;
 }
 
-// #title-slide, #title-slide h1.title {
-//   color: white;
-// }
-
-.slide-background:first-child .slide-background-content {
-  opacity: 0.2 !important;
-}
-
 .slide-background-content {
   background-size: contain !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
   opacity: 0.1 !important;
+}
+
+.slide-background:first-child .slide-background-content {
+  opacity: 0.3 !important;
 }
 
 .reveal blockquote {
   border-left-color: $primary !important;
-}
-
-.reveal blockquote p {
   color: $primary !important;
 }
 
