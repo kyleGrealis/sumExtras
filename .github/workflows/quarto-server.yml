@@ -1,0 +1,46 @@
+name: Deploy Slides to Pi
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install R dependencies
+        run: |
+          Rscript -e 'install.packages(c("tidyverse", "gtsummary", "gt", "sumExtras"))'
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Render slides
+        run: quarto render inst/slides --to revealjs
+
+      - name: Deploy via rsync over Cloudflare Tunnel
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PI_SSH_KEY }}
+          PI_HOST: ${{ secrets.PI_HOST }}
+          PI_USER: ${{ secrets.PI_USERNAME }}
+          CF_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+          CF_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "$PI_HOST" >> ~/.ssh/known_hosts
+          rsync -avz \
+            -e "ssh -i ~/.ssh/id_rsa \
+                -o ProxyCommand='cloudflared access ssh --hostname %h \
+                --id $CF_ID --secret $CF_SECRET'" \
+            inst/slides/index.html \
+            $PI_USER@$PI_HOST:/srv/slides/sumExtras/
