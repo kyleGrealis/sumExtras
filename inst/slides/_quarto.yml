@@ -22,7 +22,8 @@ embed-resources: true   # true = a single file, false = multiple files
 knitr:
   opts_chunk:      ########## set global options ############
     collapse: true # keep code from blocks together (if shown)
-    echo: false    # don't show code
+    echo: true   # don't show code
+    eval: true   # don't show code
     message: true  # show messages
     warning: true  # show warnings
     error: true    # show error messages
