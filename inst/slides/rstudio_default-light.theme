@@ -42,9 +42,9 @@
             "underline": false
         },
         "Function": {
-            "text-color": "#0002FF",
+            "text-color": "#6ca973",
             "background-color": null,
-            "bold": false,
+            "bold": true,
             "italic": false,
             "underline": false
         },
