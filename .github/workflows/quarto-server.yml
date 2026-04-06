@@ -26,6 +26,11 @@ jobs:
       - name: Render slides
         run: quarto render inst/slides --to revealjs
 
+      - name: Install cloudflared
+        run: |
+          curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o cloudflared.deb
+          sudo dpkg -i cloudflared.deb
+
       - name: Deploy via rsync over Cloudflare Tunnel
         env:
           SSH_PRIVATE_KEY: ${{ secrets.PI_SSH_KEY }}
@@ -37,9 +42,9 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H "$PI_HOST" >> ~/.ssh/known_hosts
           rsync -avz \
             -e "ssh -i ~/.ssh/id_rsa \
+                -o StrictHostKeyChecking=no \
                 -o ProxyCommand='cloudflared access ssh --hostname %h \
                 --id $CF_ID --secret $CF_SECRET'" \
             inst/slides/index.html \
