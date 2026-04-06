@@ -13,7 +13,7 @@ function replaces five. Stop copy-pasting
 [`bold_labels()`](https://www.danieldsjoberg.com/gtsummary/reference/bold_italicize_labels_levels.html),
 and
 [`modify_header()`](https://www.danieldsjoberg.com/gtsummary/reference/modify.html)
-on every table. Call
+on every table and instead call
 [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md)
 once. The package also handles missing value cleanup, automatic variable
 labeling from data dictionaries, group header styling, and JAMA compact
