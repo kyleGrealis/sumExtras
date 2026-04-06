@@ -26,7 +26,7 @@ jobs:
         uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Render slides
-        run: quarto render inst/slides --to revealjs
+        run: quarto render inst/slides
 
       - name: Install cloudflared
         run: |
@@ -44,10 +44,9 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          printf '#!/bin/sh\nexec cloudflared access ssh --hostname "$1" --service-token-id "%s" --service-token-secret "%s"\n' "$CF_ID" "$CF_SECRET" > /tmp/cf-proxy.sh
+          chmod +x /tmp/cf-proxy.sh
           rsync -avz \
-            -e "ssh -i ~/.ssh/id_rsa \
-                -o StrictHostKeyChecking=no \
-                -o ProxyCommand='cloudflared access ssh --hostname %h \
-                --service-token-id $CF_ID --service-token-secret $CF_SECRET'" \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand='/tmp/cf-proxy.sh %h'" \
             inst/slides/index.html \
             $PI_USER@$PI_HOST:/srv/slides/sumExtras/
