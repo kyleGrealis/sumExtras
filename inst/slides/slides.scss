@@ -14,15 +14,6 @@ $font-family-sans-serif: "Google Sans", sans-serif;
 
 /*-- scss:rules --*/
 
-code {
-  padding: 10px !important;
-  color: black !important;
-  background-color: #fcf3da !important;
-  border: 1px solid gray;
-  border-radius: 6px !important;
-  box-shadow: 1px 1px 6px rgb(176, 176, 176);
-}
-
 .hide {
   display: none !important;
 }
@@ -55,8 +46,8 @@ code {
   text-decoration: underline;
 }
 
-.red {
-  color: #da2c43
+.smallest {
+  font-size: 1rem;
 }
 
 .max-lines {
@@ -88,8 +79,9 @@ code {
 }
 
 .reveal div.sourceCode {
-  border: 1px solid #ccc !important;
-  box-shadow: none !important;
+  border: 1px solid #808080 !important;
+  border-radius: 6px !important;
+  box-shadow: 4px 4px 12px #b0b0b0 !important;
 }
 
 .reveal pre {
@@ -99,5 +91,15 @@ code {
 }
 
 .reveal pre code {
-  background-color: #F1F3F5;
+  padding: 10px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+code {
+  padding: 5px !important;
+  color: black !important;
+  background-color: #fcf3da !important;
+  border: 1px solid #808080;
+  border-radius: 6px !important;
 }
