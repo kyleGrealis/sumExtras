@@ -109,13 +109,12 @@ dat |>
 
 ## Setting a theme
 
-Use `sumExtras::use_jama_theme()` for a more compact table.
+<br>
+<!-- Use `sumExtras::use_jama_theme()` for a more compact table. -->
 
 ::: {.fragment}
 `use_jama_theme()` is just a wrapper function for `gtsummary::theme_gtsummary_compact("jama")`
 :::
-
-<br>
 
 :::: {.columns}
 ::: {.column}
@@ -143,7 +142,7 @@ dat |>
 
 ![](img/tbl_with_zeros.png){width="50%"}
 
-Draw attention to complete, non-`NA` values with `clean_table()` by replacihng `0 (0.00, 0.00)`, `0 (NA%)`, and other similar values with an emdash (`—`).
+Draw attention to complete, non-`NA` values with `clean_table()` by replacing `0 (0.00, 0.00)`, `0 (NA%)`, and other similar values with an emdash (`—`).
 
 ## Cleaning the table
 
@@ -715,37 +714,3 @@ with either partial or full features available.
 
 ![](img/kyle.jpg){.styled-image .absolute bottom="30%" right="1%" height="auto" width="190"}
 
-
-<!-- SLIDE OUTLINE
-1. INTRO: Show verbose gtsummary-only code (the "before")
-   - tbl_summary(by=trt) |> add_overall() |> add_p() |> bold_labels() |>
-     bold_p() |> modify_header(...) |> modify_table_body(...)
-   - Preview the final sumExtras version we're building toward
-
-2. THEME: use_jama_theme() before/after comparison
-   - Show default gtsummary output vs JAMA-themed output
-
-3. CLEAN TABLE: clean_table() for missing values
-   - Show table with ugly NA/0 patterns, then pipe on clean_table()
-
-4. EXTRAS: extras() replaces repeated boilerplate
-   - Show how one call replaces add_overall, add_p, bold_labels, bold_p,
-     modify_header, clean_table
-   - Mention key arguments: pval, overall, last, header, symbol
-
-5. AUTO LABELS: add_auto_labels() with dictionary
-   - Show dictionary creation (already built above)
-   - Demonstrate label priority: manual > attributes > dictionary
-   - Show package options: sumExtras.auto_labels, sumExtras.prefer_dictionary
-
-6. GROUP HEADERS: add_variable_group_header()
-   - Add grouping to organize variables in the table
-
-7. GROUP STYLING & COLORS: add_group_styling() + add_group_colors()
-   - Style group rows, add color — visual payoff
-   - add_group_colors() must be last (converts to gt)
-
-8. OUTRO: Full pipeline side-by-side
-   - Verbose gtsummary code vs clean sumExtras pipeline
-   - Circle back to the "before" from slide 1
--->
