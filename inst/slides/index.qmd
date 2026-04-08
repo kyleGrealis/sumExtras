@@ -282,7 +282,7 @@ dat |>
   extras()
 ```
 
-::: {.fragment .smaller}
+::: {.fragment .smallest}
 `dat` was created from `trial`. `trial` had attributes, but using `mutate`
 earlier removed attributes from `dat$marker` and `dat$grade`.
 :::
@@ -367,8 +367,7 @@ will work all the same.
 
 ## Use the `dictionary` with `add_auto_labels()`
 
-The `dictionary` is found by `sumExtras` but manual labelling inside the
-`tbl_*` function **always** wins!
+The `label` argument from the `tbl_*` function **always** wins!
 
 :::: {.columns}
 ::: {.column width="45%"}
@@ -582,7 +581,7 @@ dat |>
   ) |>
   add_group_styling() |>
   add_group_colors(
-    color = c("#E3F2FD", "#FFF9E6")
+    color = c("#E1EAE2", "#FFF9E6")
   )
 ```
 
@@ -608,7 +607,7 @@ dat |>
     variables = grade:ttdeath
   ) |>
   add_group_styling() |>
-  add_group_colors(color = c("#E3F2FD", "#FFF9E6"))
+  add_group_colors(color = c("#E1EAE2", "#FFF9E6"))
 ```
 :::
 ::::
@@ -648,7 +647,7 @@ dat |>
   ) |>
   add_group_styling() |>
   add_group_colors(
-    color = c("#E3F2FD", "#FFF9E6")
+    color = c("#E1EAE2", "#FFF9E6")
   )
 ```
 :::
@@ -670,7 +669,7 @@ dat |>
   ) |>
   add_group_styling() |>
   add_group_colors(
-    color = c("#E3F2FD", "#FFF9E6")
+    color = c("#E1EAE2", "#FFF9E6")
   )
 ```
 ::: {.fragment}
