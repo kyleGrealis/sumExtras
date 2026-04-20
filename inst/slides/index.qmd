@@ -34,10 +34,11 @@ options(
 + Customize missing values with `clean_table()`
 + One-line table formatting with `extras()`
 + Auto-label variables with `add_auto_labels()`
-  + Create a variable dictionary
-  + Set package options
-+ Add variable group headers
-+ Style and color group rows
+  <!-- + Create a variable dictionary
+  + Set package options -->
++ Add variable group headers [with _**style**_ and \
+ [**background coloring**]{.coloring}]{ .fragment }
+<!-- + Style and color group rows -->
 + Put it all together in one pipeline
 :::
 
@@ -61,8 +62,7 @@ gtsummary::trial
 
 ##
 
-Most times, we're faced with datasets with missing values.  
-Let's `mutate` in some `0` and `NA` values.
+`mutate` the data to simulate missing values
 
 ```{r}
 #| echo: true
@@ -91,9 +91,6 @@ head(dat, 5)
 dat |>
   tbl_summary(by = trt)
 ```
-::: {.fragment}
-Oh no! This table seems to run off the page!
-:::
 
 :::
 
@@ -112,9 +109,6 @@ dat |>
 <br>
 <!-- Use `sumExtras::use_jama_theme()` for a more compact table. -->
 
-::: {.fragment}
-`use_jama_theme()` is just a wrapper function for `gtsummary::theme_gtsummary_compact("jama")`
-:::
 
 :::: {.columns}
 ::: {.column}
@@ -137,12 +131,18 @@ dat |>
 :::
 ::::
 
+::: {.fragment}
+`use_jama_theme()` is a wrapper function for \
+ `gtsummary::theme_gtsummary_compact("jama")`
+:::
+
 
 ## Cleaning the table
 
 ![](img/tbl_with_zeros.png){width="50%"}
 
-Draw attention to complete, non-`NA` values with `clean_table()` by replacing `0 (0.00, 0.00)`, `0 (NA%)`, and other similar values with an emdash (`—`).
+Draw attention to complete, non-`NA` values with `clean_table()`. 
+Replace `0 (0.00, 0.00)`, `0 (NA%)`, and similar missingness with an emdash (`—`).
 
 ## Cleaning the table
 
@@ -181,6 +181,7 @@ dat |>
 
 ```{r}
 #| echo: false
+#| eval: false
 dat |>
   tbl_summary(
     by = trt,
@@ -201,13 +202,42 @@ dat |>
   clean_table()
 ```
 
-::: {.incremental .smallest}
+<!-- ::: {.incremental .smallest}
 * Removed "Characteristic" from variable heading
 * Added *p*-values
 * Bold labels & significant *p*-values
 * Added "Overall" column
 * Applied `clean_table()`
-:::
+::: -->
+
+![](img/table-with-goodies-1.png){width=85%}  
+
+This is more like what I want...
+
+## Adding labels, *p*-values, and other goodies
+![](img/table-with-goodies-2.png){width=85%}  
+
+Removed "Characteristic" from variable heading
+
+## Adding labels, *p*-values, and other goodies
+![](img/table-with-goodies-3.png){width=85%}  
+
+Added *p*-values
+
+## Adding labels, *p*-values, and other goodies
+![](img/table-with-goodies-4.png){width=85%}  
+
+Bold labels & significant *p*-values
+
+## Adding labels, *p*-values, and other goodies
+![](img/table-with-goodies-5.png){width=85%}  
+
+Added "Overall" column
+
+## Adding labels, *p*-values, and other goodies
+![](img/table-with-goodies-6.png){width=85%}  
+
+Applied `clean_table()`
 
 
 ## Adding labels, *p*-values, and other goodies
