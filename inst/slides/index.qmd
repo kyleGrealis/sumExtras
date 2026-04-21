@@ -84,24 +84,13 @@ head(dat, 5)
 
 ## Initial `gtsummary` table
 
-:::: {.columns}
-::: {.column}
+<br>
+
 ```{r}
-#| eval: false
+#| output-location: column
 dat |>
   tbl_summary(by = trt)
 ```
-
-:::
-
-::: {.column}
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(by = trt)
-```
-:::
-::::
 
 
 ## Setting a theme
@@ -109,27 +98,13 @@ dat |>
 <br>
 <!-- Use `sumExtras::use_jama_theme()` for a more compact table. -->
 
-
-:::: {.columns}
-::: {.column}
 ```{r}
-#| eval: false
+#| output-location: column
 sumExtras::use_jama_theme()
 
 dat |>
   tbl_summary(by = trt)
 ```
-:::
-
-::: {.column}
-```{r}
-#| echo: false
-use_jama_theme()
-dat |>
-  tbl_summary(by = trt)
-```
-:::
-::::
 
 ::: {.fragment}
 `use_jama_theme()` is a wrapper function for \
@@ -139,10 +114,13 @@ dat |>
 
 ## Cleaning the table
 
-![](img/tbl_with_zeros.png){width="50%"}
+![](img/tbl_with_zeros.png){width="45%"}
 
-Draw attention to complete, non-`NA` values with `clean_table()`. 
+::: {.fragment}
+**THE GOAL:**
+Draw attention to complete, non-`NA` values with `clean_table()`.
 Replace `0 (0.00, 0.00)`, `0 (NA%)`, and similar missingness with an emdash (`—`).
+:::
 
 ## Cleaning the table
 
@@ -293,19 +271,24 @@ Six lines converted to one!
 ::::
 
 
-# Adding labels
+# Labelling hierarchy
 
-## Default table without labels
+::: {.incremental}
+* Dataset label attributes
+* Using `gtsummary::tbl_*`'s `label` parameter
+* Using `sumExtras` auto-labelling
+:::
+
+## Default table without labels {.col-45-55}
 
 `gtsummary` reads attribute labels natively!
 
-:::: {.columns}
-::: {.column width="45%"}
 ```{r}
-#| eval: false
+#| eval: true
+#| output-location: column
 # Set an explicit attribute label:
 attr(dat$age, "label") <-
-  "Age FROM ATTRIBUTE (years)"
+  "Age ATTRIBUTE"
 
 dat |>
   tbl_summary(by = trt) |>
@@ -317,41 +300,33 @@ dat |>
 earlier removed attributes from `dat$marker` and `dat$grade`.
 :::
 
-:::
-
-::: {.column width="55%"}
-
-```{r}
-#| echo: false
-attr(dat$age, "label") <- "Age FROM ATTRIBUTE (years)"
-dat |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-:::
-::::
-
 
 ## The `gtsummary::tbl_*` labeling method
 
-Declare the variables labels within the `tbl_*` function:
-
 ```{r}
-#| eval: false
+#| eval: true
+#| output-location: column
+#| code-line-numbers: "|1-2|7-10"
+attr(dat$marker, "label") <-
+  "Marker ATTRIBUTE"
+
 dat |>
   tbl_summary(
     by = trt,
     label = list(
-      age ~ "Age at Enrollment (years)",
-      marker ~ "Marker Level (ng/mL)",
-      stage ~ "T Stage",
-      grade ~ "Tumor Grade",
-      response ~ "Tumor Response",
-      death ~ "Patient Died"
+      marker ~ "Marker LABEL",
+      stage ~ "Stage LABEL"
     )
   ) |>
   extras()
 ```
+
+Labels set in `tbl_*`'s `label` parameter **always** take priority!
+
+::: {.fragment .smallest}
+`dat$grade` still has no label because it doesn't have a label attribute
+*nor* was any label assigned within the `tbl_summary()` `label` parameter.
+:::
 
 
 ## Creating a Variable Dictionary
@@ -367,20 +342,20 @@ Highlight lines, then show the created object incrementally to the side -->
 ::: {.column width="55%"}
 ```{r}
 #| echo: true
-#| code-line-numbers: "|1|2"
+#| code-line-numbers: "|2"
 dictionary <- tibble::tribble(
   ~variable,    ~description,
   "trt",        "Chemotherapy Treatment",
-  "age",        "Age (years)",
-  "marker",     "Marker Level (ng/mL)",
-  "stage",      "T Stage",
-  "grade",      "Tumor Grade",
-  "response",   "Tumor Response",
-  "death",      "Patient Died"
+  "age",        "Age DICT",
+  "marker",     "Marker DICT",
+  "stage",      "Stage DICT",
+  "grade",      "Grade DICT",
+  "response",   "Response DICT",
+  "death",      "Patient Died DICT"
 )
 ```
 :::
-::: {.column width="45%" .fragment}
+::: {.column width="45%"}
 ```{r}
 dictionary
 ```
@@ -395,62 +370,35 @@ will work all the same.
 :::
 
 
-## Use the `dictionary` with `add_auto_labels()`
+## Use the `dictionary` with `add_auto_labels()` {.col-45-55}
 
-The `label` argument from the `tbl_*` function **always** wins!
-
-:::: {.columns}
-::: {.column width="45%"}
 ```{r}
-#| eval: false
+#| output-location: column
 dat |>
   tbl_summary(
     by = trt,
     label = list(
-      age ~ "Age FROM LABEL (years)",
-      marker ~ "Marker Level LABEL (ng/mL)",
+      age ~ "Age LABEL",
+      marker ~ "Marker LABEL",
       stage ~ "T Stage LABEL",
-      grade ~ "Tumor Grade LABEL",
-      response ~ "Tumor Response LABEL",
+      grade ~ "Grade LABEL",
+      response ~ "Response LABEL",
       death ~ "Patient Died LABEL"
     )
   ) |>
   extras() |>
   add_auto_labels()
 ```
-:::
 
-::: {.column width="55%"}
+**Again**: Labels set in `tbl_*`'s `label` parameter **always** take priority!
+
+
+
+## Use the `dictionary` with `add_auto_labels()` (part 2) {.col-45-55}
 
 ```{r}
-#| echo: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age FROM LABEL (years)",
-      marker ~ "Marker Level LABEL (ng/mL)",
-      stage ~ "T Stage LABEL",
-      grade ~ "Tumor Grade LABEL",
-      response ~ "Tumor Response LABEL",
-      death ~ "Patient Died LABEL"
-    )
-  ) |>
-  extras() |>
-  add_auto_labels()
-```
-:::
-::::
-
-
-## Use the `dictionary` with `add_auto_labels()` (part 2)
-
-Remove the manual labels and use the `dictionary`.
-
-:::: {.columns}
-::: {.column width="45%"}
-```{r}
-#| eval: false
+#| code-line-numbers: "|4-11"
+#| output-location: column
 dat |>
   tbl_summary(
     by = trt,
@@ -464,38 +412,12 @@ dat |>
     # )
   ) |>
   extras() |>
-  add_auto_labels(
-    dictionary = dictionary
-  )
+  add_auto_labels()
 ```
 
 ::: {.fragment}
-UH OH! Where are my `dictionary` labels??
+**Remember** the hierarchy: Attributes > `label` parameter > `dictionary`
 :::
-
-:::
-
-::: {.column width="55%"}
-
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      # age ~ "Age FROM LABEL (years)",
-      marker ~ "Marker Level (ng/mL)",
-      stage ~ "T Stage",
-      grade ~ "Tumor Grade",
-      response ~ "Tumor Response",
-      death ~ "Patient Died"
-    )
-  ) |>
-  extras() |>
-  add_auto_labels(dictionary = dictionary)
-```
-:::
-::::
 
 
 ## Use the `dictionary` with `add_auto_labels()` (part 3)
@@ -512,6 +434,8 @@ options(
 )
 ```
 
+**Reset** the hierarchy: `dictionary` takes precedence!
+
 ::: {.incremental}
 * No longer need to use the `add_auto_labels()` function
   * `extras()` will now add the labels!
@@ -519,6 +443,7 @@ options(
 :::
 
 ## Using `dictionary` and `options()`
+
 
 :::: {.columns}
 ::: {.column width="45%"}
@@ -544,6 +469,20 @@ dat |>
 
 
 # Grouping variables & adding color
+
+```{r}
+#| echo: false
+dictionary <- tibble::tribble(
+  ~variable,    ~description,
+  "trt",        "Chemotherapy Treatment",
+  "age",        "Age (years)",
+  "marker",     "Marker Level (ng/mL)",
+  "stage",      "T Stage",
+  "grade",      "Tumor Grade",
+  "response",   "Tumor Response",
+  "death",      "Patient Died"
+)
+```
 
 ## Group variables
 
@@ -713,7 +652,14 @@ and that was only one table!
 
 
 
-# Almost there...
+
+# Add slide about:
+
+Removing or turning off parameters in `extras()`!!!
+
+
+
+
 
 ## `sumExtras` supports most `gtsummary` table types
 

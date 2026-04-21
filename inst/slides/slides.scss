@@ -112,3 +112,10 @@ code {
   color: black !important;
   background-color: lightgray;
 }
+
+.reveal .col-45-55 div.column:first-child {
+  width: 45%;
+}
+.reveal .col-45-55 div.column:not(:first-child) {
+  width: 55%;
+}
