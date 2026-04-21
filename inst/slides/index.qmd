@@ -405,11 +405,11 @@ dat |>
     by = trt,
     label = list(
       age ~ "Age FROM LABEL (years)"
-    #   marker ~ "Marker Level (ng/mL)",
-    #   stage ~ "T Stage",
-    #   grade ~ "Tumor Grade",
-    #   response ~ "Tumor Response",
-    #   death ~ "Patient Died"
+      # marker ~ "Marker Level (ng/mL)",
+      # stage ~ "T Stage",
+      # grade ~ "Tumor Grade",
+      # response ~ "Tumor Response",
+      # death ~ "Patient Died"
     )
   ) |>
   extras() |>
