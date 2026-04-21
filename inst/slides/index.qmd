@@ -609,7 +609,7 @@ and that was only one table!
 
 ```{r}
 #| eval: false
-#| code-line-numbers: "|2-8"
+#| code-line-numbers: "|2,5-8"
 extras(
   # gtsummary defaults:
   # Show the p-value column?
@@ -674,6 +674,41 @@ trial |>
 ```
 
 
+## Match gtsummary tables to gt tables
+
+If you use `gtsummary` and `gt`, `sumExtras` can help with that!
+
+:::: {.columns}
+
+::: {.column}
+
+```{r}
+trial |>
+  tbl_summary(
+    by = trt,
+    include = c(age, grade, marker)
+  ) |>
+  extras()
+```
+:::
+
+
+::: {.column}
+
+```{r}
+#| code-line-numbers: "|5"
+trial |>
+  select(trt, age, grade, marker) |>
+  head(10) |>
+  gt() |>
+  theme_gt_compact()
+```
+:::
+
+::::
+
+
+
 ## `sumExtras` supports most `gtsummary` tables
 
 with either partial or full features available.
@@ -684,6 +719,7 @@ with either partial or full features available.
 * `tbl_uvregression()`
 * `tbl_strata()`
 * `tbl_merge()`
+
 
 ## THANK YOU! 😄
 
