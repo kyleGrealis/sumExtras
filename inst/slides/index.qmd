@@ -67,7 +67,7 @@ gtsummary::trial
 ```{r}
 #| echo: true
 #| eval: true
-#| code-line-numbers: "|17"
+#| code-line-numbers: "|4,8|17"
 dat <- trial |>
   mutate(
     marker = case_when(
