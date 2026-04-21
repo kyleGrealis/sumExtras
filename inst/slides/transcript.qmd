@@ -151,12 +151,12 @@ Why? Again, the labels set in the label parameter always take priority.
 ## Use the dictionary with add_auto_labels part 2
 But we actually want the auto-labeling!
 [CLICK]
-We'll begin by commenting out the label parameter code
+We'll begin by commenting out many of the label parameter arguments
 so add auto labels can work as intended. 
-Notice the output table now has the DICT for grade originating from the dictionary object.
+Notice the output table now has "age from label" and 
+the DICT for grade originating from the dictionary object.
 [pause]
-If we look closely, age and marker have the label from the attributes we set on
-slides 19 & 20.
+If we look closely, marker has the attribute label that was set on slides 20.
 T stage and the last 3 variables retained the label attributes from the
 trial dataset that our dat dataset originated from.
 Here we have all 
