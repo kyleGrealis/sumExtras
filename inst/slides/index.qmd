@@ -108,7 +108,7 @@ dat |>
 
 ::: {.fragment}
 `use_jama_theme()` is a wrapper function for \
- `gtsummary::theme_gtsummary_compact("jama")`
+ `gtsummary::set_gtsummary_theme(theme_gtsummary_compact("jama"))`
 :::
 
 
@@ -271,12 +271,12 @@ Six lines converted to one!
 ::::
 
 
-# Labelling hierarchy
+# Labeling hierarchy
 
 ::: {.incremental}
-* Dataset label attributes
 * Using `gtsummary::tbl_*`'s `label` parameter
-* Using `sumExtras` auto-labelling
+* Dataset label attributes
+* Using `sumExtras` auto-labeling
 :::
 
 ## Default table without labels {.col-45-55}
@@ -374,6 +374,7 @@ will work all the same.
 
 ```{r}
 #| output-location: column
+#| code-line-numbers: "|14"
 dat |>
   tbl_summary(
     by = trt,
@@ -397,7 +398,7 @@ dat |>
 ## Use the `dictionary` with `add_auto_labels()` (part 2) {.col-45-55}
 
 ```{r}
-#| code-line-numbers: "|4-11"
+#| code-line-numbers: "|4-11,14"
 #| output-location: column
 dat |>
   tbl_summary(
@@ -416,7 +417,7 @@ dat |>
 ```
 
 ::: {.fragment}
-**Remember** the hierarchy: Attributes > `label` parameter > `dictionary`
+**Remember** the hierarchy: `label` parameter > attributes > `dictionary`
 :::
 
 
@@ -427,45 +428,36 @@ Set session (or persistent options):
 
 ```{r}
 #| echo: true
-#| eval: true
+#| eval: false
 options(
-  sumExtras.auto_labels = TRUE,
-  sumExtras.prefer_dictionary = TRUE
+  sumExtras.prefer_dictionary = TRUE,
+  sumExtras.auto_labels = TRUE
 )
 ```
 
 **Reset** the hierarchy: `dictionary` takes precedence!
 
 ::: {.incremental}
+* The `dictionary` will be the primary labeling method
 * No longer need to use the `add_auto_labels()` function
   * `extras()` will now add the labels!
-* The `dictionary` object will be found & used
 :::
 
-## Using `dictionary` and `options()`
+## Applying the `dictionary` {.col-45-55}
 
+<br>
 
-:::: {.columns}
-::: {.column width="45%"}
 ```{r}
-#| eval: false
+#| output-location: column
+options(
+  sumExtras.prefer_dictionary = TRUE,
+  sumExtras.auto_labels = TRUE
+)
+
 dat |>
   tbl_summary(by = trt) |>
   extras()
 ```
-
-:::
-
-::: {.column width="55%"}
-
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-:::
-::::
 
 
 # Grouping variables & adding color
@@ -484,12 +476,11 @@ dictionary <- tibble::tribble(
 )
 ```
 
-## Group variables
+## Group variables {.col-45-55}
 
-:::: {.columns}
-::: {.column width="45%"}
 ```{r}
-#| eval: false
+#| output-location: column
+#| code-line-numbers: "|12"
 dat |>
   tbl_summary(by = trt) |>
   extras() |>
@@ -503,40 +494,18 @@ dat |>
   ) |>
   add_group_styling()
 ```
+
 ::: {.fragment}
 `add_group_styling()` uses **bold** & *italics* by default and restores
 left-justified variable indentation.
 :::
 
-:::
 
-::: {.column width="55%"}
+## Add grouping colors {.col-45-55}
 
 ```{r}
-#| echo: false
-dat |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age:stage
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = grade:ttdeath
-  ) |>
-  add_group_styling()
-```
-:::
-::::
-
-
-## Add grouping colors
-
-:::: {.columns}
-::: {.column width="45%"}
-```{r}
-#| eval: false
+#| output-location: column
+#| code-line-numbers: "|13-15"
 dat |>
   tbl_summary(by = trt) |>
   extras() |>
@@ -558,29 +527,6 @@ dat |>
 **NOTE:** `add_group_colors()` CONVERTS the table to a `gt` table to apply the tweaks! Use this function as the *last* step in the pipeline.
 :::
 
-:::
-
-::: {.column width="55%"}
-
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age:stage
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = grade:ttdeath
-  ) |>
-  add_group_styling() |>
-  add_group_colors(color = c("#E1EAE2", "#FFF9E6"))
-```
-:::
-::::
-
 
 ## Reduced code!
 
@@ -588,6 +534,7 @@ dat |>
 ::: {.column}
 ```{r}
 #| eval: false
+#| code-line-numbers: "|4-11,13-18"
 dat |>
   tbl_summary(
     by = trt,
@@ -625,6 +572,7 @@ dat |>
 
 ```{r}
 #| eval: false
+#| code-line-numbers: "|3"
 dat |>
   tbl_summary(by = trt) |>
   extras() |>
@@ -651,17 +599,82 @@ and that was only one table!
 ::::
 
 
+## And this is what we built!
 
-
-# Add slide about:
-
-Removing or turning off parameters in `extras()`!!!
-
+![](img/final_table.png){fig-align="center"}
 
 
 
+## `extras()` parameters
 
-## `sumExtras` supports most `gtsummary` table types
+```{r}
+#| eval: false
+#| code-line-numbers: "|2-8"
+extras(
+  # gtsummary defaults:
+  # Show the p-value column?
+  pval = TRUE,        # or FALSE
+  # Show the Overall column?
+  overall = TRUE,     # or FALSE
+  # Position the Overall column last?
+  last = FALSE,       # or TRUE
+
+  # sumExtras options:
+  header = "",        # removes "Characteristic" header
+  symbol = "—",       # display value for clean_table()
+  .args = NULL,       # list override the default (next slide)
+  .add_p_args = NULL  # gtsummary::add_p() arguments
+)
+```
+
+::: {.fragment}
+`pval`, `overall`, and `last` reuse `gtsummary`'s defaults for:  
+* `add_p()`  
+* `add_overall()`
+:::
+
+
+
+## `extras()` using `.args` parameter
+
+Create reusable `extras()` arguments to override defaults:
+
+```{r}
+#| output-location: column
+#| code-line-numbers: "|1-5|2,4|9"
+extra_args <- list(
+  pval = FALSE,       # default was TRUE
+  overall = TRUE,
+  last = TRUE         # default was FALSE
+)
+
+trial |> 
+  tbl_summary(by = trt) |> 
+  extras(.args = extra_args)
+```
+
+
+## `extras()` using `.add_p_args`
+
+Create custom *p*-value testing & styling
+
+```{r}
+#| eval: false
+#| code-line-numbers: "|1-5|10"
+p_args <- list(
+  test = list(age ~ "t.test", marker ~ "t.test"),
+  pvalue_fun = ~ gtsummary::style_pvalue(
+    .x, digits = 2
+  )
+)
+
+trial |> 
+  tbl_summary(by = trt) |> 
+  extras(.add_p_args = p_args)
+```
+
+
+## `sumExtras` supports most `gtsummary` tables
 
 with either partial or full features available.
 
@@ -671,7 +684,6 @@ with either partial or full features available.
 * `tbl_uvregression()`
 * `tbl_strata()`
 * `tbl_merge()`
-* `tbl_cross()`
 
 ## THANK YOU! 😄
 
@@ -680,7 +692,7 @@ with either partial or full features available.
 
 **GitHub**: https://github.com/kyleGrealis
 
-**Email**: kyleGrealis@proton.me
+**Email**: kyle@kyleGrealis.com
 
 **Slides**: https://slides.kyleGrealis.com/sumExtras
 
