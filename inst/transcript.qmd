@@ -159,40 +159,128 @@ the DICT for grade originating from the dictionary object.
 If we look closely, marker has the attribute label that was set on slides 20.
 T stage and the last 3 variables retained the label attributes from the
 trial dataset that our dat dataset originated from.
-Here we have all 
+We now have all three methods shown on one table: explicit labeling, 
+attributes, then sumExtras dictionary objects.
 
-You'll notice that back here we set the variables with DICT to be very explicit, but you do not notice them here in the output. That is, again, because the label parameter takes priority.
+## Use the dictionary with add_auto_labels part 3
+sumExtras offers some session options you can set at the beginning of your
+table script or choose to include these in your Rprofile.
+This will reset the hierarchy. 
+[CLICK]
+The dictionary now takes precedence as the preferred or primary labeling method.
+[CLICK]
+And you no longer need to call the add auto labels function ONLY IF
+[CLICK]
+you use the extras function in the pipe. extras will find the dictionary
+in your session environment and apply the labels automatically.
 
-So how can we do this better? Well, first we can strip out the labels. We'll just comment them out here and then again, pass the add auto labels, and you will notice that the age attribute is maintained and the dictionary now appears for grade.
+## Applying the dictionary
+Kinda like magic, right? :)
+First we set the options before we create the tables
+Then just pipe to extras!
+You'll now notice that the output on the right has the new labeling hierarchy
+with DICT being displayed and nothing specifying attribute for age or marker.
+I promise this will be clearer to you as you use it.
+Or reach out and I will gladly give a hand.
 
-We can use the dictionary with the add auto labels function and set persistent options that maintain through this session. Or you can add this to your R profile if you find yourself frequently using the gtsummary in some extras package. This will reset the hierarchy, so the dictionary now takes precedence.
+## Grouping variables & adding color
+Let's add grouping for like variables. 
+The trial data has demographic and clinical measures
 
-Okay, we'll be the primary labeling method and you no longer need to use the add auto labels function extras will now add the labels for you. So how do we apply the dictionary? Well simply, so how do we apply our dictionary now? Well, we set our options and now just only pipe to extras. And you'll notice the output on the right.
+## Group variables
+We will use the gtsummary add variable group header and then pipe that to 
+[CLICK]
+add group styling. 
+And what you get right outta the box with this is
+[CLICK]
+bold and italicized grouping labels and it restores left justified variable indentation. 
+What does that mean?!
+Well, using add_variable group header without sumExtras' add group styling,
+variable labels are indented 2 places and are vertically aligned with
+the factor levels. 
+Add group styling removes that indent and restores left-justification.
+A minor tweak but, to me, adds value...
 
-All of the labels that we have in the dictionary have that DICT afterwards. And this again is to demonstrate what is the hierarchy. So let's add some grouping to our variables.
+## Add grouping colors
+Especially when we add group colors.
+[CLICK]
+Since we have 2 variable groupings, we can set a color for each group header.
+I chose to use each of the colors for the sumExtras logo. 
+The default color is a submission-worthy light gray, if you chose to omit the
+color parameter & argument.
+[CLICK]
+Just note that add group colors will convert the table to a gt table.
+So use this function as the last in your pipe, especially if you plan to add
+more gtsummary functions in the pipe. 
 
-We will use the gtsummary add variable group header and then just pipe that to add group styling. And what you get right outta the box with this is bold and italicized grouping labels and it restores left justified variable indentation. Well, what does that mean? Prior to using the ad group styling, this T stage would be in line with the factors here.
+## Reduced code
+OK, while building our table, we've greatly reduced the code.
+[CLICK]
+We've removed the need to write labels inside of the table summary function and
+we've removed these extra gtsummary functions as well. 
+And this was all done by just applying this one simple extras function.
+I hope you can see why I lead-in that this one line can be really powerful.
+Our code was cut in half and that was just only for one table!
 
-Um.
+## And this is what we built
+It's the same output that we were going for. 
+Less code, same result!
 
-We can also add group colors with the add group colors function, and you can use one or you can set a vector of colors that you would like to use. And this is depends on the number of grouping variables that you use. So here we have two groups and we use two specific colors. But do take note that when you use the ad group colors, this will convert the table to a GT table to apply these tweaks.
+## extras parameters
+Let's discuss the default parameters for extras.
+gtsummary defaults are used where applicable while adding in some sumExtras
+defaults as well.
+You can decide if you want to show the p-value, remove the header label,
+use the emdash for clean table or pass lists for your own extras overrides
+or p-value styling
+[CLICK]
+gtsummary defaults the overall column position in the first column.
+[CLICK]
+sumExtras retains all default parameter arguments for add_overall & add_p functions
 
-So this function should be used as the last step within your pipeline. Through this whole process, we've reduced the code. We've removed these labels specifically inside of the table summary function. We've removed these extra gtsummary functions as well. Uh, we applied the some extras clean table, and we've done it all by just applying this one simple extras function.
+## .arg parameter
+Here's how you can create reusable parameter overrides, if you wish.
+[CLICK]
+You can optionally create a list of default overrides for extras
+[CLICK]
+Let's set the p-value to false and last position to false
+[CLICK]
+And now set the .args parameter to use the extra args you've created.
+Notice the table now does not have the p-value column and the overall column
+is now in the far right location.
 
-Our code was cut in half and that was just only for one table, and we still get the same output that we were going for. So what are some other extra parameters that you can set? Well, within this we have some gtsummary Default for P value. True overall, true or last False. So the last argument is for where do we want to position the overall column.
+## .add_p_args
+We can do a similar modification to our p-values
+[CLICK]
+Create a p args list where
+the continuous variables age and marker use the t test
+and the p value output is styled to 2 digits
+[CLICK]
+Add that argument to the .add p args parameter within extras
 
-We can also set some, oh shit, this is bad.
+## Match gtsummary tables to gt tables
+If you use both gtsummary and gt in the same report, sumExtras
+has the
+[CLICK]
+theme_gt_compact function for gt tables.
+This allows you to achieve the same compact output from the use jama theme
+but for your gt tables!
 
-So what are some other parameters that we can set within the extras function? Well, gtsummary gives us some defaults. So for P values in the overall column, these are the native defaults. And the last is for where to position that overall column. So when we specify that last equals false, it will put that into the first column position.
+## sumExtras supports..
+Most of the gtsummary tables that you may use have either partial or Full feature
+support from sumExtras.
+Please check the documentation for both packages for more specifics, 
+or feel free to reach out to me if your tables require further customizations.
 
-Other, some extras options are, what do we want for the header? So you notice that we remove the characteristic from the header. Uh, we've replaced the zeros and NA values in the clean table function with this symbol for the M dash, and we can also pass a ARGs and p ARGs, which we will get to in the next slide.
+## Thank you
 
-But the P value overall and last parameters, those come directly from GT summaries, defaults for the add p and add overall functions. Extras can also use a dot ARGs parameter to create reusable default overrides. So for example, we're going to set a list of extra arguments here. So the P value and the position of the overall column are going to be overridden.
+Thank you so much for choosing to spend your time with me today. 
+I really appreciate it. 
+You can find sumExtras on CRAN or from my GitHub repo.
+The slides are live on my website: slides.kylegrealis.com/sumExtras
+Do you love it, do you hate it, is the documentation wonky? 
+You can email me at kyle@kyleGrealis.com and I look forward to any feedback
+you can provide! 
 
-Uh, the last equals true now places that overall column into the final position. And then we just take these extra arguments and pass them in the dot ARGs parameter position. We can do the same thing for P value styling. We can customize that using the dot add p ARGs. Okay, so again, we're going to create a list where we specify the test for the continuous variables.
-
-Age and a marker will be the T-test, and we're going to style them with two digits for the output. Again, passing inside the extras function, the dot add P ARGs PRS parameter, some extra supports. Most of the gtsummary tables that you may use with either partial or. Full features available, so please check the documentation for both packages for more specifics, or feel free to reach out to me.
-
-Thank you so much for choosing to spend your time with me today. I really appreciate it. You can find some extras on GitHub at.
-
-And thank you for spending your time with me today. You can find me on GitHub here or email me at kyle@kylegrlist.com. The slides are live and available right now at slides dot kyle gr list.com/some extras. And the package documentation can also be found@kylegrlist.com slash some extras. Thank you so much and enjoy the rest of your conference.
+And thank you for spending your time with me today and 
+enjoy the remainder of RMed 2026!
