@@ -420,7 +420,7 @@ trial |>
 ::: {.column}
 ```{r}
 #| eval: false
-#| code-line-numbers: "3-12,14-20"
+#| code-line-numbers: "4-12,14-20"
 trial |>
   tbl_summary(
     by = trt,
