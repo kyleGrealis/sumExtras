@@ -67,7 +67,7 @@ gtsummary::trial
 ```{r}
 #| echo: true
 #| eval: true
-#| code-line-numbers: "|4,8|17"
+#| code-line-numbers: "|4,8,17"
 dat <- trial |>
   mutate(
     marker = case_when(
@@ -100,6 +100,7 @@ dat |>
 
 ```{r}
 #| output-location: column
+# Use a compact theme
 sumExtras::use_jama_theme()
 
 dat |>
@@ -279,191 +280,16 @@ Six lines converted to one!
 * Using `sumExtras` auto-labeling
 :::
 
-## Default table without labels {.col-45-55}
 
-`gtsummary` reads attribute labels natively!
+## Creating a variable dictionary
 
-```{r}
-#| eval: true
-#| output-location: column
-# Set an explicit attribute label:
-attr(dat$age, "label") <-
-  "Age ATTRIBUTE"
-
-dat |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-
-::: {.fragment .smallest}
-`dat` was created from `trial`. `trial` had attributes, but using `mutate`
-earlier removed attributes from `dat$marker` and `dat$grade`.
-:::
-
-
-## The `gtsummary::tbl_*` labeling method
-
-```{r}
-#| eval: true
-#| output-location: column
-#| code-line-numbers: "|1-2|7-10"
-attr(dat$marker, "label") <-
-  "Marker ATTRIBUTE"
-
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      marker ~ "Marker LABEL",
-      stage ~ "Stage LABEL"
-    )
-  ) |>
-  extras()
-```
-
-Labels set in `tbl_*`'s `label` parameter **always** take priority!
-
-::: {.fragment .smallest}
-`dat$grade` still has no label because it doesn't have a label attribute
-*nor* was any label assigned within the `tbl_summary()` `label` parameter.
-:::
-
-
-## Creating a Variable Dictionary
-
-A dictionary object is a data frame with two columns:  
-* `variable`  
-* `description`
-
-<!-- Show the creation of the data dictionary object
-Highlight lines, then show the created object incrementally to the side -->
+A `dictionary` is a data frame with `variable` and `description` columns.
 
 :::: {.columns}
 ::: {.column width="55%"}
 ```{r}
 #| echo: true
 #| code-line-numbers: "|2"
-dictionary <- tibble::tribble(
-  ~variable,    ~description,
-  "trt",        "Chemotherapy Treatment",
-  "age",        "Age DICT",
-  "marker",     "Marker DICT",
-  "stage",      "Stage DICT",
-  "grade",      "Grade DICT",
-  "response",   "Response DICT",
-  "death",      "Patient Died DICT"
-)
-```
-:::
-::: {.column width="45%"}
-```{r}
-dictionary
-```
-:::
-::::
-
-::: {.incremental}
-::: {.callout-note .fragment}
-The column names are case-*in*sensitive. `variable`, `Variable`, and `VARIABLE`
-will work all the same.
-:::
-:::
-
-
-## Use the `dictionary` with `add_auto_labels()` {.col-45-55}
-
-```{r}
-#| output-location: column
-#| code-line-numbers: "|14"
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age LABEL",
-      marker ~ "Marker LABEL",
-      stage ~ "T Stage LABEL",
-      grade ~ "Grade LABEL",
-      response ~ "Response LABEL",
-      death ~ "Patient Died LABEL"
-    )
-  ) |>
-  extras() |>
-  add_auto_labels()
-```
-
-**Again**: Labels set in `tbl_*`'s `label` parameter **always** take priority!
-
-
-
-## Use the `dictionary` with `add_auto_labels()` (part 2) {.col-45-55}
-
-```{r}
-#| code-line-numbers: "|6-10,14"
-#| output-location: column
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age FROM LABEL (years)"
-      # marker ~ "Marker Level (ng/mL)",
-      # stage ~ "T Stage",
-      # grade ~ "Tumor Grade",
-      # response ~ "Tumor Response",
-      # death ~ "Patient Died"
-    )
-  ) |>
-  extras() |>
-  add_auto_labels()
-```
-
-::: {.fragment}
-**Remember** the hierarchy: `label` parameter > attributes > `dictionary`
-:::
-
-
-## Use the `dictionary` with `add_auto_labels()` (part 3)
-
-<br>
-Set session (or persistent options):
-
-```{r}
-#| echo: true
-#| eval: false
-options(
-  sumExtras.prefer_dictionary = TRUE,
-  sumExtras.auto_labels = TRUE
-)
-```
-
-**Reset** the hierarchy: `dictionary` takes precedence!
-
-::: {.incremental}
-* The `dictionary` will be the primary labeling method
-* No longer need to use the `add_auto_labels()` function
-  * `extras()` will now add the labels!
-:::
-
-## Applying the `dictionary` {.col-45-55}
-
-<br>
-
-```{r}
-#| output-location: column
-options(
-  sumExtras.prefer_dictionary = TRUE,
-  sumExtras.auto_labels = TRUE
-)
-
-dat |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-
-
-# Grouping variables & adding color
-
-```{r}
-#| echo: false
 dictionary <- tibble::tribble(
   ~variable,    ~description,
   "trt",        "Chemotherapy Treatment",
@@ -475,6 +301,92 @@ dictionary <- tibble::tribble(
   "death",      "Patient Died"
 )
 ```
+:::
+::: {.column width="45%"}
+```{r}
+dictionary
+```
+:::
+::::
+
+::: {.fragment}
+::: {.callout-note}
+Column names are case-*in*sensitive.
+:::
+:::
+
+
+## Using `add_auto_labels()` {.col-45-55}
+
+With a `dictionary` in scope, labels are applied automatically.
+
+```{r}
+#| output-location: column
+#| code-line-numbers: "|1-3|1-3,8"
+options(
+  sumExtras.prefer_dictionary = TRUE
+)
+
+dat |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_auto_labels()
+```
+
+::: {.fragment}
+No more writing `label = list(...)` for every table!
+:::
+
+
+## Streamline with options
+
+<br>
+
+:::: {.columns}
+
+::: {.column width="48%"}
+
+```{r}
+#| code-line-numbers: "|1-4|2,8,9"
+#| eval: false
+options(
+  sumExtras.auto_labels = TRUE,
+  sumExtras.prefer_dictionary = TRUE
+)
+
+dat |>
+  tbl_summary(by = trt) |>
+  extras() #|> 
+  # add_auto_labels()
+```
+
+::: {.fragment .smallest}
+**Label hierarchy:** `label` parameter > dictionary > attributes.  
+Without `prefer_dictionary`: `label` > attributes > dictionary.
+:::
+
+:::
+
+::: {.column width="52%"}
+
+```{r}
+#| echo: false
+options(
+  sumExtras.auto_labels = TRUE,
+  sumExtras.prefer_dictionary = TRUE
+)
+
+dat |>
+  tbl_summary(by = trt) |>
+  extras()
+```
+:::
+
+::::
+
+
+
+# Grouping variables & adding color
 
 ## Group variables {.col-45-55}
 
