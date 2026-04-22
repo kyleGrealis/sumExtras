@@ -1,6 +1,8 @@
 
 ## Title
- Good afternoon, RMed. My name is Kyle Grealis, and today I am presenting the sumExtras package for streamlining table workflows in clinical research with R.
+ Good afternoon, RMed. My name is Kyle Grealis, and today I will show
+how easy it is to use the sumExtras package for streamlining table 
+workflows in clinical research
 
 ## Intro
 sumExtras is a R CRAN package created to enhance my workflows with gtsummary. 
