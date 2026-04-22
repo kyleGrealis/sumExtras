@@ -453,7 +453,7 @@ trial |>
   extras()
 ```
 
-Seventeen lines converted to one!
+Sixteen lines converted to one!
 
 :::
 
