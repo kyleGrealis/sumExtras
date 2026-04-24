@@ -28,30 +28,60 @@ options(
 > **sumExtras**: "gt**sum**mary table **Extras**"
 
 
-## The plan
+## What we'll learn:
+
 ::: {.incremental}
-+ Apply a JAMA-ready theme
-+ Customize missing values with `clean_table()`
-+ One-line table formatting with `extras()`
-+ Auto-label variables with `add_auto_labels()`
-  + Create a variable dictionary
-  + Set package options
-+ Add variable group headers
-+ Style and color group rows
-+ Put it all together in one pipeline
++ where are the slides? 😁
++ `gtsummary` basics
++ Table theming
++ Variable labeling
++ Address missing values
++ The `extras()` function
++ Variable grouping & styling
 :::
 
 
-## What we'll build
+## Go from this... 
+
+```{r}
+#| echo: false
+trial |>
+  tbl_summary(by = trt)
+```
+
+
+## To this!
 
 ![](img/final_table.png){fig-align="center"}
 
 
-## Creating a summary table
+## And the slides are here:
 
-Results from a simulated study of two chemotherapy agents.
+https://slides.kyleGrealis.com/sumExtras
 
-A dataset containing the baseline characteristics of 200 patients who received Drug A or Drug B. Dataset also contains the outcome of tumor response to the treatment.
+The docs:
+https://www.kyleGrealis.com/sumExtras
+
+How to install:
+
+```{r}
+#| eval: false
+install.packages("sumExtras")
+pak::pak("sumExtras")
+pak::pak("kyleGrealis/sumExtras")
+
+# Watch me break things:
+remotes::install_github("kyleGrealis/sumExtras@dev")
+```
+
+
+## `gtsummary::trial` dataset
+
+Results from a simulated study of two chemotherapy agents
+
+A dataset containing the baseline characteristics of 200 patients who received
+Drug A or Drug B. Dataset also contains the outcome of tumor response to the
+treatment.
 
 ```{r}
 #| echo: true
@@ -59,16 +89,100 @@ A dataset containing the baseline characteristics of 200 patients who received D
 gtsummary::trial
 ```
 
-##
 
-Most times, we're faced with datasets with missing values.  
-Let's `mutate` in some `0` and `NA` values.
+## `gtsummary` basics (part 1)
+
+Create a stratified table using the `by` parameter
+
+```{r}
+#| output-location: column
+trial |> 
+  gtsummary::tbl_summary(by = trt)
+```
+
+
+## `gtsummary` basics (part 2)
+
+Setting a compact theme
+
+```{r}
+#| output-location: column
+#| code-line-numbers: "|2"
+# Set once at the top of your table script
+sumExtras::use_jama_theme()
+
+trial |> 
+  tbl_summary(by = trt)
+```
+
+::: {.incremental .smaller}
+* `use_jama_theme()` is a wrapper function for \
+ `gtsummary::set_gtsummary_theme(theme_gtsummary_compact("jama"))`
+* If your data contains label attributes, `gtsummary` will print
+those automatically,  
+as in the table above
+:::
+
+
+## `gtsummary` basics (part 3)
+
+Pass a list of labels
+
+```{r}
+#| output-location: column
+#| code-line-numbers: "|4-12"
+trial |> 
+  tbl_summary(
+    by = trt,
+    label = list(
+      age ~ "Age (years)",
+      marker ~ "Marker Level (ng/mL)",
+      stage ~ "T Stage",
+      grade ~ "Tumor Grade",
+      response ~ "Tumor Response",
+      death ~ "Patient Died",
+      ttdeath ~ "Month to Death/Censor"
+    )
+  )
+```
+
+## Add labels, *p*-values, and other goodies
+![](img/table-with-goodies-1.png){width=85%}  
+
+This is more like what I want...
+
+## Add labels, *p*-values, and other goodies
+![](img/table-with-goodies-2.png){width=85%}  
+
+Removed "Characteristic" from variable heading
+
+## Add labels, *p*-values, and other goodies
+![](img/table-with-goodies-3.png){width=85%}  
+
+Added *p*-values
+
+## Add labels, *p*-values, and other goodies
+![](img/table-with-goodies-4.png){width=85%}  
+
+Bold labels & significant *p*-values
+
+## Add labels, *p*-values, and other goodies
+![](img/table-with-goodies-5.png){width=85%}  
+
+Added "Overall" column
+
+## Add labels, *p*-values, and other goodies
+![](img/table-with-goodies-6.png){width=85%}  
+
+Clean up missing values
+
+
+## Simulate missing values
 
 ```{r}
 #| echo: true
-#| eval: true
-#| code-line-numbers: "|17"
-dat <- trial |>
+#| code-line-numbers: "|4,8,18,22"
+trial <- trial |>
   mutate(
     marker = case_when(
       trt == "Drug B" ~ 0,
@@ -79,77 +193,59 @@ dat <- trial |>
       .default = grade
     )
   )
-head(dat, 5)
+
+head(trial)
 ```
 
-## Initial `gtsummary` table
 
-:::: {.columns}
-::: {.column}
+
+## `gtsummary` basics (part 4)
+
+Add *p*-values, bold labels, and introducing `clean_table()`
+
 ```{r}
-#| eval: false
-dat |>
-  tbl_summary(by = trt)
+#| output-location: column
+#| code-line-numbers: "|14|15|16|17|18|19"
+trial |> 
+  tbl_summary(
+    by = trt,
+    label = list(
+      age ~ "Age (years)",
+      marker ~ "Marker Level (ng/mL)",
+      stage ~ "T Stage",
+      grade ~ "Tumor Grade",
+      response ~ "Tumor Response",
+      death ~ "Patient Died",
+      ttdeath ~ "Month to Death/Censor"
+    )
+  ) |> 
+  modify_header(label = "") |>
+  bold_labels() |>
+  add_p() |>
+  bold_p() |>
+  add_overall() |> 
+  sumExtras::clean_table()
 ```
+
+
+
+## `clean_table()`
+
+![](img/tbl_with_zeros.png){width="45%"}
+
+**THE GOAL:**
+
++ Draw attention to complete data.
+
 ::: {.fragment}
-Oh no! This table seems to run off the page!
++ Replace missingness patterns with an emdash (`—`).
 :::
-
-:::
-
-::: {.column}
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(by = trt)
-```
-:::
-::::
-
-
-## Setting a theme
-
-Use `sumExtras::use_jama_theme()` for a more compact table.
-
-::: {.fragment}
-`use_jama_theme()` is just a wrapper function for `gtsummary::theme_gtsummary_compact("jama")`
-:::
-
-<br>
-
-:::: {.columns}
-::: {.column}
-```{r}
-#| eval: false
-sumExtras::use_jama_theme()
-
-dat |>
-  tbl_summary(by = trt)
-```
-:::
-
-::: {.column}
-```{r}
-#| echo: false
-use_jama_theme()
-dat |>
-  tbl_summary(by = trt)
-```
-:::
-::::
-
-
-## Cleaning the table
-
-![](img/tbl_with_zeros.png){width="50%"}
-
-Draw attention to complete, non-`NA` values with `clean_table()` by replacihng `0 (0.00, 0.00)`, `0 (NA%)`, and other similar values with an emdash (`—`).
 
 ## Cleaning the table
 
 ```{r}
 #| eval: false
-dat |>
+trial |>
   tbl_summary(by = trt) |>
   clean_table()
 ```
@@ -159,9 +255,19 @@ dat |>
 Without `clean_table()`
 ```{r}
 #| echo: false
-use_jama_theme()
-dat |>
-  tbl_summary(by = trt)
+trial |>
+  tbl_summary(
+    by = trt,
+    label = list(
+      age ~ "Age (years)",
+      marker ~ "Marker Level (ng/mL)",
+      stage ~ "T Stage",
+      grade ~ "Tumor Grade",
+      response ~ "Tumor Response",
+      death ~ "Patient Died",
+      ttdeath ~ "Month to Death/Censor"
+    )
+  )
 ```
 :::
 
@@ -169,176 +275,42 @@ dat |>
 With `clean_table()`
 ```{r}
 #| echo: false
-use_jama_theme()
-dat |>
-  tbl_summary(by = trt) |>
+trial |>
+  tbl_summary(
+    by = trt,
+    label = list(
+      age ~ "Age (years)",
+      marker ~ "Marker Level (ng/mL)",
+      stage ~ "T Stage",
+      grade ~ "Tumor Grade",
+      response ~ "Tumor Response",
+      death ~ "Patient Died",
+      ttdeath ~ "Month to Death/Censor"
+    )
+  ) |> 
   clean_table()
 ```
 :::
 ::::
 
 
-## Adding labels, *p*-values, and other goodies
+# Reusable labeling
 
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age at Enrollment (years)",
-      marker ~ "Marker Level (ng/mL)",
-      stage ~ "T Stage",
-      grade ~ "Tumor Grade",
-      response ~ "Tumor Response",
-      death ~ "Patient Died"
-    )
-  ) |>
-  modify_header(label = "") |>
-  bold_labels() |>
-  add_p() |>
-  bold_p() |>
-  add_overall() |>
-  clean_table()
-```
-
-::: {.incremental .smallest}
-* Removed "Characteristic" from variable heading
-* Added *p*-values
-* Bold labels & significant *p*-values
-* Added "Overall" column
-* Applied `clean_table()`
+::: {.incremental}
+* Create a variable `dictionary` object
+* Use `sumExtras` auto-labeling
 :::
 
 
-## Adding labels, *p*-values, and other goodies
+## Creating a variable dictionary
 
-:::: {.columns}
-::: {.column}
-```{r}
-#| eval: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age at Enrollment (years)",
-      marker ~ "Marker Level (ng/mL)",
-      stage ~ "T Stage",
-      grade ~ "Tumor Grade",
-      response ~ "Tumor Response",
-      death ~ "Patient Died"
-    )
-  ) |>
-  modify_header(label = "") |>
-  bold_labels() |>
-  add_p() |>
-  bold_p() |>
-  add_overall() |>
-  clean_table()
-```
-:::
-
-::: {.column}
-```{r}
-#| eval: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age at Enrollment (years)",
-      marker ~ "Marker Level (ng/mL)",
-      stage ~ "T Stage",
-      grade ~ "Tumor Grade",
-      response ~ "Tumor Response",
-      death ~ "Patient Died"
-    )
-  ) |>
-  extras()
-```
-:::{.fragment}
-Six lines converted to one!
-:::
-
-:::
-
-::::
-
-
-# Adding labels
-
-## Default table without labels
-
-`gtsummary` reads attribute labels natively!
-
-:::: {.columns}
-::: {.column width="45%"}
-```{r}
-#| eval: false
-# Set an explicit attribute label:
-attr(dat$age, "label") <-
-  "Age FROM ATTRIBUTE (years)"
-
-dat |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-
-::: {.fragment .smaller}
-`dat` was created from `trial`. `trial` had attributes, but using `mutate`
-earlier removed attributes from `dat$marker` and `dat$grade`.
-:::
-
-:::
-
-::: {.column width="55%"}
-
-```{r}
-#| echo: false
-attr(dat$age, "label") <- "Age FROM ATTRIBUTE (years)"
-dat |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-:::
-::::
-
-
-## The `gtsummary::tbl_*` labeling method
-
-Declare the variables labels within the `tbl_*` function:
-
-```{r}
-#| eval: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age at Enrollment (years)",
-      marker ~ "Marker Level (ng/mL)",
-      stage ~ "T Stage",
-      grade ~ "Tumor Grade",
-      response ~ "Tumor Response",
-      death ~ "Patient Died"
-    )
-  ) |>
-  extras()
-```
-
-
-## Creating a Variable Dictionary
-
-A dictionary object is a data frame with two columns:  
-* `variable`  
-* `description`
-
-<!-- Show the creation of the data dictionary object
-Highlight lines, then show the created object incrementally to the side -->
+A `dictionary` is a data frame with `variable` and `description` columns.
 
 :::: {.columns}
 ::: {.column width="55%"}
 ```{r}
 #| echo: true
-#| code-line-numbers: "|1|2"
+#| code-line-numbers: "|2"
 dictionary <- tibble::tribble(
   ~variable,    ~description,
   "trt",        "Chemotherapy Treatment",
@@ -351,277 +323,105 @@ dictionary <- tibble::tribble(
 )
 ```
 :::
-::: {.column width="45%" .fragment}
+::: {.column width="45%"}
 ```{r}
 dictionary
 ```
 :::
 ::::
 
-::: {.incremental}
-::: {.callout-note .fragment}
-The column names are case-*in*sensitive. `variable`, `Variable`, and `VARIABLE`
-will work all the same.
-:::
+::: {.fragment}
+With a `dictionary` in scope, labels can be applied automatically.
 :::
 
 
-## Use the `dictionary` with `add_auto_labels()`
-
-The `dictionary` is found by `sumExtras` but manual labelling inside the
-`tbl_*` function **always** wins!
-
-:::: {.columns}
-::: {.column width="45%"}
-```{r}
-#| eval: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age FROM LABEL (years)",
-      marker ~ "Marker Level LABEL (ng/mL)",
-      stage ~ "T Stage LABEL",
-      grade ~ "Tumor Grade LABEL",
-      response ~ "Tumor Response LABEL",
-      death ~ "Patient Died LABEL"
-    )
-  ) |>
-  extras() |>
-  add_auto_labels()
-```
-:::
-
-::: {.column width="55%"}
+## Using `add_auto_labels()`
 
 ```{r}
-#| echo: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      age ~ "Age FROM LABEL (years)",
-      marker ~ "Marker Level LABEL (ng/mL)",
-      stage ~ "T Stage LABEL",
-      grade ~ "Tumor Grade LABEL",
-      response ~ "Tumor Response LABEL",
-      death ~ "Patient Died LABEL"
-    )
-  ) |>
-  extras() |>
-  add_auto_labels()
-```
-:::
-::::
+#| output-location: column
+#| code-line-numbers: "|1-3|8-16|24"
+options(
+  sumExtras.prefer_dictionary = TRUE
+)
 
-
-## Use the `dictionary` with `add_auto_labels()` (part 2)
-
-Remove the manual labels and use the `dictionary`.
-
-:::: {.columns}
-::: {.column width="45%"}
-```{r}
-#| eval: false
-dat |>
+trial |>
   tbl_summary(
     by = trt,
     # label = list(
-    #   age ~ "Age FROM LABEL (years)",
+    #   age ~ "Age (years)",
     #   marker ~ "Marker Level (ng/mL)",
     #   stage ~ "T Stage",
     #   grade ~ "Tumor Grade",
     #   response ~ "Tumor Response",
-    #   death ~ "Patient Died"
+    #   death ~ "Patient Died",
+    #   ttdeath ~ "Month to Death/Censor"
     # )
-  ) |>
-  extras() |>
-  add_auto_labels(
-    dictionary = dictionary
-  )
+  ) |> 
+  modify_header(label = "") |>
+  bold_labels() |>
+  add_p() |>
+  bold_p() |>
+  add_overall() |> 
+  clean_table() |> 
+  add_auto_labels()
 ```
 
-::: {.fragment}
-UH OH! Where are my `dictionary` labels??
-:::
 
-:::
+## Reduce the code
 
-::: {.column width="55%"}
+No more writing `label = list(...)` for every table!
 
 ```{r}
-#| echo: false
-dat |>
-  tbl_summary(
-    by = trt,
-    label = list(
-      # age ~ "Age FROM LABEL (years)",
-      marker ~ "Marker Level (ng/mL)",
-      stage ~ "T Stage",
-      grade ~ "Tumor Grade",
-      response ~ "Tumor Response",
-      death ~ "Patient Died"
-    )
-  ) |>
-  extras() |>
-  add_auto_labels(dictionary = dictionary)
+#| output-location: column
+options(
+  sumExtras.prefer_dictionary = TRUE
+)
+
+trial |>
+  tbl_summary(by = trt) |> 
+  modify_header(label = "") |>
+  bold_labels() |>
+  add_p() |>
+  bold_p() |>
+  add_overall() |> 
+  clean_table() |> 
+  add_auto_labels()
 ```
-:::
-::::
 
 
-## Use the `dictionary` with `add_auto_labels()` (part 3)
+## Reduce the code some more: 
 
-<br>
-Set session (or persistent options):
+Introducing `extras()`
 
 ```{r}
-#| echo: true
-#| eval: true
+#| output-location: column
+#| code-line-numbers: "|2|8-14|2,15"
 options(
   sumExtras.auto_labels = TRUE,
   sumExtras.prefer_dictionary = TRUE
 )
-```
 
-::: {.incremental}
-* No longer need to use the `add_auto_labels()` function
-  * `extras()` will now add the labels!
-* The `dictionary` object will be found & used
-:::
-
-## Using `dictionary` and `options()`
-
-:::: {.columns}
-::: {.column width="45%"}
-```{r}
-#| eval: false
-dat |>
-  tbl_summary(by = trt) |>
+trial |>
+  tbl_summary(by = trt) |> 
+  # modify_header(label = "") |>
+  # bold_labels() |>
+  # add_p() |>
+  # bold_p() |>
+  # add_overall() |> 
+  # clean_table() |> 
+  # add_auto_labels()
   extras()
 ```
 
-:::
 
-::: {.column width="55%"}
-
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(by = trt) |>
-  extras()
-```
-:::
-::::
-
-
-# Grouping variables & adding color
-
-## Group variables
-
-:::: {.columns}
-::: {.column width="45%"}
-```{r}
-#| eval: false
-dat |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age:stage
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = grade:ttdeath
-  ) |>
-  add_group_styling()
-```
-::: {.fragment}
-`add_group_styling()` uses **bold** & *italics* by default and restores
-left-justified variable indentation.
-:::
-
-:::
-
-::: {.column width="55%"}
-
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age:stage
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = grade:ttdeath
-  ) |>
-  add_group_styling()
-```
-:::
-::::
-
-
-## Add grouping colors
-
-:::: {.columns}
-::: {.column width="45%"}
-```{r}
-#| eval: false
-dat |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age:stage
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = grade:ttdeath
-  ) |>
-  add_group_styling() |>
-  add_group_colors(
-    color = c("#E3F2FD", "#FFF9E6")
-  )
-```
-
-::: {.fragment}
-**NOTE:** `add_group_colors()` CONVERTS the table to a `gt` table to apply the tweaks! Use this function as the *last* step in the pipeline.
-:::
-
-:::
-
-::: {.column width="55%"}
-
-```{r}
-#| echo: false
-dat |>
-  tbl_summary(by = trt) |>
-  extras() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age:stage
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = grade:ttdeath
-  ) |>
-  add_group_styling() |>
-  add_group_colors(color = c("#E3F2FD", "#FFF9E6"))
-```
-:::
-::::
-
-
-## Reduced code!
+## Code comparison
 
 :::: {.columns}
 ::: {.column}
 ```{r}
 #| eval: false
-dat |>
+#| code-line-numbers: "4-12,14-20"
+trial |>
   tbl_summary(
     by = trt,
     label = list(
@@ -630,35 +430,48 @@ dat |>
       stage ~ "T Stage",
       grade ~ "Tumor Grade",
       response ~ "Tumor Response",
-      death ~ "Patient Died"
+      death ~ "Patient Died",
+      ttdeath ~ "Month to Death/Censor"
     )
-  ) |>
+  ) |> 
   modify_header(label = "") |>
   bold_labels() |>
   add_p() |>
   bold_p() |>
-  add_overall() |>
-  clean_table() |>
-  add_variable_group_header(
-    header = "Demographics",
-    variables = age:stage
-  ) |>
-  add_variable_group_header(
-    header = "Clinical Measures",
-    variables = grade:ttdeath
-  ) |>
-  add_group_styling() |>
-  add_group_colors(
-    color = c("#E3F2FD", "#FFF9E6")
-  )
+  add_overall() |> 
+  clean_table() |> 
+  add_auto_labels()
 ```
 :::
 
 ::: {.column}
-
 ```{r}
 #| eval: false
-dat |>
+#| code-line-numbers: "3"
+trial |>
+  tbl_summary(by = trt) |> 
+  extras()
+```
+
+Sixteen lines converted to one!
+
+:::
+
+::::
+
+:::{.fragment}
+Not including the `options()` and `dictionary` 😉
+:::
+
+
+# Variable grouping & adding color
+
+## Variable grouping {.col-45-55}
+
+```{r}
+#| output-location: column
+#| code-line-numbers: "|12"
+trial |>
   tbl_summary(by = trt) |>
   extras() |>
   add_variable_group_header(
@@ -669,25 +482,183 @@ dat |>
     header = "Clinical Measures",
     variables = grade:ttdeath
   ) |>
-  add_group_styling() |>
-  add_group_colors(
-    color = c("#E3F2FD", "#FFF9E6")
-  )
+  sumExtras::add_group_styling()
 ```
-::: {.fragment}
-We just cut our code **in half**... 
-and that was only one table!
+
+::: {.incremental}
++ **bold** & *italic* group headers 
++ restores left-justified variable indentation
 :::
 
+
+## Add gray group background {.col-45-55}
+
+```{r}
+#| output-location: column
+#| code-line-numbers: "|13"
+trial |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Demographics",
+    variables = age:stage
+  ) |>
+  add_variable_group_header(
+    header = "Clinical Measures",
+    variables = grade:ttdeath
+  ) |>
+  sumExtras::add_group_styling() |>
+  sumExtras::add_group_colors()
+```
+
+
+## Add color group background {.col-45-55}
+
+```{r}
+#| output-location: column
+#| code-line-numbers: "|13-15"
+trial |>
+  tbl_summary(by = trt) |>
+  extras() |>
+  add_variable_group_header(
+    header = "Demographics",
+    variables = age:stage
+  ) |>
+  add_variable_group_header(
+    header = "Clinical Measures",
+    variables = grade:ttdeath
+  ) |>
+  sumExtras::add_group_styling() |>
+  sumExtras::add_group_colors(
+    color = c("#E1EAE2", "#FFF9E6")
+  )
+```
+
+::: {.fragment}
+**NOTE:** `add_group_colors()` CONVERTS the table to a `gt` table to apply the tweaks! Use this function as the *last* step in the pipeline.
+:::
+
+
+## And this is what we built!
+
+![](img/final_table.png){fig-align="center"}
+
+
+# Extra `extras()`!!!
+
+What if you don't want the defaults?
+
+## `extras()` parameters
+
+```{r}
+#| eval: false
+#| code-line-numbers: "|2|3|4|5|6|7-8"
+extras(
+  pval = TRUE,        # or FALSE
+  overall = TRUE,     # or FALSE
+  last = FALSE,       # or TRUE; gtsummary::add_overall() default
+  header = "",        # removes "Characteristic" header
+  symbol = "—",       # display value for clean_table()
+  .args = NULL,       # list override the default (next slide)
+  .add_p_args = NULL  # gtsummary::add_p() arguments
+)
+```
+
+## Overrides
+
+```{r}
+#| eval: false
+#| code-line-numbers: "|1-2|4-5|7-8|10-11|13-14"
+# Remove p-values
+extras(pval = FALSE)
+
+# Remove Overall column
+extras(overall = FALSE)
+
+# Move Overall column to right-most column
+extras(last = TRUE)
+
+# Change "Characteristic" header
+extras(header = "Variables")
+
+# Use an emoji for clean_table()
+extras(symbol = "🤨")
+```
+
+
+## `extras()` using `.args` parameter
+
+Create reusable `extras()` arguments to override defaults:
+
+```{r}
+#| output-location: column
+#| code-line-numbers: "|1-5|1-5,9"
+extra_args <- list(
+  pval = FALSE,
+  last = TRUE,
+  symbol = "🤨"
+)
+
+trial |> 
+  tbl_summary(by = trt) |> 
+  extras(.args = extra_args)
+```
+
+
+## `extras()` using `.add_p_args`
+
+Create custom *p*-value testing & styling
+
+```{r}
+#| eval: false
+#| code-line-numbers: "|1-5|10"
+p_args <- list(
+  test = list(age ~ "t.test", marker ~ "t.test"),
+  pvalue_fun = ~ gtsummary::style_pvalue(
+    .x, digits = 2
+  )
+)
+
+trial |> 
+  tbl_summary(by = trt) |> 
+  extras(.add_p_args = p_args)
+```
+
+
+## Match gtsummary tables to gt tables
+
+:::: {.columns}
+
+::: {.column}
+
+```{r}
+trial |>
+  tbl_summary(
+    by = trt,
+    include = c(age, grade, marker)
+  ) |>
+  extras()
+```
+:::
+
+
+::: {.column}
+
+```{r}
+#| code-line-numbers: "|5"
+trial |>
+  select(trt, age, grade, marker) |>
+  head(10) |>
+  gt() |>
+  theme_gt_compact()
+```
 :::
 
 ::::
 
 
 
-# Almost there...
-
-## `sumExtras` supports most `gtsummary` table types
+## `sumExtras` supports most `gtsummary` tables
 
 with either partial or full features available.
 
@@ -697,7 +668,7 @@ with either partial or full features available.
 * `tbl_uvregression()`
 * `tbl_strata()`
 * `tbl_merge()`
-* `tbl_cross()`
+
 
 ## THANK YOU! 😄
 
@@ -706,7 +677,7 @@ with either partial or full features available.
 
 **GitHub**: https://github.com/kyleGrealis
 
-**Email**: kyleGrealis@proton.me
+**Email**: kyle@kyleGrealis.com
 
 **Slides**: https://slides.kyleGrealis.com/sumExtras
 
@@ -715,37 +686,3 @@ with either partial or full features available.
 
 ![](img/kyle.jpg){.styled-image .absolute bottom="30%" right="1%" height="auto" width="190"}
 
-
-<!-- SLIDE OUTLINE
-1. INTRO: Show verbose gtsummary-only code (the "before")
-   - tbl_summary(by=trt) |> add_overall() |> add_p() |> bold_labels() |>
-     bold_p() |> modify_header(...) |> modify_table_body(...)
-   - Preview the final sumExtras version we're building toward
-
-2. THEME: use_jama_theme() before/after comparison
-   - Show default gtsummary output vs JAMA-themed output
-
-3. CLEAN TABLE: clean_table() for missing values
-   - Show table with ugly NA/0 patterns, then pipe on clean_table()
-
-4. EXTRAS: extras() replaces repeated boilerplate
-   - Show how one call replaces add_overall, add_p, bold_labels, bold_p,
-     modify_header, clean_table
-   - Mention key arguments: pval, overall, last, header, symbol
-
-5. AUTO LABELS: add_auto_labels() with dictionary
-   - Show dictionary creation (already built above)
-   - Demonstrate label priority: manual > attributes > dictionary
-   - Show package options: sumExtras.auto_labels, sumExtras.prefer_dictionary
-
-6. GROUP HEADERS: add_variable_group_header()
-   - Add grouping to organize variables in the table
-
-7. GROUP STYLING & COLORS: add_group_styling() + add_group_colors()
-   - Style group rows, add color — visual payoff
-   - add_group_colors() must be last (converts to gt)
-
-8. OUTRO: Full pipeline side-by-side
-   - Verbose gtsummary code vs clean sumExtras pipeline
-   - Circle back to the "before" from slide 1
--->
