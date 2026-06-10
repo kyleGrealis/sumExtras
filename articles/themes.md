@@ -1,6 +1,7 @@
 # Themes
 
 ``` r
+
 library(sumExtras)
 library(gtsummary)
 library(gt)
@@ -15,6 +16,7 @@ tightens font sizes, and produces tables suited for publication or
 reports.
 
 ``` r
+
 use_jama_theme()
 
 trial |>
@@ -32,6 +34,7 @@ To reset back to the default
 [gtsummary](https://github.com/ddsjoberg/gtsummary) theme:
 
 ``` r
+
 gtsummary::reset_gtsummary_theme()
 ```
 
@@ -47,6 +50,7 @@ tables.
 #### Default gt
 
 ``` r
+
 trial |>
   select(trt, age, grade) |>
   head(10) |>
@@ -56,6 +60,7 @@ trial |>
 #### With theme_gt_compact()
 
 ``` r
+
 trial |>
   select(trt, age, grade) |>
   head(10) |>
@@ -92,6 +97,7 @@ trial |>
 You can layer additional [gt](https://gt.rstudio.com) styling on top:
 
 ``` r
+
 trial |>
   dplyr::select(trt, age, grade, marker) |>
   head(8) |>

@@ -1,6 +1,7 @@
 # Automatic Variable Labeling
 
 ``` r
+
 library(sumExtras)
 library(gtsummary)
 library(dplyr)
@@ -23,6 +24,7 @@ variable names) and `description` (the labels you want displayed).
 Column names are case-insensitive.
 
 ``` r
+
 dictionary <- tibble::tribble(
   ~variable,    ~description,
   "trt",        "Chemotherapy Treatment",
@@ -55,6 +57,7 @@ of your analysis script.
 ### Pass the Dictionary Explicitly
 
 ``` r
+
 trial |>
   tbl_summary(by = trt, include = c(age, grade, marker)) |>
   extras() |> 
@@ -70,6 +73,7 @@ If a `dictionary` object exists in your environment,
 finds it without you passing it:
 
 ``` r
+
 # dictionary already exists from above
 trial |>
   tbl_summary(by = trt, include = c(age, stage, response)) |>
@@ -88,6 +92,7 @@ or manual assignment),
 reads those directly:
 
 ``` r
+
 labeled_trial <- trial
 attr(labeled_trial$age, "label") <- "Patient Age at Baseline"
 attr(labeled_trial$marker, "label") <- "Biomarker Concentration (ng/mL)"
@@ -107,6 +112,7 @@ Labels set via `label = list(...)` in
 always take priority over dictionary or attribute labels:
 
 ``` r
+
 trial |>
   tbl_summary(
     by = trt,
@@ -126,6 +132,7 @@ Works with
 the same way:
 
 ``` r
+
 lm(marker ~ age + grade + stage, data = trial) |>
   tbl_regression() |>
   add_auto_labels()
@@ -154,6 +161,7 @@ tables. See
 for details.
 
 ``` r
+
 trial_both <- trial
 attr(trial_both$age, "label") <- "Age from Attribute"
 
@@ -179,6 +187,7 @@ calling
 entirely. Set this once per session (or put it in your `.Rprofile`):
 
 ``` r
+
 options(sumExtras.auto_labels = TRUE)
 ```
 
@@ -187,6 +196,7 @@ Now every
 call picks up the dictionary automatically:
 
 ``` r
+
 dictionary <- tibble::tribble(
   ~variable,    ~description,
   "age",        "Age at Enrollment (years)",

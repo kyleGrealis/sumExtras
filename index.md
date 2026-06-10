@@ -24,12 +24,14 @@ theming.
 ### CRAN
 
 ``` r
+
 install.packages("sumExtras")
 ```
 
 ### Development version
 
 ``` r
+
 # install.packages("pak")
 pak::pak("kyleGrealis/sumExtras")
 ```
@@ -37,6 +39,7 @@ pak::pak("kyleGrealis/sumExtras")
 ## Quick Start
 
 ``` r
+
 library(sumExtras)
 library(gtsummary)
 ```

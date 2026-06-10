@@ -1,6 +1,7 @@
 # Table Styling and Formatting
 
 ``` r
+
 library(sumExtras)
 library(gtsummary)
 library(dplyr)
@@ -17,6 +18,7 @@ creates section headers in your table.
 to style them.
 
 ``` r
+
 trial |>
   select(age, marker, grade, stage, response, trt) |>
   tbl_summary(by = trt) |>
@@ -47,6 +49,7 @@ changes.
 #### Without styling
 
 ``` r
+
 trial |>
   select(age, marker, grade, stage, trt) |>
   tbl_summary(by = trt) |>
@@ -60,6 +63,7 @@ trial |>
 #### With add_group_styling()
 
 ``` r
+
 trial |>
   select(age, marker, grade, stage, trt) |>
   tbl_summary(by = trt) |>
@@ -78,6 +82,7 @@ trial |>
 The `format` argument controls the text style:
 
 ``` r
+
 # Bold only
 trial |>
   select(age, marker, grade, stage, trt) |>
@@ -102,6 +107,7 @@ operation in that it converts the table to [gt](https://gt.rstudio.com).
 It must be the **last step** in your pipeline.
 
 ``` r
+
 trial |>
   select(age, marker, grade, stage, response, trt) |>
   tbl_summary(by = trt) |>
@@ -124,6 +130,7 @@ The default color is `"#E8E8E8"` (light gray). Pass any CSS color
 string, or a vector of colors (one per group):
 
 ``` r
+
 trial |>
   select(age, marker, grade, stage, response, trt) |>
   tbl_summary(by = trt) |>
@@ -153,6 +160,7 @@ returns the row indices of group headers. You can then use those with
 directly:
 
 ``` r
+
 my_table <- trial |>
   select(age, marker, grade, stage, trt) |>
   tbl_summary(by = trt) |>
@@ -194,6 +202,7 @@ tables so everything is consistent:
 #### gtsummary with extras()
 
 ``` r
+
 trial |>
   tbl_summary(
     by = trt,
@@ -205,6 +214,7 @@ trial |>
 #### gt with theme_gt_compact()
 
 ``` r
+
 trial |>
   select(trt, age, grade, marker) |>
   head(10) |>
@@ -234,6 +244,7 @@ for more on theming.
 ## Complete Example
 
 ``` r
+
 dictionary <- tibble::tribble(
   ~variable,    ~description,
   "trt",        "Treatment Assignment",

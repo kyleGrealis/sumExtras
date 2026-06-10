@@ -6,6 +6,7 @@ Add these options to your `.Rprofile` for persistent use or add to the
 beginning of your table building script for ease of sharing.
 
 ``` r
+
 options(sumExtras.auto_labels = TRUE)
 options(sumExtras.prefer_dictionary = TRUE)
 ```
@@ -18,6 +19,7 @@ already has label attributes), you can skip calling
 on every table. Set this once:
 
 ``` r
+
 options(sumExtras.auto_labels = TRUE)
 ```
 
@@ -26,6 +28,7 @@ Now
 handles labeling automatically:
 
 ``` r
+
 # Define your dictionary once
 dictionary <- tibble::tribble(
   ~variable,    ~description,
@@ -58,6 +61,7 @@ priority over dictionary labels. If you maintain a centralized data
 dictionary and want it to win over attribute labels, set:
 
 ``` r
+
 options(sumExtras.prefer_dictionary = TRUE)
 ```
 

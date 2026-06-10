@@ -1,6 +1,7 @@
 # Introduction to sumExtras
 
 ``` r
+
 library(sumExtras)
 library(gtsummary)
 library(dplyr)
@@ -42,6 +43,7 @@ and missing value cleanup.
 You can control which features are applied:
 
 ``` r
+
 # Without p-values
 trial |>
   tbl_summary(by = trt) |>
@@ -51,6 +53,7 @@ trial |>
 [TABLE]
 
 ``` r
+
 # Overall column last instead of first
 trial |>
   tbl_summary(by = trt) |>
@@ -60,6 +63,7 @@ trial |>
 [TABLE]
 
 ``` r
+
 # Custom header text
 trial |>
   tbl_summary(by = trt) |>
@@ -71,6 +75,7 @@ trial |>
 Or pass arguments as a list for reuse across tables:
 
 ``` r
+
 my_args <- list(pval = TRUE, overall = TRUE, last = TRUE)
 
 trial |>
@@ -95,6 +100,7 @@ and missing value cleanup are applied automatically while irrelevant
 options are silently ignored. It never breaks your pipeline.
 
 ``` r
+
 # Regression tables work too
 glm(response ~ age + grade, data = trial, family = binomial) |>
   tbl_regression(exponentiate = TRUE) |>
@@ -113,6 +119,7 @@ so there’s no need to call
 again after:
 
 ``` r
+
 t1 <- trial |>
   tbl_summary(by = trt, include = c(age, grade)) |>
   extras()
@@ -135,6 +142,7 @@ replacement text (default `"---"`). You can also pass `symbol` through
 [`extras()`](https://www.kyleGrealis.com/sumExtras/reference/extras.md).
 
 ``` r
+
 demo_trial <- trial |>
   mutate(
     age = if_else(trt == "Drug B", 0, age),
@@ -146,6 +154,7 @@ demo_trial <- trial |>
 #### Without cleaning
 
 ``` r
+
 demo_trial |>
   tbl_summary(by = trt)
 ```
@@ -153,6 +162,7 @@ demo_trial |>
 #### With clean_table()
 
 ``` r
+
 demo_trial |>
   tbl_summary(by = trt) |>
   clean_table()
@@ -171,6 +181,7 @@ set in
 always take priority.
 
 ``` r
+
 dictionary <- tibble::tribble(
   ~variable,    ~description,
   "trt",        "Chemotherapy Treatment",
@@ -196,6 +207,7 @@ For more on label priority, pre-labeled data, and auto-discovery, see
 When combining with group headers and styling, order matters:
 
 ``` r
+
 tbl_summary(by = ...) |>
   extras() |> # always first
   add_variable_group_header() |> # after extras()
