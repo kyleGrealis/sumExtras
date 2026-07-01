@@ -1,4 +1,11 @@
-linters:
-  linters_with_defaults(
-    object_usage_linter = NULL
+linters: linters_with_defaults(
+    line_length_linter(90),
+    object_name_linter(styles = "snake_case"),
+    pipe_call_linter(),
+    object_usage_linter = NULL,
+    commented_code_linter = NULL
+  )
+exclusions: list(
+    "inst",
+    "vignettes"
   )
