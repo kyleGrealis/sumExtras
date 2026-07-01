@@ -1,5 +1,12 @@
 # sumExtras
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/sumExtras)](https://CRAN.R-project.org/package=sumExtras)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/sumExtras)](https://cran.r-project.org/package=sumExtras)
+[![CRAN
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/sumExtras)](https://cran.r-project.org/package=sumExtras)
+
 > **sumExtras**: “**SUM**mary table **EXTRAS**”
 
 ## Overview
